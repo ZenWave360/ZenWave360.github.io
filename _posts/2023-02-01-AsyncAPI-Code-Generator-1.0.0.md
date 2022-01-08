@@ -3,7 +3,6 @@ layout: post
 title:  "ZenWave 360: AsyncAPI Code Generator 1.0.0 Released"
 date:   2021-02-1 07:00:00 +0200
 categories: api-first asyncapi eda
-published: false
 ---
 
 ZenWave 360: API-First with AsyncAPI and ZenWave 360º is now version 1.0.0 GA.

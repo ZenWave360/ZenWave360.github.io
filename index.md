@@ -16,7 +16,7 @@ Domain Driven Design (DDD) and API-First for Event Driven Microservices
 
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ZenWave360/zenwave-code-generator/main/docs/logos/code-generator-logo-light.svg#gh-light-mode-only" alt="ZW> Code Generator" />
+  <img src="/resources/code-generator-logo.excalidraw.svg" alt="ZW> Code Generator" />
 </p>
 
 We believe in the <span class="tag-cloud">simplicity</span> and <span class="tag-cloud">elegance</span> of <span class="tag-cloud">software well designed</span>:
@@ -65,16 +65,49 @@ In this way all team members: **Domain Experts**, **Product Owners**, **Software
 - [Maven Plugin](ZenWave-Code-Generator/Maven-Plugin) so you can execute any standard or custom generator-plugin as part of your build process
 - IDE Model Editor (comming soon): text-based model editor that lets you visualize and work with your Models and APIs in different ways so your software _fits in your own head_
 
-</div>
 
 ## Getting Started
 
-- API-First with AsyncAPI
-- Generating tests for REST APIs from OpenAPI
-  - [Spring WebTestClient](https://zenwave360.github.io/zenwave-code-generator/plugins/openapi-spring-webtestclient/)
-  - [REST-Assured](https://zenwave360.github.io/zenwave-code-generator/plugins/openapi-rest-assured/)
-  - [Karate](https://github.com/ZenWave360/karate-ide)
-- Generating [full backend application](https://zenwave360.github.io/zenwave-code-generator/) with Spring-Boot, Spring Data (Mongodb/JPA), Elastic Search...
+This is a list of currently available funtionality in WenWave 360 for DDD and API-First modeling:
+
+## API-First with OpenAPI
+
+If you are already doing API-First with OpenAPI, with ZenWave360 you can generate:
+
+- [SpringMVC Controllers](/zenwave-code-generator/plugins/jdl-openapi-controllers/) implementing your API-First generated interfaces and Mapstruct Mappers for your DTOs-Domain model.
+- [Spring WebTestClient Tests](https://zenwave360.github.io/zenwave-code-generator/plugins/openapi-spring-webtestclient/) for SpringMVC, Spring WebFlux or remote REST API Testing.
+- [REST-Assured Tests](https://zenwave360.github.io/zenwave-code-generator/plugins/openapi-rest-assured/)
+- KarateDSL Tests (with sister project [ZenWave KarateIDE](https://github.com/ZenWave360/karate-ide) VSCode extension)
+- Stateful Mocks with KarateDSL and [ZenWave APIMock](https://github.com/ZenWave360/zenwave-apimock)
+- Reverse Engeneering [JDL Models from OpenAPI schemas](https://zenwave360.github.io/zenwave-code-generator/plugins/jdl-to-openapi/#openapi-to-jdl)
+- Generate [OpenAPI CRUD definitions from JDL Models](https://zenwave360.github.io/zenwave-code-generator/plugins/jdl-to-openapi/)
+
+## API-First with AsyncAPI
+
+If you are already doing API-First with OpenAPI, with ZenWave360 you can generate:
+
+- Strongly typed business interfaces, DTOs and Header objects from your AsyncAPI definition.
+- [AsyncAPI JsonSchema2Pojo](https://zenwave360.github.io/zenwave-code-generator/plugins/asyncapi-jsonschema2pojo/) generator plugin uses [JsonSchema2Pojo](https://www.jsonschema2pojo.org/) library supporting all upstream options
+- [Spring Cloud Streams implementation](https://zenwave360.github.io/zenwave-code-generator/plugins/asyncapi-spring-cloud-streams3/) for those business interfaces, for producing and consuming messages to any broker supported by Spring Cloud Streams.
+- Generates different [Enterprise Integration Patterns](Event-Driven-Architectures/Enterprise-Integration-Patterns/) behind those business interfaces:
+  - Transactional Outbox: with MongoDB ChangeStreams, Plain SQL and Debezium SQL
+  - Route different Business non retrayable Exceptions to DeadLetter Queues
+  - Enterprise Envelope
+- Generates In-Memory Test-Doubles for your message producers.
+- Reverse Engeneering JDL Models from AsyncAPI schemas
+- Generate [AsyncAPI definitions from JDL Models](https://zenwave360.github.io/zenwave-code-generator/plugins/jdl-to-asyncapi/), for both json-schema or avro.
+
+## DDD with JHipster JDL and ZenWave Domain Language
+
+- You can use [JHipster Domain Language](Domain-Driven-Design/JDL-Domain-Language) (JDL) to describe entity aggragates and their relations.
+
+- And [ZenWave Domain Language](Domain-Driven-Design/ZDL-Domain-Language) to describe Event-Driven microservices beyond CRUD applications.
+
+- ZenWave Code Generator can generate a [full backend application](https://zenwave360.github.io/zenwave-code-generator/) following a flexible hexagonal/clean architecture and best practices for: Spring-Boot, SpringMVC, Spring-Data (MongoDB and JPA), Spring Cloud Streams and ElasticSearch...
+
+</div>
+
+![ZenWave360 - Software Easy to Understand](/resources/ZenWave360-Software_Easy_To_Understand.png)
 
 <p>&nbsp;</p>
 <div class="budha-blockquote">

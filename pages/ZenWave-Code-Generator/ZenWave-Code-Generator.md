@@ -13,37 +13,15 @@ has_children: true
 
 ZenWave Code Generator is a configurable and extensible code generator tool for **Domain Driven Design (DDD)** and **API-First** for **Event Driven Microservices** that can generate code from a mix of different models including:
 
-- [JHipster Domain Language (JDL)](https://www.jhipster.tech/jdl/intro)
-- [AsyncAPI](https://www.asyncapi.com/docs/getting-started/coming-from-openapi)
-- [OpenAPI](https://swagger.io/specification/)
+- [JHipster Domain Language JDL](Domain-Driven-Design/JDL-Domain-Language) to describe your domain model: entities, aggregated and relations.
+- [ZenWave Domain Language ZDL](Domain-Driven-Design/ZDL-Domain-Language) for Event-Driven Microservices beyond CRUD applications.
+- [AsyncAPI](API-First/OpenAPI)
+- [OpenAPI](API-First/AsyncAPI)
 
-Using JHipster Domain Language as **Ubiquitous Language** for **Data on the Inside** and **API-First** specs like **AsyncAPI** and **OpenAPI** to describe Inter Process Communications (IPC) for **Data on the Outside**.
+Using JHipster Domain Language/ZenWave Domain Language as **Ubiquitous Language** for **Data on the Inside** and **API-First** specs like **AsyncAPI** and **OpenAPI** to describe Inter Process Communications (IPC) for **Data on the Outside**.
 
-![ZenWave Modeling Languages](https://zenwave360.github.io/zenwave-code-generator/docs/00-ZenWave-ModelingLanguages.excalidraw.svg)
-
-- **JHipster Domain Language (JDL) as Ubiquitous Language:** To describe your domain core domain model
-- **API-First specs like AsyncAPI and OpenAPI:** to describe Inter Process Communications (IPC) between bounded contexts/microservices.
-- **ZenWave Code Generator:** to generate (_a lot of_) infrastructure, functional and testing code from your models and APIs.
-
-## Not (just) a Code Generator
-
-ZenWave Code Generator is not a Code Generator but a **Modeling Tool** for Domain Driven Design and API-First in disguise of a _code generator_.
-
-Its purpose is to produce successful software projects by dramatically shortening the feedback loop between the expert domain knowledge and working software and its tests.
-
-![Domain Driven Design Feedback Loop](https://zenwave360.github.io/zenwave-code-generator/docs/ZenWave-360-DDD-Feedback-Loop-with-ZW-Products.excalidraw.svg)
-
-In this way all team members: **Domain Experts**, **Product Owners**, **Software Archytechts**, **Developers** and **Testers** can provide early feedback based on an **Ubiquitous Language (JDL)** and the software and tests generated from that model.
-
-## Why Domain Driven Design?
-
-> "There are three types of developers implementing microservices. Those who use DDD, those who don't realise they do, and those who fail."
-
-**DDD:** is about building software around a domain model that represents the problem we want to solve. Expressed by and Ubiquitous Language that is shared by all team members. It helps understand the problem before thinking of a solution. It connects Domain Experts with Technical Experts building a shared understanding of the problem and the solution.
-
-**ZenWave360:** is about speeding up the feedback loop from idea -> model -> working software and tests.
-
-![Design to Code](https://zenwave360.github.io/zenwave-code-generator/docs/ZenWave360-Design-Code-Loop.excalidraw.svg)
+- **JHipster Domain Language/ZenWave Domain Language as Ubiquitous Language:** To describe your domain core domain model and its relations, operations and events.
+- **API-First specs like AsyncAPI and OpenAPI:** To describe Inter Process Communications (IPC) between bounded contexts/microservices.
 
 ## Generate complete Event Driven Microservices using DDD and API-First
 
