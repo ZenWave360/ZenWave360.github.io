@@ -27,15 +27,26 @@ We believe in the <span class="tag-cloud">simplicity</span> and <span class="tag
     <li>Easy to understand</li>
 </ul>
 
-<span class="tag-cloud">ZenWave Code Generator</span> is part of suite of tools to help you create software easy to understand:
+<span class="tag-cloud">ZenWave Code Generator</span> is part of suite of tools to help you create software easy to understand.
+
+## Not (just) a Code Generator
+
+ZenWave Code Generator is not a Code Generator but a <span class="tag-cloud">Modeling Tool</span> for Domain Driven Design and API-First in disguise of a _code generator_.
+
+Its purpose is to produce successful software projects by <span class="tag-cloud">dramatically shortening the feedback loop</span> between the expert domain knowledge and working software and its tests.
+
+![Domain Driven Design Feedback Loop](https://zenwave360.github.io/zenwave-code-generator/docs/ZenWave-360-DDD-Feedback-Loop-with-ZW-Products.excalidraw.svg)
+
+In this way all team members: **Domain Experts**, **Product Owners**, **Software Archytechts**, **Developers** and **Testers** can provide early feedback based on an **Ubiquitous Language (JDL/ZDL)** and the software and tests generated from that model.
   
-## How
 <div class="check"  markdown="1">
+
+## How
 
 ### Leveraging <span class="tag-cloud">DDD</span>
 
 - Adopting [JHipster Domain Language (JDL)](https://www.jhipster.tech/jdl/intro) to let you define your domain model: entities, relationships, agregates, input models, search criterias...
-- Providing ZenWave Domain Language (ZDL) ([comming soon](https://github.com/ZenWave360/zenwave-code-generator/blob/main/zenwave-code-generator-test-resources/src/main/resources/io/zenwave360/generator/resources/jdl/orders-model-eda-idl.jdl)) to let you connect your business model to Event-Driven Architecture, much more than an AsyncAPI IDL..
+- Providing ZenWave Domain Language (<span class="tag-cloud">ZDL</span>) ([comming soon](https://github.com/ZenWave360/zenwave-code-generator/blob/main/zenwave-code-generator-test-resources/src/main/resources/io/zenwave360/generator/resources/jdl/orders-model-eda-idl.jdl)) to let you connect your business model to Event-Driven Architecture, much more than an AsyncAPI IDL..
 
 ### Leveraging <span class="tag-cloud">API-First</span>
 
@@ -47,13 +58,14 @@ We believe in the <span class="tag-cloud">simplicity</span> and <span class="tag
 
 - Generating (lots of) Tests from API First Definitions
 - Generating Validated Mocks (Consumer Contracts) from API First Definitions
-</div>
+
 ## What
 
 - Extensible CLI with an evergrowing set of [standard generator-plugins](ZenWave-Code-Generator/CLI#list-of-available-plugins)
 - [Maven Plugin](ZenWave-Code-Generator/Maven-Plugin) so you can execute any standard or custom generator-plugin as part of your build process
 - IDE Model Editor (comming soon): text-based model editor that lets you visualize and work with your Models and APIs in different ways so your software _fits in your own head_
 
+</div>
 
 
 <p>&nbsp;</p>
