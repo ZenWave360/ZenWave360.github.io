@@ -35,7 +35,7 @@ Check out [AsyncAPI and JsonSchema2Pojo](https://zenwave360.github.io/zenwave-co
                 <generatorName>spring-cloud-streams3</generatorName>
                 <inputSpec>${pom.basedir}/src/main/resources/model/asyncapi.yml</inputSpec>
                 <configOptions>
-                    <role>provider</role>
+                    <role>provider</role><!-- provider or client -->
                     <style>imperative</style>
                     <apiPackage>io.zenwave360.example.adapters.events.producer</apiPackage>
                     <modelPackage>io.zenwave360.example.adapters.events.model</modelPackage>
@@ -52,7 +52,6 @@ Check out [AsyncAPI and JsonSchema2Pojo](https://zenwave360.github.io/zenwave-co
                 <generatorName>jsonschema2pojo</generatorName>
                 <inputSpec>${pom.basedir}/src/main/resources/model/asyncapi.yml</inputSpec>
                 <configOptions>
-                    <apiPackage>io.zenwave360.example.adapters.events</apiPackage>
                     <modelPackage>io.zenwave360.example.adapters.events.model</modelPackage>
                 </configOptions>
             </plugin>

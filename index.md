@@ -67,6 +67,14 @@ In this way all team members: **Domain Experts**, **Product Owners**, **Software
 
 </div>
 
+## Getting Started
+
+- API-First with AsyncAPI
+- Generating tests for REST APIs from OpenAPI
+  - [Spring WebTestClient](https://zenwave360.github.io/zenwave-code-generator/plugins/openapi-spring-webtestclient/)
+  - [REST-Assured](https://zenwave360.github.io/zenwave-code-generator/plugins/openapi-rest-assured/)
+  - [Karate](https://github.com/ZenWave360/karate-ide)
+- Generating [full backend application](https://zenwave360.github.io/zenwave-code-generator/) with Spring-Boot, Spring Data (Mongodb/JPA), Elastic Search...
 
 <p>&nbsp;</p>
 <div class="budha-blockquote">
