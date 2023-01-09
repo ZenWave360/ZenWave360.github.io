@@ -7,7 +7,7 @@ categories: api-first asyncapi eda
 
 ZenWave 360: API-First with AsyncAPI and ZenWave 360º is now version 1.0.0 GA.
 
-![ZenWave360 - Software Easy to Understand](/resources/ZenWave360-API-First_with_AsyncAPI.png)
+![ZenWave360 - API-First with AsyncAPI](/resources/ZenWave360-API-First_with_AsyncAPI.png)
 
 With ZenWave's `spring-cloud-streams3` and `jsonschema2pojo` generator plugins you can generate:
 - Strongly typed **business interfaces**
