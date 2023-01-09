@@ -15,7 +15,7 @@ With ZenWave's `spring-cloud-streams3` and `jsonschema2pojo` generator plugins y
 - **Payload DTOs** and
 - **Header objects** from AsyncAPI definitions.
 
-It uses Spring Cloud Streams so it can connect to many different brokers via provided binders.
+It uses Spring Cloud Streams, so it can connect to different brokers via provided binders.
 
 And because everything is hidden behind interfaces we can encapsulate many Enterprise Integration Patterns.
 
