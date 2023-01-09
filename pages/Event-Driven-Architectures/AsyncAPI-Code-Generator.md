@@ -11,11 +11,21 @@ nav_order: 3
 
 ## API-First with AsyncAPI and ZenWave Code Generator
 
-With ZenWave's `spring-cloud-streams3` and `jsonschema2pojo` generator and [maven plugin](/ZenWave-Code-Generator/Maven-Plugin) you can generate strongly typed business interfaces and DTOs from AsyncAPI definitions.
+With ZenWave's `spring-cloud-streams3` and `jsonschema2pojo` generator plugins you can generate:
+- Strongly typed **business interfaces**
+- **Payload DTOs** and 
+- **Header objects** from AsyncAPI definitions.
 
-It encapsulates SpringCloud Streams 3 API creating abstractions for many Enterprise Integration Patterns for Event Driven Architectures like: Transactional Outbox, Business DeadLetterQueue, Enterprise Envelop, Async Request/Response... behind business oriented interfaces.
+It uses Spring Cloud Streams as default implementation so it can connect to many different brokers via provided binders.
 
-See [AsyncAPI and Spring Cloud Streams 3 Configuration Options](https://zenwave360.github.io/zenwave-code-generator/plugins/asyncapi-spring-cloud-streams3/#options) for more details.
+And because everything is hidden behind interfaces we can encapsulate many Enterprise Integration Patterns:
+
+- Transactional Outbox: with MongoDB ChangeStreams, Plain SQL and Debezium SQL flavors
+- Business DeadLetter Queues: allowing you to route different business Exceptions to different DeadLetter queues for non-retrayable errors.
+- Enterprise Envelope: when your organization uses a common Envelope for messages, you can still express your AsyncAPI definition in terms of your business payload.
+
+
+See [AsyncAPI and Spring Cloud Streams 3 Configuration Options](https://zenwave360.github.io/zenwave-code-generator/plugins/asyncapi-spring-cloud-streams3/#options) and [ZenWave Maven Plugin](/ZenWave-Code-Generator/Maven-Plugin) for more details.
 
 ```xml
 <plugin>
