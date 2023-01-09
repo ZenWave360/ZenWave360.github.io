@@ -4,8 +4,8 @@ title: What is ZenWave360
 nav_order: 1
 ---
 
-<div class="budha-blockquote">
-    <img src="resources/laptop-budha.png" alt="ZenWave Programmer">
+<div class="buddha-blockquote">
+    <img src="resources/laptop-buddha.png" alt="ZenWave Programmer">
     <blockquote> <p>👉 ZenWave360 Helps You Create Software<br/> Easy to Understand</p> </blockquote>
 </div>
 <hr/>
@@ -16,14 +16,14 @@ Domain Driven Design (DDD) and API-First for Event Driven Microservices
 
 
 <p align="center">
-  <img src="/resources/code-generator-logo.excalidraw.svg" alt="ZW> Code Generator" />
+  <img src="resources/code-generator-logo.excalidraw.svg" alt="ZW> Code Generator" />
 </p>
 
 We believe in the <span class="tag-cloud">simplicity</span> and <span class="tag-cloud">elegance</span> of <span class="tag-cloud">software well designed</span>:
 
 <ul class="check"> 
-    <li>Simple</li>
-    <li>To the point</li>
+    <li>Simple,</li>
+    <li>Meaningful and</li>
     <li>Easy to understand</li>
 </ul>
 
@@ -37,7 +37,7 @@ Its purpose is to produce successful software projects by <span class="tag-cloud
 
 ![Domain Driven Design Feedback Loop](https://zenwave360.github.io/zenwave-code-generator/docs/ZenWave-360-DDD-Feedback-Loop-with-ZW-Products.excalidraw.svg)
 
-In this way all team members: **Domain Experts**, **Product Owners**, **Software Archytechts**, **Developers** and **Testers** can provide early feedback based on an **Ubiquitous Language (JDL/ZDL)** and the software and tests generated from that model.
+In this way all team members: **Domain Experts**, **Product Owners**, **Software Architects**, **Developers** and **Testers** can provide early feedback based on an **Ubiquitous Language (JDL/ZDL)** and the software and tests generated from that model.
   
 <div class="check"  markdown="1">
 
@@ -45,8 +45,8 @@ In this way all team members: **Domain Experts**, **Product Owners**, **Software
 
 ### Leveraging <span class="tag-cloud">DDD</span>
 
-- Adopting [JHipster Domain Language (JDL)](https://www.jhipster.tech/jdl/intro) to let you define your domain model: entities, relationships, agregates, input models, search criterias...
-- Providing ZenWave Domain Language (<span class="tag-cloud">ZDL</span>) ([comming soon](https://github.com/ZenWave360/zenwave-code-generator/blob/main/zenwave-code-generator-test-resources/src/main/resources/io/zenwave360/generator/resources/jdl/orders-model-eda-idl.jdl)) to let you connect your business model to Event-Driven Architecture, much more than an AsyncAPI IDL..
+- Adopting [JHipster Domain Language (JDL)](https://www.jhipster.tech/jdl/intro) to let you define your domain model: entities, relationships, aggregates, input models, search criteria...
+- Providing ZenWave Domain Language (<span class="tag-cloud">ZDL</span>) ([coming soon](Domain-Driven-Design/ZDL-Domain-Language)) to let you connect your business model to Event-Driven Architecture, much more than an AsyncAPI IDL...
 
 ### Leveraging <span class="tag-cloud">API-First</span>
 
@@ -54,21 +54,21 @@ In this way all team members: **Domain Experts**, **Product Owners**, **Software
 - Generating Functional Code from API Definitions (OpenAPI, AsyncAPI and GraphQL)
 - (AsyncAPI) Implementing API-First Producers, Consumers and Enterprise Integration Patterns from AsyncAPI Definitions for your Event-Driven Microservices
 
-### <span class="tag-cloud">Tests as First-Class</span> citizien
+### <span class="tag-cloud">Tests as First-Class</span> citizen
 
 - Generating (lots of) Tests from API First Definitions
 - Generating Validated Mocks (Consumer Contracts) from API First Definitions
 
 ## What
 
-- Extensible CLI with an evergrowing set of [standard generator-plugins](ZenWave-Code-Generator/CLI#list-of-available-plugins)
+- Extensible CLI with an ever-growing set of [standard generator-plugins](ZenWave-Code-Generator/CLI#list-of-available-plugins)
 - [Maven Plugin](ZenWave-Code-Generator/Maven-Plugin) so you can execute any standard or custom generator-plugin as part of your build process
-- IDE Model Editor (comming soon): text-based model editor that lets you visualize and work with your Models and APIs in different ways so your software _fits in your own head_
+- IDE Model Editor (coming soon): text-based model editor that lets you visualize and work with your Models and APIs in different ways so your software _fits in your own head_
 
 
 ## Getting Started
 
-This is a list of currently available funtionality in WenWave 360 for DDD and API-First modeling:
+This is a list of currently available functionality in WenWave 360 for DDD and API-First modeling:
 
 ## API-First with OpenAPI
 
@@ -79,7 +79,7 @@ If you are already doing API-First with OpenAPI, with ZenWave360 you can generat
 - [REST-Assured Tests](https://zenwave360.github.io/zenwave-code-generator/plugins/openapi-rest-assured/)
 - KarateDSL Tests (with sister project [ZenWave KarateIDE](https://github.com/ZenWave360/karate-ide) VSCode extension)
 - Stateful Mocks with KarateDSL and [ZenWave APIMock](https://github.com/ZenWave360/zenwave-apimock)
-- Reverse Engeneering [JDL Models from OpenAPI schemas](https://zenwave360.github.io/zenwave-code-generator/plugins/jdl-to-openapi/#openapi-to-jdl)
+- Reverse Engineering [JDL Models from OpenAPI schemas](https://zenwave360.github.io/zenwave-code-generator/plugins/jdl-to-openapi/#openapi-to-jdl)
 - Generate [OpenAPI CRUD definitions from JDL Models](https://zenwave360.github.io/zenwave-code-generator/plugins/jdl-to-openapi/)
 
 ## API-First with AsyncAPI
@@ -91,15 +91,15 @@ If you are already doing API-First with OpenAPI, with ZenWave360 you can generat
 - [Spring Cloud Streams implementation](https://zenwave360.github.io/zenwave-code-generator/plugins/asyncapi-spring-cloud-streams3/) for those business interfaces, for producing and consuming messages to any broker supported by Spring Cloud Streams.
 - Generates different [Enterprise Integration Patterns](Event-Driven-Architectures/Enterprise-Integration-Patterns/) behind those business interfaces:
   - Transactional Outbox: with MongoDB ChangeStreams, Plain SQL and Debezium SQL
-  - Route different Business non retrayable Exceptions to DeadLetter Queues
+  - Route different Business non-retrayable Exceptions to DeadLetter Queues
   - Enterprise Envelope
 - Generates In-Memory Test-Doubles for your message producers.
-- Reverse Engeneering JDL Models from AsyncAPI schemas
+- Reverse Engineering JDL Models from AsyncAPI schemas
 - Generate [AsyncAPI definitions from JDL Models](https://zenwave360.github.io/zenwave-code-generator/plugins/jdl-to-asyncapi/), for both json-schema or avro.
 
 ## DDD with JHipster JDL and ZenWave Domain Language
 
-- You can use [JHipster Domain Language](Domain-Driven-Design/JDL-Domain-Language) (JDL) to describe entity aggragates and their relations.
+- You can use [JHipster Domain Language](Domain-Driven-Design/JDL-Domain-Language) (JDL) to describe entity aggregates and their relations.
 
 - And [ZenWave Domain Language](Domain-Driven-Design/ZDL-Domain-Language) to describe Event-Driven microservices beyond CRUD applications.
 
@@ -110,7 +110,7 @@ If you are already doing API-First with OpenAPI, with ZenWave360 you can generat
 ![ZenWave360 - Software Easy to Understand](/resources/ZenWave360-Software_Easy_To_Understand.png)
 
 <p>&nbsp;</p>
-<div class="budha-blockquote">
-    <img src="resources/laptop-budha.png" alt="ZenWave Programmer">
+<div class="buddha-blockquote">
+    <img src="resources/laptop-buddha.png" alt="ZenWave Programmer">
     <blockquote> <p>👉 ZenWave360 Helps You Create Software<br/> Easy to Understand</p> </blockquote>
 </div>

@@ -33,14 +33,14 @@ Some definitions:
 
 - SERVICE: An independent piece of software, typically a microservice, that provides a set of capabilities to other services.
 - PROVIDER: The service that implements the functionality of the API. It may be accepting asynchronous command request or publishing business domain events.
-- CLIENT/s: The service/s that makes use of the funcionality of the API. It may be requesting asynchronous commands or subscribing to business domain events.
+- CLIENT/s: The service/s that makes use of the functionality of the API. It may be requesting asynchronous commands or subscribing to business domain events.
 - PRODUCER: A service that writes a given message.
 - CONSUMER: A service that reads a given message.
 
 > Define your AsyncAPI from the perspective of the **PROVIDER** of the functionality, which may be a producer, a consumer or both. Share this definition with your **CLIENTS**.
 
 
-Use the table to understand which section of AsyncAPI (publish or subscribe) to use for each topic, and which role (provider or client) to use on the plugin plugin.
+Use the table to understand which section of AsyncAPI (publish or subscribe) to use for each topic, and which role (provider or client) to use on the plugin configuration.
 
 |                              | Events                | Commands                |
 |------------------------------|-----------------------|-------------------------|
@@ -50,13 +50,13 @@ Use the table to understand which section of AsyncAPI (publish or subscribe) to 
 
 ## Understanding AsyncAPI Definition
 
-If you are familiar with OpenAPI you may find useful the following image borrowed from AsynAPI documentation (click image to follow):
+If you are familiar with OpenAPI you may find useful the following image borrowed from AsyncAPI documentation (click image to follow):
 
 [![OpenAPI and AsyncAPI](/resources/openapi-asyncapi.png)](https://www.asyncapi.com/docs/tutorials/getting-started/coming-from-openapi)
 
 ### Info
 
-Document your API: name, purpouse, contact details, license...
+Document your API: name, purpose, contact details, license...
 
 ### Servers
 
@@ -117,7 +117,7 @@ components:
 
 ### Reusing Configurations: Operation Traits, Message Traits...
 
-Operation Traits, Message Traits are an excelent way to reuse chunks of configuration between different operations or messages.
+Operation Traits, Message Traits are an excellent way to reuse chunks of configuration between different operations or messages.
 
 For instance if various messages share some common headers, you can configure them as Message Traits:
 

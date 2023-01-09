@@ -1,3 +1,12 @@
+@font-face {
+  font-family: "Virgil";
+  src: url("https://unpkg.com/@excalidraw/excalidraw@0.13.0-4d26993/dist/excalidraw-assets/Virgil.woff2");
+}
+@font-face {
+  font-family: "Cascadia";
+  src: url("https://unpkg.com/@excalidraw/excalidraw@0.13.0-4d26993/dist/excalidraw-assets/Cascadia.woff2");
+}
+
 @media only screen and (min-width: 1400px) {
   #site-nav, .site-header {
       width: 350px;
@@ -6,7 +15,7 @@
     max-width: 1000px;
   }
   .home-h1 { font-size: 30px !important; }
-  .budha-blockquote {
+  .buddha-blockquote {
     img {
       width: 120px; float: left; margin-left: 55px;
     }
@@ -17,7 +26,7 @@
 }
 
 @media only screen and (max-width: 600px) {
-  .budha-blockquote {
+  .buddha-blockquote {
     img {
       width: 105px; float: left; margin-left: 5px;
     }

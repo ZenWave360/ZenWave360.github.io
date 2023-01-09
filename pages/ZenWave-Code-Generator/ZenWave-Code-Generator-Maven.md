@@ -10,9 +10,9 @@ nav_order: 2
 
 ZenWave Code Generator Maven Plugin can execute any plugin-generator as part of your build process.
 
-- You need to add any plugin-generator you want to use to this maven-plugin `dependencies` section. By default no custom or standard plugin-generators are added.
+- You need to add any plugin-generator you want to use to this maven-plugin `dependencies` section. By default, no custom or standard plugin-generators are added.
 - Use `generatorName` to specify the class name or short code of the plugin-generator you want to exec.
-- `inputSpec` supports file URIs and also `classpath` URIs so you can generate code from API files in your project and/or maven-plugin classpath.
+- `inputSpec` supports file URIs and also `classpath` URIs, so you can generate code from API files in your project and/or maven-plugin classpath.
 - Configure your plugin-generator using `configOptions` section.
 
 The main advantage of ZenWave Code Generator Maven Plugin over the Command Line Interface is to generate API-First code as part of your build process.

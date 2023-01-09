@@ -179,4 +179,4 @@ Because access to the underlying broker is encapsulated behind the generated int
 - [Transactional Outbox:](Enterprise-Integration-Patterns/Transactional-Outbox) for MongoDB, plain JDBC and Debezium SQL
 - [Business DeadLetterQueue](Enterprise-Integration-Patterns/Business-Dead-Letter-Queue)
 - [Enterprise Envelop](Enterprise-Integration-Patterns/Enterprise-Envelop)
-- [Async Request/Response](Enterprise-Integration-Patterns/Async-Request-Response) (comming soon with AsyncAPI v3)
+- [Async Request/Response](Enterprise-Integration-Patterns/Async-Request-Response) (coming soon with AsyncAPI v3)

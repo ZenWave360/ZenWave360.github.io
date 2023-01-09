@@ -10,7 +10,7 @@ nav_order: 1
 
 ZenWave Code Generator is designed to be modular, so you can create and add custom plugins and generators packed as Java `jar` files.
 
-## Jbang Instalation
+## Jbang Installation
 
 The easiest way to install ZenWave Code Generator as a CLI is with [JBang alias](https://www.jbang.dev/documentation/guide/latest/alias_catalogs.html):
 

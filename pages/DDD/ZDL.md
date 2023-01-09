@@ -16,7 +16,7 @@ ZenWave Domain Language: describe your model aggregates and events beyond CRUD a
   <summary>orders-model.jdl (expand to see)</summary>
 
 ```jdl
-// entities and aggregates ommited for brevity
+// entities and aggregates omitted for brevity
 
 services {
 	service CustomerUseCases (Customer) {
