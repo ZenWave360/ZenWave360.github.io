@@ -22,7 +22,7 @@ Check out [AsyncAPI and JsonSchema2Pojo](https://zenwave360.github.io/zenwave-co
 ```xml
 <plugin>
     <groupId>io.github.zenwave360.zenwave-code-generator</groupId>
-    <artifactId>zenwave-code-generator-mojo</artifactId>
+    <artifactId>zenwave-code-generator-maven-plugin</artifactId>
     <version>${zenwave.version}</version>
     <executions>
         <execution>
@@ -72,4 +72,4 @@ Check out [AsyncAPI and JsonSchema2Pojo](https://zenwave360.github.io/zenwave-co
 </plugin>
 ```
 
-You can find main Maven Plugin documentation at (zenwave-code-generator-mojo)[https://zenwave360.github.io/zenwave-code-generator/zenwave-code-generator-mojo/]
+You can find main Maven Plugin documentation at (zenwave-code-generator-maven-plugin)[https://zenwave360.github.io/zenwave-code-generator/zenwave-code-generator-maven-plugin/]

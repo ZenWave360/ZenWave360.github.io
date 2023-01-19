@@ -40,6 +40,8 @@ This generator supports the following JDL extensions:
 - **@searchCriteria(entityName)** is used to specify the entity name for the search criteria, if empty will take the same fields as the actual entity.
 - **@skip** entities used as search criteria should be marked with @skip
 
+- **@dbref** fields will be mapped as mongodb `@DocumentedReference`
+
 <details open markdown="1">
   <summary>orders-model.jdl (expand to see)</summary>
 
