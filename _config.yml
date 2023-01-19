@@ -2,8 +2,8 @@ title: ZenWave360
 # email: ivangsa@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   ZenWave 360: DDD and API-First Modeling Tools for Modern Distributed Applications.
-baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+#baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://zenwave360.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 github_username:  ivangsa
 
 
