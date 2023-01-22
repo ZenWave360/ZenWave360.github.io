@@ -50,14 +50,14 @@ In this way all team members: **Domain Experts**, **Product Owners**, **Software
 
 ### Leveraging <span class="tag-cloud">API-First</span>
 
-- Generating (draft) API Definition Documents (OpenAPI, AsyncAPI and GraphQL) from your DDD models, saving a lot of time
-- Generating Functional Code from API Definitions (OpenAPI, AsyncAPI and GraphQL)
+- Generating (draft) API Definition Documents (OpenAPI and AsyncAPI) from your DDD models, saving a lot of time
+- Generating Functional Code from API Definitions (OpenAPI and AsyncAPI)
 - (AsyncAPI) Implementing API-First Producers, Consumers and Enterprise Integration Patterns from AsyncAPI Definitions for your Event-Driven Microservices
 
-### <span class="tag-cloud">Tests as First-Class</span> citizen
+### <span class="tag-cloud">Tests First</span>
 
-- Generating (lots of) Tests from API First Definitions
-- Generating Validated Mocks (Consumer Contracts) from API First Definitions
+- Generating Tests from API First Definitions
+- Generating Consumer Contracts: Mocks and InMemory Implementations and Contexts from API First Definitions
 
 ## What
 
@@ -79,25 +79,28 @@ If you are already doing API-First with OpenAPI, with ZenWave360 you can generat
 - [REST-Assured Tests](https://zenwave360.github.io/zenwave-code-generator/plugins/openapi-rest-assured/)
 - KarateDSL Tests (with sister project [ZenWave KarateIDE](https://github.com/ZenWave360/karate-ide) VSCode extension)
 - Stateful Mocks with KarateDSL and [ZenWave APIMock](https://github.com/ZenWave360/zenwave-apimock)
+- OpenAPI IDL: Generating [OpenAPI CRUD definitions from JDL Models](https://zenwave360.github.io/zenwave-code-generator/plugins/jdl-to-openapi/)
 - Reverse Engineering [JDL Models from OpenAPI schemas](https://zenwave360.github.io/zenwave-code-generator/plugins/jdl-to-openapi/#openapi-to-jdl)
-- Generate [OpenAPI CRUD definitions from JDL Models](https://zenwave360.github.io/zenwave-code-generator/plugins/jdl-to-openapi/)
 
 ## API-First with AsyncAPI
 
 If you are already doing API-First with OpenAPI, with ZenWave360 you can generate:
 
 - Strongly typed business interfaces, DTOs and Header objects from your AsyncAPI definition.
-- [AsyncAPI JsonSchema2Pojo](https://zenwave360.github.io/zenwave-code-generator/plugins/asyncapi-jsonschema2pojo/) generator plugin uses [JsonSchema2Pojo](https://www.jsonschema2pojo.org/) library supporting all upstream options
 - [Spring Cloud Streams implementation](https://zenwave360.github.io/zenwave-code-generator/plugins/asyncapi-spring-cloud-streams3/) for those business interfaces, for producing and consuming messages to any broker supported by Spring Cloud Streams.
+- [AsyncAPI JsonSchema2Pojo](https://zenwave360.github.io/zenwave-code-generator/plugins/asyncapi-jsonschema2pojo/) generator plugin uses [JsonSchema2Pojo](https://www.jsonschema2pojo.org/) library supporting all upstream options
 - Generates different [Enterprise Integration Patterns](Event-Driven-Architectures/Enterprise-Integration-Patterns/) behind those business interfaces:
-  - Transactional Outbox: with MongoDB ChangeStreams, Plain SQL and Debezium SQL
+  - Transactional Outbox: with MongoDB ChangeStreams, JDBC and Debezium SQL
   - Route different Business non-retrayable Exceptions to DeadLetter Queues
   - Enterprise Envelope
+  - Automatic Headers at Runtime 
 - Generates In-Memory Test-Doubles for your message producers.
+- AsyncAPI IDL: Generating [AsyncAPI definitions from JDL Models](https://zenwave360.github.io/zenwave-code-generator/plugins/jdl-to-asyncapi/), for both json-schema or avro.
 - Reverse Engineering JDL Models from AsyncAPI schemas
-- Generate [AsyncAPI definitions from JDL Models](https://zenwave360.github.io/zenwave-code-generator/plugins/jdl-to-asyncapi/), for both json-schema or avro.
 
 ## DDD with JHipster JDL and ZenWave Domain Language
+
+Focus on define/design you application domain model first using JDL and ZDL domain languages and then generate your Software, Tests and APIs from that model.
 
 - You can use [JHipster Domain Language](Domain-Driven-Design/JDL-Domain-Language) (JDL) to describe entity aggregates and their relations.
 

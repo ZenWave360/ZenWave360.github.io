@@ -16,7 +16,7 @@ With ZenWave's `spring-cloud-streams3` and `jsonschema2pojo` generator plugins y
 - **Payload DTOs** and 
 - **Header objects** from AsyncAPI definitions.
 
-It uses Spring Cloud Streams as default implementation so it can connect to many different brokers via provided binders.
+It uses Spring Cloud Streams as default implementation, so it can connect to many different brokers via provided binders.
 
 And because everything is hidden behind interfaces we can encapsulate many Enterprise Integration Patterns:
 
@@ -34,7 +34,7 @@ See [AsyncAPI and Spring Cloud Streams 3 Configuration Options](https://zenwave3
     <version>${zenwave.version}</version>
     <executions>
         <execution>
-            <id>generate-asyncapi-producer</id>
+            <id>generate-asyncapi-provider</id>
             <phase>generate-sources</phase>
             <goals>
                 <goal>generate</goal>
@@ -42,16 +42,22 @@ See [AsyncAPI and Spring Cloud Streams 3 Configuration Options](https://zenwave3
             <plugin>
                 <generatorName>spring-cloud-streams3</generatorName>
                 <inputSpec>${pom.basedir}/src/main/resources/model/asyncapi.yml</inputSpec>
+                <!-- you can also reference spec file from classpath: including project or plugin classpath -->
+                <!-- <inputSpec>classpath:/model/asyncapi.yml</inputSpec> -->
+                <!-- <includeProjectClasspath>false</includeProjectClasspath> -->
                 <configOptions>
                     <role>provider</role><!-- provider or client -->
-                    <style>imperative</style>
-                    <apiPackage>io.zenwave360.example.adapters.events.provider</apiPackage>
-                    <modelPackage>io.zenwave360.example.adapters.events.model</modelPackage>
+                    <style>imperative</style><!-- imperative or reactive -->
+                    <exposeMessage>false</exposeMessage><!-- use spring Message<T> as part of business interfaces or not -->
+                    <!-- <transactionalOutbox>mongodb</transactionalOutbox> --><!-- none, mongodb, jdbc or debezium -->
+                    <modelPackage>io.zenwave360.example.core.domain.events</modelPackage>
+                    <producerApiPackage>io.zenwave360.example.core.outbound.events</producerApiPackage>
+                    <consumerApiPackage>io.zenwave360.example.adapters.events</consumerApiPackage>
                 </configOptions>
             </plugin>
         </execution>
         <execution>
-            <id>generate-asyncapi-producer-dtos</id>
+            <id>generate-asyncapi-dtos</id>
             <phase>generate-sources</phase>
             <goals>
                 <goal>generate</goal>
@@ -60,7 +66,9 @@ See [AsyncAPI and Spring Cloud Streams 3 Configuration Options](https://zenwave3
                 <generatorName>jsonschema2pojo</generatorName>
                 <inputSpec>${pom.basedir}/src/main/resources/model/asyncapi.yml</inputSpec>
                 <configOptions>
-                    <modelPackage>io.zenwave360.example.adapters.events.model</modelPackage>
+                    <modelPackage>io.zenwave360.example.core.domain.events</modelPackage>
+                    <!-- you can configure any upstream features with 'jsonschema2pojo' prefix -->
+                    <!-- <jsonschema2pojo.includeTypeInfo>true</jsonschema2pojo.includeTypeInfo>-->
                 </configOptions>
             </plugin>
         </execution>
@@ -88,14 +96,14 @@ Because broker based API definitions are inherently **symmetrical** it's difficu
 
 > Write your AsyncAPI definitions from the `provider` perspective and then configure the code generator to generate either a `provider` or a `client`.
 
-NOTE: a `provider` can both produce (events) and consume (requests/commands) messages for the same API and vice-versa.
+As a quick note: a `provider` can both produce (events) and consume (requests/commands) messages for the same API and vice-versa.
 
 ### Spring Cloud Streams Producer: Using generated code to produce messages
 
 On the producer side generates:
 
 - Interface `ICustomerEventsProducer` to produce typed messages that uses your domain names: `onCustomerEvent`, `CustomerEventPayload` and `CustomerEventPayloadHeaders`.
-- Producer _@Component_ `CustomerEventsProducer` you can autowire in your services.
+- Producer `@Component` `CustomerEventsProducer` you can autowire in your services.
 
 **In order to produce messages all you need to do is @Autowire the generated producer as part of your code.**
 
@@ -192,7 +200,7 @@ public class OnCustomerEventConsumer implements Consumer<Message<CustomerEventPa
                 service.onCustomerEvent((CustomerEventPayload) payload, headers);
                 return;
             }
-            log.warn("Received message without any business handler: [payload: {}, message: {}]", payload.getClass().getName(), message);
+            log.error("Received message without any business handler: [payload: {}, message: {}]", payload.getClass().getName(), message);
         } catch (Exception e) {
             // error handling and dead-letter-queue routing omitted for brevity
         }
@@ -211,6 +219,44 @@ class DoCustomerRequestConsumerService implements IDoCustomerRequestConsumerServ
         // [...] do something with this message
     }
 }
+```
+
+### Populating Headers at Runtime Automatically
+
+ZenWave Code Generator provides `x-runtime-expression` for automatic header population at runtime. Values for this extension property are:
+
+- `$message.payload#/<json pointer fragment>`: follows the same format as AsyncAPI [Correlation ID](https://www.asyncapi.com/docs/reference/specification/v2.5.0#correlationIdObject) object.
+- `$tracingIdSupplier`: will use the tracing id `java.function.Supplier` configured in your Spring context.
+
+```yaml
+    CustomerEventMessage:
+      name: CustomerEventMessage
+      // [...] other properties omitted for brevity
+      headers:
+        type: object
+        properties:
+          kafka_messageKey:
+            type: string
+            description: This one will be populated automatically at runtime
+            x-runtime-expression: $message.payload#/customer/id
+          tracingId:
+            type: string
+            description: This one will be populated automatically at runtime
+            x-runtime-expression: $tracingIdSupplier
+```
+
+```xml
+<configOption>
+    <tracingIdSupplierQualifier>myTracingIdSupplier</tracingIdSupplierQualifier><!-- default is "tracingIdSupplier" -->
+    <runtimeHeadersProperty>x-custom-runtime-expression</runtimeHeadersProperty><!-- you can also override this extension property name -->
+</configOption>
+```
+
+```java
+    @Bean("myTracingIdSupplier")
+    public Supplier tracingIdSupplier() {
+        return () -> "test-tracing-id";
+    }
 ```
 
 ## Enterprise Integration Patterns
