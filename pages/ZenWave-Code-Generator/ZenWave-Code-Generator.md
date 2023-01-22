@@ -11,7 +11,7 @@ has_children: true
 > 👉 ZenWave360 Helps You Create Software that's Easy to Understand
 
 
-ZenWave Code Generator is a configurable and extensible code generator tool for **Domain Driven Design (DDD)** and **API-First** for **Event Driven Microservices** that can generate code from a mix of different models including:
+ZenWave Code Generator is a configurable and extensible code generator tool for **Domain Driven Design** and **API-First** for **Event Driven Microservices** that can generate code from a mix of different models including:
 
 - [JHipster Domain Language JDL](Domain-Driven-Design/JDL-Domain-Language) to describe your domain model: entities, aggregated and relations.
 - [ZenWave Domain Language ZDL](Domain-Driven-Design/ZDL-Domain-Language) for Event-Driven Microservices beyond CRUD applications.

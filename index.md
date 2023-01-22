@@ -11,7 +11,7 @@ nav_order: 1
 <hr/>
 
 <h1 class="home-h1">
-Domain Driven Design (DDD) and API-First for Event Driven Microservices
+Domain Driven Design and API-First for Event Driven Microservices
 </h1>
 
 
