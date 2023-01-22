@@ -6,9 +6,20 @@ nav_order: 3
 has_children: true
 ---
 
-## Domain Driven Design
+## Domain Driven Design with ZenWave 360º
 
 > "There are three types of developers implementing microservices. <br/> Those who use DDD, those who don't realise they do, and those who fail."
+
+![ZenWave Modeling Languages](https://zenwave360.github.io/zenwave-code-generator/docs/00-ZenWave-ModelingLanguages.excalidraw.svg)
+
+<div class="check"  markdown="1">
+
+- Using JDL/ZDL as **Ubiquitous Language** for **Data on the Inside** and 
+
+- **API-First** specs like **AsyncAPI** and **OpenAPI** to describe Inter Process Communications (IPC) for **Data on the Outside**.
+</div>
+
+## Domain Driven Design
 
 **DDD:** is about building software around a domain model that represents the problem we want to solve. Expressed by and Ubiquitous Language that is shared by all team members. It helps understand the problem before thinking of a solution. It connects Domain Experts with Technical Experts building a shared understanding of the problem and the solution.
 
@@ -29,14 +40,3 @@ Its purpose is to produce successful software projects by dramatically shortenin
 </p>
 
 In this way all team members: **Domain Experts**, **Product Owners**, **Software Architects**, **Developers** and **Testers** can provide early feedback based on an **Ubiquitous Language (JDL)** and the software and tests generated from that model.
-
-## ZenWave360: Domain Driven Design and API-First for Event Driven Microservices
-
-<div class="check"  markdown="1">
-- Using JDL/ZDL as **Ubiquitous Language** for **Data on the Inside** and 
-
-
-- **API-First** specs like **AsyncAPI** and **OpenAPI** to describe Inter Process Communications (IPC) for **Data on the Outside**.
-</div>
-
-![ZenWave Modeling Languages](https://zenwave360.github.io/zenwave-code-generator/docs/00-ZenWave-ModelingLanguages.excalidraw.svg)
