@@ -15,7 +15,7 @@ ZenWave Code Generator is designed to be modular, so you can create and add cust
 The easiest way to install ZenWave Code Generator as a CLI is with [JBang alias](https://www.jbang.dev/documentation/guide/latest/alias_catalogs.html):
 
 ```shell
-jbang alias add --name=zw release@zenwave360/zenwave-code-generator --fresh
+jbang alias add --fresh --name=zw release@zenwave360/zenwave-code-generator
 ```
 
 This command will create a JBang alias named `zw` with all standard plugin generators at their current `RELEASE` version.

@@ -9,6 +9,10 @@ nav_order: 3
 
 # Enterprise Envelope
 
+https://www.enterpriseintegrationpatterns.com/patterns/messaging/EnvelopeWrapper.html
+
+## Configuring ZenWave Producers and Consumers to use an Enterprise Envelope
+
 This document is still a DRAFT, see the **AsyncAPI ApiFirst Generator KitchenSink** project for a working example:
 
 https://github.com/ZenWave360/AsyncAPI-ApiFirst-Generator-KitchenSink/#with-enterprise-envelope

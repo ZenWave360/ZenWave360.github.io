@@ -9,6 +9,14 @@ nav_order: 2
 
 # Business Dead-Letter-Queue Routing
 
+Dead Letter Queue:
+> What will the messaging system do with a message it cannot deliver?
+
+Business Dead-Letter-Queue:
+> What will the messaging system do with a delivered message it can not process due to business rules, invariants or validation errors?
+
+## Configuring ZenWave Consumers for Business Dead-Letter-Queue Routing
+
 This document is still a DRAFT, see the **AsyncAPI ApiFirst Generator KitchenSink** project for a working example: https://github.com/ZenWave360/AsyncAPI-ApiFirst-Generator-KitchenSink/#with-deadletterqueue-routing
 
 ```yaml

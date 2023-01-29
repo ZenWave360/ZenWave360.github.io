@@ -56,8 +56,10 @@ In this way all team members: **Domain Experts**, **Product Owners**, **Software
 
 ### <span class="tag-cloud">Tests First</span>
 
+- Generating "Edge Integration Tests", "Vertical/Sociable Unit Tests" and "Integration Tests" for your backend entities
 - Generating Tests from API First Definitions
 - Generating Consumer Contracts: Mocks and InMemory Implementations and Contexts from API First Definitions
+
 
 ## What
 
@@ -65,6 +67,7 @@ In this way all team members: **Domain Experts**, **Product Owners**, **Software
 - [Maven Plugin](ZenWave-Code-Generator/Maven-Plugin) so you can execute any standard or custom generator-plugin as part of your build process
 - IDE Model Editor (coming soon): text-based model editor that lets you visualize and work with your Models and APIs in different ways so your software _fits in your own head_
 
+![ZenWave Features MindMap](https://zenwave360.github.io/zenwave-code-generator/docs/ZenWave-MindMap.svg)
 
 ## Getting Started
 
