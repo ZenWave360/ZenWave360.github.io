@@ -20,6 +20,12 @@ jbang alias add --fresh --name=zw release@zenwave360/zenwave-sdk
 
 This command will create a JBang alias named `zw` with all standard plugin generators at their current `RELEASE` version.
 
+Or for the latest `SNAPSHOT` version:
+
+```shell
+jbang alias add --fresh --name=zw snapshots@zenwave360/zenwave-sdk
+```
+
 If you want to add custom plugins to your cli interface you will need to use the extended format.
 
 ## Adding Custom Plugins to Jbang Installation
