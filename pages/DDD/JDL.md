@@ -12,6 +12,8 @@ ZenWave360 uses [JHipster Domain Language JDL](https://www.jhipster.tech/jdl/int
 
 ## JDL Extensions/Customizations
 
+![JDL](https://raw.githubusercontent.com/ZenWave360/zenwave-sdk/main/docs/04-DDD-Agreggates-BoundedContexts-Orders_JDL.png)
+
 This generator supports the following JDL extensions:
 
 ### Extensions In JDL Language
