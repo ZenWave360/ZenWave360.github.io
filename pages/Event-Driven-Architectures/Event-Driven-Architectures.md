@@ -23,4 +23,4 @@ ZenWave Code generator helps you to create software easy to understand by levera
 - Hiding implementation details
 - And abstracting away many [Enterprise Integration Patterns](./Enterprise-Integration-Patterns/) behind those strongly typed interfaces
 
-![AsyncAPI and Spring Cloud Streams 3](https://zenwave360.github.io/zenwave-code-generator/docs/ZenWave360-AsyncAPI-SpringCloudStreams.excalidraw.svg)
+![AsyncAPI and Spring Cloud Streams 3](https://zenwave360.github.io/zenwave-sdk/docs/ZenWave360-AsyncAPI-SpringCloudStreams.excalidraw.svg)

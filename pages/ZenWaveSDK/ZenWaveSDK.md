@@ -1,17 +1,17 @@
 ---
 layout: page
-title: ZenWave Code Generator
-permalink: /ZenWave-Code-Generator/
+title: ZenWave SDK
+permalink: /ZenWaveSDK/
 nav_order: 2
 has_children: true
 ---
 
-# ZenWave Code Generator
+# ZenWave SDK
 
 > 👉 ZenWave360 Helps You Create Software that's Easy to Understand
 
 
-ZenWave Code Generator is a configurable and extensible code generator tool for **Domain Driven Design** and **API-First** for **Event Driven Microservices** that can generate code from a mix of different models including:
+ZenWave SDK is a configurable and extensible code generator tool for **Domain Driven Design** and **API-First** for **Event Driven Microservices** that can generate code from a mix of different models including:
 
 - [JHipster Domain Language JDL](Domain-Driven-Design/JDL-Domain-Language) to describe your domain model: entities, aggregated and relations.
 - [ZenWave Domain Language ZDL](Domain-Driven-Design/ZDL-Domain-Language) for Event-Driven Microservices beyond CRUD applications.
@@ -36,7 +36,7 @@ You can generate complete Event Driven Microservices using DDD and API-First
 5. Generate E2E, Integration tests and Consumer Contracts for the public APIs you just produced.
 
 
-![ZenWave Features MindMap](https://zenwave360.github.io/zenwave-code-generator/docs/ZenWave-MindMap.svg)
+![ZenWave Features MindMap](https://zenwave360.github.io/zenwave-sdk/docs/ZenWave-MindMap.svg)
 
 
 ## What can we generate for you today?
@@ -47,12 +47,12 @@ Whether you are:
 - Refactoring a legacy monolith
 - Adding functionality on top of an existent microservices architecture
 
-...ZenWave Code Generator can... **generate a lot of code for you!!**
+...ZenWave SDK can... **generate a lot of code for you!!**
 
-![06-ServiceImplementation-Hexagonal](https://zenwave360.github.io/zenwave-code-generator/docs/06-ServiceImplementation-Hexagonal.excalidraw.svg)
+![06-ServiceImplementation-Hexagonal](https://zenwave360.github.io/zenwave-sdk/docs/06-ServiceImplementation-Hexagonal.excalidraw.svg)
 
 ## Extensible and Configurable
 
-ZenWave Code Generator is designed to be easily extensible and adaptable to your project or your organization needs and likes.
+ZenWave SDK is designed to be easily extensible and adaptable to your project or your organization needs and likes.
 
-Navigate to ZenWave Code Generator to [read more...](https://zenwave360.github.io/zenwave-code-generator/)
+Navigate to ZenWave SDK to [read more...](https://zenwave360.github.io/zenwave-sdk/)

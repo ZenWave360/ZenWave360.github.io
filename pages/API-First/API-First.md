@@ -15,4 +15,4 @@ has_children: true
 - **API-First** specs like **AsyncAPI** and **OpenAPI** to describe Inter Process Communications (IPC) for **Data on the Outside**.
 </div>
 
-![ZenWave Modeling Languages](https://zenwave360.github.io/zenwave-code-generator/docs/00-ZenWave-ModelingLanguages.excalidraw.svg)
+![ZenWave Modeling Languages](https://zenwave360.github.io/zenwave-sdk/docs/00-ZenWave-ModelingLanguages.excalidraw.svg)

@@ -6,12 +6,12 @@ parent: Event Driven Architectures
 nav_order: 3
 ---
 
-![AsyncAPI and Spring Cloud Streams 3](https://zenwave360.github.io/zenwave-code-generator/docs/ZenWave360-AsyncAPI-SpringCloudStreams.excalidraw.svg)
+![AsyncAPI and Spring Cloud Streams 3](https://zenwave360.github.io/zenwave-sdk/docs/ZenWave360-AsyncAPI-SpringCloudStreams.excalidraw.svg)
 
 
-## API-First with AsyncAPI and ZenWave Code Generator
+## API-First with AsyncAPI and ZenWave SDK
 
-With ZenWave's `spring-cloud-streams3` and `jsonschema2pojo` generator plugins you can generate:
+With ZenWave's `spring-cloud-streams3` and `jsonschema2pojo` sdk plugins you can generate:
 - Strongly typed **business interfaces**
 - **Payload DTOs** and 
 - **Header objects** from AsyncAPI definitions.
@@ -25,12 +25,12 @@ And because everything is hidden behind interfaces we can encapsulate many Enter
 - Enterprise Envelope: when your organization uses a common Envelope for messages, you can still express your AsyncAPI definition in terms of your business payload.
 
 
-See [AsyncAPI and Spring Cloud Streams 3 Configuration Options](https://zenwave360.github.io/zenwave-code-generator/plugins/asyncapi-spring-cloud-streams3/#options) and [ZenWave Maven Plugin](/ZenWave-Code-Generator/Maven-Plugin) for more details.
+See [AsyncAPI and Spring Cloud Streams 3 Configuration Options](https://zenwave360.github.io/zenwave-sdk/plugins/asyncapi-spring-cloud-streams3/#options) and [ZenWave Maven Plugin](/ZenWave-Code-Generator/Maven-Plugin) for more details.
 
 ```xml
 <plugin>
-    <groupId>io.github.zenwave360.zenwave-code-generator</groupId>
-    <artifactId>zenwave-code-generator-maven-plugin</artifactId>
+    <groupId>io.github.zenwave360.zenwave-sdk</groupId>
+    <artifactId>zenwave-sdk-maven-plugin</artifactId>
     <version>${zenwave.version}</version>
     <executions>
         <execution>
@@ -75,12 +75,12 @@ See [AsyncAPI and Spring Cloud Streams 3 Configuration Options](https://zenwave3
     </executions>
     <dependencies>
         <dependency>
-            <groupId>io.github.zenwave360.zenwave-code-generator.plugins</groupId>
+            <groupId>io.github.zenwave360.zenwave-sdk.plugins</groupId>
             <artifactId>asyncapi-spring-cloud-streams3</artifactId>
             <version>${zenwave.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.github.zenwave360.zenwave-code-generator.plugins</groupId>
+            <groupId>io.github.zenwave360.zenwave-sdk.plugins</groupId>
             <artifactId>asyncapi-jsonschema2pojo</artifactId>
             <version>${zenwave.version}</version>
         </dependency>
@@ -223,7 +223,7 @@ class DoCustomerRequestConsumerService implements IDoCustomerRequestConsumerServ
 
 ### Populating Headers at Runtime Automatically
 
-ZenWave Code Generator provides `x-runtime-expression` for automatic header population at runtime. Values for this extension property are:
+ZenWave SDK provides `x-runtime-expression` for automatic header population at runtime. Values for this extension property are:
 
 - `$message.payload#/<json pointer fragment>`: follows the same format as AsyncAPI [Correlation ID](https://www.asyncapi.com/docs/reference/specification/v2.5.0#correlationIdObject) object.
 - `$tracingIdSupplier`: will use the tracing id `java.function.Supplier` configured in your Spring context.

@@ -10,7 +10,7 @@ has_children: true
 
 > "There are three types of developers implementing microservices. <br/> Those who use DDD, those who don't realise they do, and those who fail."
 
-![ZenWave Modeling Languages](https://zenwave360.github.io/zenwave-code-generator/docs/00-ZenWave-ModelingLanguages.excalidraw.svg)
+![ZenWave Modeling Languages](https://zenwave360.github.io/zenwave-sdk/docs/00-ZenWave-ModelingLanguages.excalidraw.svg)
 
 <div class="check"  markdown="1">
 
@@ -26,17 +26,17 @@ has_children: true
 **ZenWave360:** is about speeding up the feedback loop from idea -> model -> working software and tests.
 
 <p align="center" markdown="1">
-![Design to Code](https://zenwave360.github.io/zenwave-code-generator/docs/ZenWave360-Design-Code-Loop.excalidraw.svg)
+![Design to Code](https://zenwave360.github.io/zenwave-sdk/docs/ZenWave360-Design-Code-Loop.excalidraw.svg)
 </p>
 
 ## Not (just) a Code Generator
 
-ZenWave Code Generator is not a Code Generator but a **Modeling Tool** for Domain Driven Design and API-First in disguise of a _code generator_.
+ZenWave SDK is a **Modeling Tool** for Domain Driven Design and API-First in disguise of a _code generator_.
 
 Its purpose is to produce successful software projects by dramatically shortening the feedback loop between the expert domain knowledge and working software and its tests.
 
 <p align="center" markdown="1">
-![Domain Driven Design Feedback Loop](https://zenwave360.github.io/zenwave-code-generator/docs/ZenWave-360-DDD-Feedback-Loop-with-ZW-Products.excalidraw.svg)
+![Domain Driven Design Feedback Loop](https://zenwave360.github.io/zenwave-sdk/docs/ZenWave-360-DDD-Feedback-Loop-with-ZW-Products.excalidraw.svg)
 </p>
 
 In this way all team members: **Domain Experts**, **Product Owners**, **Software Architects**, **Developers** and **Testers** can provide early feedback based on an **Ubiquitous Language (JDL)** and the software and tests generated from that model.
