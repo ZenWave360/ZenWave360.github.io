@@ -8,7 +8,7 @@ has_children: true
 
 # Event-Driven Architectures (Draft)
 
-Asynchronous message-based communication is certainly not new and have existed as part of Service Oriented Architectures (SOAs) but the need to scale up not only increasingly big sets of data but also the organizational challenge of multiple teams working together has lead to a new architectural style: Event-Driven Architectures or EADs for short.
+Asynchronous message-based communication is certainly not new and have existed as part of Service Oriented Architectures (SOAs) but the need to scale up not only increasingly big sets of data but also the organizational challenge of multiple teams working together has lead to a new architectural style: Event-Driven Architectures or EDAs for short.
 
 In Event-Driven Architectures, small services, in size and in purpose, communicate with each other asynchronously by producing and consuming events and messages.
 

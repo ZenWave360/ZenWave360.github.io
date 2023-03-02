@@ -22,8 +22,22 @@ nav_order: 2
     - [Notification Messages](#notification-messages)
     - [State Transfer Messages](#state-transfer-messages)
 
+If you are familiar with OpenAPI and OpenAPI Generator API-First workflow:
+
+- First write the OpenAPI definition, collaborating between API providers and API consumers.
+- Then use OpenAPI Generator, either the maven plugin or a CLI, to generate some DTOs and interfaces from your OpenAPI definition.
+- Implement the generated interfaces to create a service for the API.
+- As a client, use the interfaces to consume the API with an HTTP client generated behind the scenes.
+
+When doing API-First with AsyncAPI, the process is similar. After you generate some interfaces and DTOs from your API definition, you use the generated interfaces to produce messages, sending them to the broker, and implement them to consume messages from the broker.
+
+There is still a fundamental difference between OpenAPI and AsyncAPI: OpenAPI is used to document Request-Response / Client-Server APIs, while AsyncAPI is used to document Event-Driven APIs which, except for websockets, are Broker-based. 
+
+And broker-based APIs, unlike Client-Server, are inherently **symmetric**.
 
 ## Broker-based APIs are Symmetric
+
+![Client-server vs broker-based EDAs](/resources/client-server-vs-broker-eda.excalidraw.svg)
 
 Because APIs mediated by a broker are inherently **symmetric** it's difficult to establish the roles of client/server: what represents a `publish` operation from one side will be a `subscribe` operation seen from the other side. Also, a given service can act as a publisher and subscriber on the same API.
 
@@ -39,7 +53,6 @@ Some definitions:
 
 > Define your AsyncAPI from the perspective of the **PROVIDER** of the functionality, which may be a producer, a consumer or both. Share this definition with your **CLIENTS**.
 
-
 Use the table to understand which section of AsyncAPI (publish or subscribe) to use for each topic, and which role (provider or client) to use on the plugin configuration.
 
 |                              | Events                | Commands                |
@@ -48,7 +61,23 @@ Use the table to understand which section of AsyncAPI (publish or subscribe) to 
 | Client                       | Consumes (subscribe)  | Produces (publish)      |
 | OperationId Suggested Prefix | **on**&lt;Event Name> | **do**&lt;Command Name> |
 
+If you still find confusing which one is a provider and a client just use this rule: it can be only one provider of a given message while clients of a given message there can be many:
+
+- If the provider is the producer use publish section
+- If is the consumer use subscribe section.
+
+## Events, Commands, and Messages
+
+In a messaging system, there are two types of messages: events and commands. An event message describes a change that has already happened, while a command message describes an operation that needs to be carried out. In other words, events are used to notify subscribers about something that has already occurred, while commands are used to initiate an action or process.
+
+- **Event:** A message describing a change that has already happened.
+- **Command:** A message describing an operation that has to be carried out.
+
+Also, while there can be only one provider that produces a given event, but commands can be issued for one or many client producers.
+
 ## Understanding AsyncAPI Definition
+
+While OpenAPI and AsyncAPI come to document completely different architectural styles, they are similar in many aspects, in fact AsyncAPI YAML format was originaly based on OpenAPI format and structure.
 
 If you are familiar with OpenAPI you may find useful the following image borrowed from AsyncAPI documentation (click image to follow):
 
@@ -62,13 +91,19 @@ Document your API: name, purpose, contact details, license...
 
 Document where your API will be deployed and required security...
 
+You can also document some server **protocol specific configurations** using free-form **bindings** property
+
 ### Channels: Publish / Subscribe
 
-Each channel represent one broker topic, channel, queue... where you are about to publish or subscribe to.
+Each channel represent one single broker topic, channel, queue... where you are about to publish or subscribe to.
 
-Use use above table to understand which section, publish or subscribe, you may want to use.
+Use table above to understand which section, publish or subscribe, you may want to use.
 
-In a nutshell: providers publish events and subscribes to commands/queries.
+In a nutshell: 
+
+> Providers publish events and subscribe to commands/queries/requests.
+
+If you still find confusing which is a provider and a client just use this rule: In a given messaging scenario, there can be only one provider of a message, while there can be multiple clients.. If the provider is producing messages, use the `publish` section. If the provider is consuming messages, use the `subscribe` section.
 
 ### Messages
 
@@ -120,7 +155,6 @@ components:
 Operation Traits, Message Traits are an excellent way to reuse chunks of configuration between different operations or messages.
 
 For instance if various messages share some common headers, you can configure them as Message Traits:
-
 ```yml
 components:
   messages:
@@ -130,28 +164,105 @@ components:
       summary: Async Event for a Customer
       schemaFormat: application/vnd.aai.asyncapi;version=2.4.0
       traits:
-        - $ref: '#/components/messageTraits/CommonHeaders' # 'CommonHeaders' contents will replace 'traits' property
+      - $ref: '#/components/messageTraits/CommonHeaders' # 'CommonHeaders' contents will replace 'traits' property
       payload:
-        $ref: '#/components/schemas/CustomerEventPayload'
+      $ref: '#/components/schemas/CustomerEventPayload'
 
   messageTraits:
     CommonHeaders:
       headers:
-        type: object
-        properties:
-          my-app-header:
-            type: integer
-            minimum: 0
-            maximum: 100
+      type: object
+      properties:
+      my-app-header:
+        type: integer
+        minimum: 0
+        maximum: 100
 ```
 
 And the same concept applies to Operation Traits.
 
-## Different Styles of Message Payloads
 
-### Event Sourcing Messages
+## Different Styles of Event Messages
 
 ### Notification Messages
 
+An Event Notification **contains minimal information about the event** and enough information for interested consumers to locate additional details. The specifics of what information is included in an event notification can vary depending on the system or use case.
+
+```json
+{
+  "headers": {
+    "event-type": "customer-created",
+    "event-id": "",
+    "aggregate-id": "1",
+    "aggregate-type": "customer"
+  },
+  "payload": {
+    "id": 1,
+    "eventType": "created",
+    "link": "/customers/1"
+  }
+}
+```
 
 ### State Transfer Messages
+
+On the other hand a State Transfer message **contains the entire state of the aggregate** so consumer does not need to make additional calls. This can be useful in situations where subscribers need to maintain a synchronized view of the data. Compacted keyed topics typically use this style of messages.
+
+```json
+{
+  "headers": {
+    "event-id": "",
+    "aggregate-id": "1",
+    "aggregate-type": "customer"
+  },
+  "payload": {
+    "id": 1,
+    "firstName": "string",
+    "lastName": "string",
+    "password": "string",
+    "email": "string",
+    "username": "string",
+    "address": {
+      "id": 1,
+      "street": "string",
+      "city": "string",
+      "state": "string",
+      "zip": "string"
+    }
+  }
+}
+```
+
+
+### Domain Event Messages
+
+Domain Event Messages **contains information about the event and interesting portions of the underlying aggregate**, but not the entire state of the aggregate. This style of events is typically used for Event Sourcing integration patterns.
+
+```json
+{
+  "headers": {
+    "event-type": "customer-address-updated",
+    "event-id": "",
+    "aggregate-id": "1",
+    "aggregate-type": "customer"
+  },
+  "payload": {
+    "id": 1,
+    "eventType": "address-updated",
+    "customer": {
+      "id": 1,
+      "new-address": {
+        "street": "string",
+        "city": "string",
+        "state": "string",
+        "zip": "string"
+      }
+    }
+  }
+}
+```
+
+ 
+## Next: Java Code Generator for AsyncAPI
+
+[Next: Java Code Generator for AsyncAPI](/Event-Driven-Architectures/AsyncAPI-Code-Generator)

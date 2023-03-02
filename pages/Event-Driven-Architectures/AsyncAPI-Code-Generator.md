@@ -11,7 +11,7 @@ nav_order: 3
 
 ## API-First with AsyncAPI and ZenWave SDK
 
-With ZenWave's `spring-cloud-streams3` and `jsonschema2pojo` sdk plugins you can generate:
+With ZenWave's `spring-cloud-streams3` and `jsonschema2pojo` plugins you can generate:
 - Strongly typed **business interfaces**
 - **Payload DTOs** and 
 - **Header objects** from AsyncAPI definitions.
@@ -32,47 +32,49 @@ See [AsyncAPI and Spring Cloud Streams 3 Configuration Options](https://zenwave3
     <groupId>io.github.zenwave360.zenwave-sdk</groupId>
     <artifactId>zenwave-sdk-maven-plugin</artifactId>
     <version>${zenwave.version}</version>
+    <configuration>
+        <inputSpec>classpath:/model/asyncapi.yml</inputSpec>
+        <addCompileSourceRoot>true</addCompileSourceRoot>
+        <addTestCompileSourceRoot>true</addTestCompileSourceRoot>
+    </configuration>
     <executions>
-        <execution>
-            <id>generate-asyncapi-provider</id>
-            <phase>generate-sources</phase>
-            <goals>
-                <goal>generate</goal>
-            </goals>
-            <plugin>
-                <generatorName>spring-cloud-streams3</generatorName>
-                <inputSpec>${pom.basedir}/src/main/resources/model/asyncapi.yml</inputSpec>
-                <!-- you can also reference spec file from classpath: including project or plugin classpath -->
-                <!-- <inputSpec>classpath:/model/asyncapi.yml</inputSpec> -->
-                <!-- <includeProjectClasspath>false</includeProjectClasspath> -->
-                <configOptions>
-                    <role>provider</role><!-- provider or client -->
-                    <style>imperative</style><!-- imperative or reactive -->
-                    <exposeMessage>false</exposeMessage><!-- use spring Message<T> as part of business interfaces or not -->
-                    <!-- <transactionalOutbox>mongodb</transactionalOutbox> --><!-- none, mongodb, jdbc or debezium -->
-                    <modelPackage>io.zenwave360.example.core.domain.events</modelPackage>
-                    <producerApiPackage>io.zenwave360.example.core.outbound.events</producerApiPackage>
-                    <consumerApiPackage>io.zenwave360.example.adapters.events</consumerApiPackage>
-                </configOptions>
-            </plugin>
-        </execution>
+        <!-- DTOs -->
         <execution>
             <id>generate-asyncapi-dtos</id>
             <phase>generate-sources</phase>
             <goals>
                 <goal>generate</goal>
             </goals>
-            <plugin>
+            <configuration>
                 <generatorName>jsonschema2pojo</generatorName>
-                <inputSpec>${pom.basedir}/src/main/resources/model/asyncapi.yml</inputSpec>
                 <configOptions>
                     <modelPackage>io.zenwave360.example.core.domain.events</modelPackage>
-                    <!-- you can configure any upstream features with 'jsonschema2pojo' prefix -->
-                    <!-- <jsonschema2pojo.includeTypeInfo>true</jsonschema2pojo.includeTypeInfo>-->
+                    <!--        <jsonschema2pojo.includeTypeInfo>true</jsonschema2pojo.includeTypeInfo>-->
+                    <jsonschema2pojo.useLongIntegers>true</jsonschema2pojo.useLongIntegers>
                 </configOptions>
-            </plugin>
+            </configuration>
+        </execution>
+        <!-- Generate PROVIDER -->
+        <execution>
+            <id>generate-asyncapi</id>
+            <phase>generate-sources</phase>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+            <configuration>
+                <generatorName>spring-cloud-streams3</generatorName>
+                <configOptions>
+                    <role>provider</role>
+                    <style>imperative</style>
+                    <transactionalOutbox>mongodb</transactionalOutbox>
+                    <modelPackage>io.zenwave360.example.core.domain.events</modelPackage>
+                    <producerApiPackage>io.zenwave360.example.core.outbound.events</producerApiPackage>
+                    <consumerApiPackage>io.zenwave360.example.adapters.commands</consumerApiPackage>
+                </configOptions>
+            </configuration>
         </execution>
     </executions>
+
     <dependencies>
         <dependency>
             <groupId>io.github.zenwave360.zenwave-sdk.plugins</groupId>
@@ -96,7 +98,7 @@ Because broker based API definitions are inherently **symmetrical** it's difficu
 
 > Write your AsyncAPI definitions from the `provider` perspective and then configure the code generator to generate either a `provider` or a `client`.
 
-As a quick note: a `provider` can both produce (events) and consume (requests/commands) messages for the same API and vice-versa.
+If you still find confusing which is a provider and a client just use this rule: In a given messaging scenario, there can be only one provider of a message, while there can be multiple clients.. If the provider is producing messages, use the `publish` section. If the provider is consuming messages, use the `subscribe` section.
 
 ### Spring Cloud Streams Producer: Using generated code to produce messages
 
@@ -221,7 +223,24 @@ class DoCustomerRequestConsumerService implements IDoCustomerRequestConsumerServ
 }
 ```
 
-### Populating Headers at Runtime Automatically
+### Exception Handling with Business Dead Letter Queue
+
+ZenWave SDK consumers can be configured to route exceptions to different error queues. This is useful to manage non-retryable business exceptions so the stream processing is not interrupted. If your code throws an exception not configured for error routing it will be rethrow and it will follow the standard error handling mechanism for your particular Spring Cloud Stream binder.
+
+```yaml
+spring.cloud.stream.bindings:
+    on-customer-event-in-0:
+      destination: customer.events
+      content-type: application/json
+      # configuring error routing for this consumer
+      dead-letter-queue-error-map: >
+        {
+          'javax.validation.ValidationException': 'on-customer-event-validation-error-out-0',
+          'java.lang.Exception': 'on-customer-event-error-out-0'
+        }
+```
+
+## Populating Headers at Runtime Automatically
 
 ZenWave SDK provides `x-runtime-expression` for automatic header population at runtime. Values for this extension property are:
 
@@ -257,6 +276,53 @@ ZenWave SDK provides `x-runtime-expression` for automatic header population at r
     public Supplier tracingIdSupplier() {
         return () -> "test-tracing-id";
     }
+```
+
+### InMemory Producers as TestDoubles
+
+Alongside the generated producer, ZenWave SDK also generates an _in-memory producer captor_ that can be used as a test double and a singletone manual context so you easily include them in your unit/integration tests.
+
+```java
+// generated class, you can use in your tests
+public class ProducerInMemoryContext {
+
+    public static final ProducerInMemoryContext INSTANCE = new ProducerInMemoryContext();
+
+
+    private CustomerEventsProducerCaptor customerEventsProducerCaptor = new CustomerEventsProducerCaptor();
+
+    public <T extends ICustomerEventsProducer> T customerEventsProducer() {
+        return (T) customerEventsProducerCaptor;
+    }
+}
+```
+
+And use it in your tests to instantiate your service and perform assertions in your tests. You can find [a working example here](https://github.com/ivangsa/spring-boot-mongodb-elasticsearch-kafka-example/blob/e8fa9c89e5f3d72b90ac23749f636fc7640bdf39/src/test/java/io/zenwave360/example/core/implementation/CustomerUseCasesTest.java#L70).
+
+```java
+// example of how you can instantiate your service using the in-memory producer captor
+public class InMemoryTestsManualContext extends InMemoryTestsConfig {
+
+    // [...] other beans omitted for brevity
+    
+    public CustomerUseCasesImpl customerUseCases() {
+        // instantiating a bean with in-memory dependencies
+        return new CustomerUseCasesImpl(customerRepository(), ProducerInMemoryContext.INSTANCE.customerEventsProducer());
+    }
+}
+
+// and using it in your tests to perform assertions
+public class CustomerUseCasesTest {
+    
+    // this is the in-memory producer captor wired
+    CustomerEventsProducerCaptor customerEventsProducer = ProducerInMemoryContext.INSTANCE.customerEventsProducer();
+
+    @Test
+    void testCustomerUseCase() {
+        // [...] test your use case
+        Assertions.assertEquals(3, customerEventsProducer.getCapturedMessages(customerEventsProducer.onCustomerEventBindingName).size());
+    }
+}
 ```
 
 ## Enterprise Integration Patterns
