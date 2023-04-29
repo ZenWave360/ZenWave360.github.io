@@ -8,6 +8,9 @@ nav_order: 1
 
 # Generating AsyncAPI definition files from JDL with ZenWaveSDK
 
+![JDL-2-AsyncAPI](JDL-2-AsyncAPI.svg)
+
+
 Writing YAML by hand is no fun, but you can simplify the process of writing AsyncAPI definition files by using a Domain Specific Language (DSL).
 
 Thanks to ZenWave SDK, you can convert JDL models into AsyncAPI definition files. This can save time and effort in the development process while ensuring that your APIs follow best practices and standards.

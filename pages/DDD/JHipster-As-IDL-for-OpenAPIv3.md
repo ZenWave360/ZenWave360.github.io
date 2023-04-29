@@ -8,6 +8,8 @@ nav_order: 2
 
 # Generating OpenAPI definition files from JDL with ZenWaveSDK
 
+![JDL-2-OpenAPI](JDL-2-OpenAPI.svg)
+
 Writing YAML by hand is no fun, but you can simplify the process of writing OpenAPI definition files by using a Domain Specific Language (DSL).
 
 Thanks to ZenWave SDK, you can convert JDL models into OpenAPI definition files. This can save time and effort in the development process while ensuring that your APIs follow best practices and standards.
