@@ -1,6 +1,6 @@
 ---
 layout: page
-title: OpenAPI Code Generator
+title: JDL To OpenAPI
 permalink: /Domain-Driven-Design/JDL-Domain-Language/JHipster-As-IDL-for-OpenAPIv3
 parent: "JDL for Entities Aggregates and Relations"
 nav_order: 1
