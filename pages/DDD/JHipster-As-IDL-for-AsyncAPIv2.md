@@ -2,7 +2,7 @@
 layout: page
 title: AsyncAPI Code Generator
 permalink: /Domain-Driven-Design/JDL-Domain-Language/JHipster-As-IDL-for-AsyncAPIv2
-parent: JDL for Entities, Aggregates and Relations
+parent: 'JDL for Entities, Aggregates and Relations'
 nav_order: 1
 ---
 
