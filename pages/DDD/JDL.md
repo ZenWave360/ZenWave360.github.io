@@ -1,14 +1,17 @@
 ---
 layout: page
 title: JDL for Entities, Aggregates and Relations
-permalink: /Domain-Driven-Design/JDL-Domain-Language
+permalink: /Domain-Driven-Design/JDL-Domain-Language/
 parent: Domain Driven Design
 nav_order: 1
+has_children: true
 ---
 
 #  JHipster Domain Language JDL
 
 ZenWave360 uses [JHipster Domain Language JDL](https://www.jhipster.tech/jdl/intro) to describe your domain model: entities, aggregated and relations.
+
+JHipster Domain Language (JDL) is a Domain Specific Language (DSL) used to define the domain model of a web application. With JDL, you can describe the entities, relationships, and constraints of your system in a concise and readable way, making it a valuable tool for implementing Domain Driven Design (DDD) principles in API and Event-Driven applications. By using JDL, you can create a clear and consistent domain model that reflects the business requirements of your system, improving the overall quality and maintainability of the application.
 
 ## JDL Extensions/Customizations
 
