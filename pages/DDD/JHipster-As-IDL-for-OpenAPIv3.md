@@ -2,9 +2,11 @@
 layout: page
 title: OpenAPI Code Generator
 permalink: /Domain-Driven-Design/JDL-Domain-Language/JHipster-As-IDL-for-OpenAPIv3
-parent: "JDL for Entities, Aggregates and Relations"
+parent: "JDL for Entities Aggregates and Relations"
 nav_order: 1
 ---
+
+# Generating OpenAPI definition files from JDL with ZenWaveSDK
 
 Writing YAML by hand is no fun, but you can simplify the process of writing OpenAPI definition files by using a Domain Specific Language (DSL).
 

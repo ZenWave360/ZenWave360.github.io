@@ -2,9 +2,11 @@
 layout: page
 title: AsyncAPI Code Generator
 permalink: /Domain-Driven-Design/JDL-Domain-Language/JHipster-As-IDL-for-AsyncAPIv2
-parent: 'JDL for Entities, Aggregates and Relations'
+parent: 'JDL for Entities Aggregates and Relations'
 nav_order: 1
 ---
+
+# Generating AsyncAPI definition files from JDL with ZenWaveSDK
 
 Writing YAML by hand is no fun, but you can simplify the process of writing AsyncAPI definition files by using a Domain Specific Language (DSL).
 
