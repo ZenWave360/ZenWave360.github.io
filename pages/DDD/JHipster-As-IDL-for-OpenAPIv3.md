@@ -2,7 +2,7 @@
 layout: page
 title: JDL To OpenAPI
 permalink: /Domain-Driven-Design/JDL-Domain-Language/JHipster-As-IDL-for-OpenAPIv3
-parent: JDL for Entities Aggregates and Relations
+parent: JHipster Domain Language JDL
 grand_parent: Domain Driven Design
 nav_order: 2
 ---

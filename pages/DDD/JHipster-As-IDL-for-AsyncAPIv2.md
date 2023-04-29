@@ -2,7 +2,7 @@
 layout: page
 title: JDL To AsyncAPI v2
 permalink: /Domain-Driven-Design/JDL-Domain-Language/JHipster-As-IDL-for-AsyncAPIv2
-parent: JDL for Entities Aggregates and Relations
+parent: JHipster Domain Language JDL
 grand_parent: Domain Driven Design
 nav_order: 1
 ---
