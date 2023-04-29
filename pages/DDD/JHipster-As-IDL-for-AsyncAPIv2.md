@@ -10,10 +10,6 @@ nav_order: 1
 
 Writing YAML by hand is no fun, but you can simplify the process of writing AsyncAPI definition files by using a Domain Specific Language (DSL).
 
-[JHipster Domain Language (JDL)](https://www.jhipster.tech/jdl/intro) is a Domain Specific Language (DSL) used to define the domain model of a web application. With JDL, you can describe the entities, relationships, and constraints of your system in a concise and readable way.
-
-Zenwave SDK is set of tools to generate (and reverse engineering) code from JDL and API-First models.
-
 Thanks to ZenWave SDK, you can convert JDL models into AsyncAPI definition files. This can save time and effort in the development process while ensuring that your APIs follow best practices and standards.
 
 ## JDL Example
@@ -73,11 +69,4 @@ You can generate AsyncAPI definition files with the following options:
   - State Transfer message contains the entire state of the aggregate so consumer does not need to make additional calls.
   - Domain Event Messages contains information about the event and interesting portions of the underlying aggregate, but not the entire state of the aggregate.
 
-
-## Summary
-
 By using JDL to define your domain model and ZenWave SDK to convert it into an AsyncAPI definition file, you can simplify the process of designing and documenting your APIs. This can improve the overall quality and consistency of your APIs, while also reducing errors and inconsistencies.
-
-Overall, using JDL and ZenWave SDK provides a streamlined and efficient way to implement Domain Driven Design principles in Event-Driven applications, while also improving the efficiency and quality of the development process.
-
-NOTE: You can also use ZenWave SDK to generate complete OpenAPI definitions from JDL models.

@@ -1,6 +1,6 @@
 ---
 layout: page
-title: JDL for Entities Aggregates and Relations
+title: JHipster Domain Language JDL
 permalink: /Domain-Driven-Design/JDL-Domain-Language/
 parent: Domain Driven Design
 nav_order: 1
