@@ -1,9 +1,5 @@
----
-slug: /
----
-
+import { Link } from 'gatsby';
 import {
-  Article,
   ScreenContainer,
   Button,
   HeroSection,
@@ -16,116 +12,92 @@ import {
   FeatureSection,
   FeatureList,
   Feature,
+  FeatureImage,
   FeatureTitle,
   FeatureText,
-  FeatureImage,
-  SiblingNav,
-  SiblingNavLink,
-} from 'smooth-doc/components'
-import { graphql, useStaticQuery, Link } from 'gatsby'
-import codeImageURL from '../images/icons8-code-100.png'
-import inspectCodeImageURL from '../images/icons8-inspect-code-100.png'
-import markdownImageURL from '../images/icons8-markdown-100.png'
-import variableImageURL from '../images/icons8-variable-100.png'
-import registryEditorImageURL from '../images/icons8-registry-editor-100.png'
-import systemTaskImageURL from '../images/icons8-system-task-100.png'
-import webDesignImageURL from '../images/icons8-web-design-100.png'
-import moduleImageURL from '../images/icons8-module-100.png'
-import heroBackgroundURL from '../images/hero-background.png'
-import GettingStarted from '../partials/getting-started.mdx'
+} from "smooth-doc/components";
+import heroBackgroundImageURL from "../images/hero-background.png";
+import markdownImageURL from '../images/markdown.png'
+import jdlImageURL from '../static/logos/conceptual-model-white.png'
+import sdkImageURL from '../static/logos/zenwave-sdk-dark.png'
+import springBootImageURL from '../static/logos/spring-boot-logo.png'
+import springImageURL from '../static/logos/spring.svg'
+import dddImageURL from '../static/logos/ddd.png'
+import edaImageURL from '../static/logos/event-storming.png'
+import osiImageURL from '../static/logos/osi.webp'
+import openApiImageURL from '../static/logos/openapi-logo.png'
+import asyncApiImageURL from '../static/logos/asyncapi-logo.png'
+import tddImageURL from '../static/logos/tdd.png'
 
-<HeroSection>
-  <ScreenContainer>
-    <Hero backgroundImageURL={heroBackgroundURL}>
+<ScreenContainer>
+  <HeroSection>
+    <Hero backgroundImageURL={heroBackgroundImageURL}>
       <HeroBody>
-        <HeroTitle>Create awesome docs without compromise</HeroTitle>
-        <HeroTeaser>
-          A ready-to-use Gatsby theme to build docs for all your projects.
-          Smooth DOC makes documentation easy.
-        </HeroTeaser>
+        <HeroTitle>ZenWave Helps You Create Software Easy To Understand!</HeroTitle>
+        <HeroTeaser>DDD and API-First Modeling Tools for Modern Distributed Applications.</HeroTeaser>
         <HeroActionList>
           <HeroAction>
-            <Button as={Link} to="/docs/getting-started/">
-              Explore Docs
+            <Button variant="neutral" as={Link} to="/docs">
+              Browse Docs
+            </Button>
+            <Button as={Link} to="/docs">
+              Getting Started
             </Button>
           </HeroAction>
         </HeroActionList>
       </HeroBody>
     </Hero>
-  </ScreenContainer>
-</HeroSection>
-<FeatureSection>
-  <FeatureList>
-    <Feature>
-      <FeatureImage src={registryEditorImageURL} />
-      <FeatureTitle>Use Gatsby</FeatureTitle>
-      <FeatureText>
-        Gatsby is a powerful static website generator. It gives you amazing web
-        perf.
-      </FeatureText>
-    </Feature>
-    <Feature>
-      <FeatureImage src={markdownImageURL} />
-      <FeatureTitle>Powered by MDX</FeatureTitle>
-      <FeatureText>
-        MDX combines Markdown and JSX. You can use your own components in
-        Markdown-style files.
-      </FeatureText>
-    </Feature>
-    <Feature>
-      <FeatureImage src={webDesignImageURL} />
-      <FeatureTitle>Custom Theme & Dark Mode</FeatureTitle>
-      <FeatureText>
-        Dark mode is natively supported and theme is fully customizable!
-      </FeatureText>
-    </Feature>
-    <Feature>
-      <FeatureImage src={moduleImageURL} />
-      <FeatureTitle>Ready-to-use components</FeatureTitle>
-      <FeatureText>
-        A set of ready-to-use components to build great landing pages.
-      </FeatureText>
-    </Feature>
-    <Feature>
-      <FeatureImage src={codeImageURL} />
-      <FeatureTitle>React Live Code Editor</FeatureTitle>
-      <FeatureText>
-        Give life to your docs with Live Code Editing. Users can edit examples
-        and see changes in real-time!
-      </FeatureText>
-    </Feature>
-    <Feature>
-      <FeatureImage src={systemTaskImageURL} />
-      <FeatureTitle>Enhanced SEO</FeatureTitle>
-      <FeatureText>
-        Smooth DOC handles all SEO metadata, sitemap and social sharing for you.
-      </FeatureText>
-    </Feature>
-    <Feature>
-      <FeatureImage src={inspectCodeImageURL} />
-      <FeatureTitle>Algolia DocSearch</FeatureTitle>
-      <FeatureText>
-        A good search is a real asset for a documentation. Algolia DocSearch is
-        built-in!
-      </FeatureText>
-    </Feature>
-    <Feature>
-      <FeatureImage src={variableImageURL} />
-      <FeatureTitle>Carbon Ads</FeatureTitle>
-      <FeatureText>
-        Monetizing your open source project is often hard. Carbon Ads support
-        makes it easier!
-      </FeatureText>
-    </Feature>
-  </FeatureList>
-</FeatureSection>
-<ScreenContainer as="section" py={5}>
-  <Article>
-    <GettingStarted />
-    <SiblingNav>
-      <SiblingNavLink type="next" to="/docs/getting-started/">
-        Read full documentation
-      </SiblingNavLink>
-    </SiblingNav>
-  </Article>
+  </HeroSection>
+
+  <FeatureSection>
+    <FeatureList>
+      <Feature>
+        <FeatureImage src={jdlImageURL} />
+        <FeatureTitle>Domain Model Language</FeatureTitle>
+        <FeatureText>
+          Concise and complete DDD modeling language for Event-Driven Architectures.
+        </FeatureText>
+      </Feature>
+      <Feature>
+        <FeatureImage style={{ display: 'inline', 'margin-right': '5px', ...props.style }} src={sdkImageURL} />
+        <FeatureImage style={{ display: 'inline', 'margin-right': '5px', ...props.style }} src={springBootImageURL} />
+        {/* <FeatureImage style={{ display: 'inline', ...props.style }} src={springImageURL} /> */}
+        <FeatureTitle>ZenWave SDK</FeatureTitle>
+        <FeatureText>
+          ZenWave SDK helps you create SpringBoot/SpringCloud applications in no time.
+        </FeatureText>
+      </Feature>
+      <Feature>
+        <FeatureImage src={dddImageURL} />
+        <FeatureTitle>Domain Driven Design</FeatureTitle>
+        <FeatureText>
+          Business, Developer and Computer friendly Ubiquitous Language for your Domain and Bounded Contexts.
+        </FeatureText>
+      </Feature>
+      <Feature>
+        <FeatureImage src={edaImageURL} />
+        <FeatureTitle>Event-Driven Architectures</FeatureTitle>
+        <FeatureText>
+          Leveraging Event-Storming to model your Event-Driven Architectures and applying Enterprise Integration Patterns with minimal effort.
+        </FeatureText>
+      </Feature>
+      <Feature>
+        <FeatureImage style={{ display: 'inline', 'margin-right': '5px', ...props.style }} src={osiImageURL} />
+        <FeatureImage style={{ display: 'inline', 'margin-right': '5px', ...props.style }} src={openApiImageURL} />
+        <FeatureImage style={{ display: 'inline', ...props.style }} src={asyncApiImageURL} />
+        <FeatureTitle>API-First</FeatureTitle>
+        <FeatureText>
+          Leveraging open standards like OpenAPI and AsyncAPI.
+        </FeatureText>
+      </Feature>
+      <Feature>
+      <FeatureImage src={tddImageURL} />
+        <FeatureTitle>Test First</FeatureTitle>
+        <FeatureText>
+          Testing as first class citizen. Helps you scaffold complete test suites from your models and APIs.
+        </FeatureText>
+      </Feature>
+    </FeatureList>
+  </FeatureSection>
+
 </ScreenContainer>
