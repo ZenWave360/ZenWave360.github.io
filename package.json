@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "workspaces": [
+    "smooth-doc",
+    "website"
+  ],
+  "scripts": {
+    "format": "prettier --write \"**/*.{js,md,mdx}\"",
+    "format-check": "prettier --check \"**/*.{js,md,mdx}\"",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "eslint-config-react-app": "^7.0.0",
+    "prettier": "^2.5.1"
+  },
+  "overrides": {
+    "babel-plugin-styled-components": "2.0.2"
+  }
+}
