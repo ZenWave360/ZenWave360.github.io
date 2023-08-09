@@ -2,8 +2,9 @@ const fs = require('fs')
 const path = require('path')
 const { createFilePath } = require('gatsby-source-filesystem')
 const { getSiteUrl } = require('./src/theme-options')
+const { createContentDigest, slash } = require(`gatsby-core-utils`)
 
-function createSchemaCustomization({ actions }) {
+function createSchemaCustomization({ actions, schema }) {
   const { createTypes } = actions
   const typeDefs = `
     type NavItem {
@@ -38,9 +39,57 @@ function createSchemaCustomization({ actions }) {
       order: Int
       redirect: String
     }
+
+    type BlogPost implements Node {
+      id: ID!
+      title: String!
+      body: String!
+      slug: String!
+      date: Date! @dateformat
+      tags: [String]!
+      excerpt: String!
+      image: File
+      imageAlt: String
+      imageCaptionText: String
+      imageCaptionLink: String
+      socialImage: File
+    }
   `
   createTypes(typeDefs)
+
 }
+
+function processRelativeImage(source, context, type) {
+  // Image is a relative path - find a corresponding file
+  const mdxFileNode = context.nodeModel.findRootNodeAncestor(
+    source,
+    (node) => node.internal && node.internal.type === `File`
+  )
+  if (!mdxFileNode) {
+    return
+  }
+  const imagePath = slash(path.join(mdxFileNode.dir, source[type]))
+
+  const fileNodes = context.nodeModel.getAllNodes({ type: `File` })
+  for (const file of fileNodes) {
+    if (file.absolutePath === imagePath) {
+      return file
+    }
+  }
+}
+
+const mdxResolverPassthrough =
+  (fieldName) => async (source, args, context, info) => {
+    const type = info.schema.getType(`Mdx`)
+    const mdxNode = context.nodeModel.getNodeById({
+      id: source.parent,
+    })
+    const resolver = type.getFields()[fieldName].resolve
+    const result = await resolver(mdxNode, args, context, {
+      fieldName,
+    })
+    return result
+  }
 
 function createDirectoryIfNotExists({ reporter }, pathname) {
   if (!fs.existsSync(pathname)) {
@@ -53,15 +102,24 @@ async function onPreBootstrap(options) {
   // Create all required directories
   createDirectoryIfNotExists(options, 'pages')
   createDirectoryIfNotExists(options, 'pages/docs')
+  createDirectoryIfNotExists(options, 'pages/posts')
   createDirectoryIfNotExists(options, 'images')
 }
 
-function onCreateMdxNode({ node, getNode, actions }, options) {
-  const { createNodeField } = actions
+function getPageType(contentFilePath) {
+  if (/\/pages\/docs\//.test(contentFilePath)) {
+    return 'doc'
+  }
+  if (/\/pages\/posts\//.test(contentFilePath)) {
+    return 'post'
+  }
+  return 'page'
+}
+
+async function onCreateMdxNode({ node, getNode, actions, createNodeId }, options) {
+  const { createNodeField, createNode, createParentChildLink } = actions
   const slug = node.frontmatter.slug || createFilePath({ node, getNode })
-  const pageType = /\/pages\/docs\//.test(node.internal.contentFilePath)
-    ? 'doc'
-    : 'page'
+  const pageType = getPageType(node.internal.contentFilePath);
 
   createNodeField({
     name: 'id',
@@ -148,6 +206,37 @@ function onCreateMdxNode({ node, getNode, actions }, options) {
     node,
     value: getEditLink(),
   })
+
+  if(pageType === 'post') {
+    const fieldData = {
+      title: node.frontmatter.title,
+      tags: node.frontmatter.tags || [],
+      slug,
+      excerpt: node.frontmatter.excerpt || '',
+      date: node.frontmatter.date,
+      image: node.frontmatter.image,
+      imageAlt: node.frontmatter.imageAlt,
+      imageCaptionText: node.frontmatter.imageCaptionText,
+      imageCaptionLink: node.frontmatter.imageCaptionLink,
+      socialImage: node.frontmatter.socialImage,
+    }
+    const mdxBlogPostId = createNodeId(`${node.id} >>> BlogPost`)
+    console.log('mdxBlogPostId', mdxBlogPostId )
+    await createNode({
+      ...fieldData,
+      // Required fields.
+      id: mdxBlogPostId,
+      parent: node.id,
+      children: [],
+      internal: {
+        type: `BlogPost`,
+        contentDigest: createContentDigest(fieldData),
+        content: JSON.stringify(fieldData),
+        description: `Mdx implementation of the BlogPost interface`,
+      },
+    })
+    createParentChildLink({ parent: node, child: getNode(mdxBlogPostId) })
+  }
 }
 
 function onCreateNode(...args) {
@@ -224,6 +313,12 @@ async function createPages({ graphql, actions, reporter }) {
         contentFilePath: node.internal.contentFilePath,
       },
     })
+  })
+
+  createPage({
+    path: '/blog/',
+    component: require.resolve("./src/templates/posts.js"),
+    context: { filter: {}, limit: 100 },
   })
 }
 

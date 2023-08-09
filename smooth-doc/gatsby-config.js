@@ -122,8 +122,15 @@ module.exports = function config(options) {
       {
         resolve: 'gatsby-source-filesystem',
         options: {
+          path: `./pages/posts`,
+          name: 'post',
+        },
+      },
+      {
+        resolve: 'gatsby-source-filesystem',
+        options: {
           path: `./pages`,
-          ignore: ['**/docs/**'],
+          ignore: ['**/docs/**', '**/posts/**'],
           name: 'page',
         },
       },

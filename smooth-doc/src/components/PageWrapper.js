@@ -1,6 +1,7 @@
 import React from 'react'
 import { PageLayout } from './PageLayout'
 import { DocLayout } from './DocLayout'
+import { PostLayout } from './PostLayout'
 
 export function PageWrapper({
   children,
@@ -21,6 +22,8 @@ export function PageWrapper({
         </DocLayout>
       )
     case 'page':
+      return <PageLayout title={mdx.fields.title}>{children}</PageLayout>
+    case 'post':
       return <PageLayout title={mdx.fields.title}>{children}</PageLayout>
     default:
       return children
