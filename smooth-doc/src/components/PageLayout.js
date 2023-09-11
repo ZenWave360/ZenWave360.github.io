@@ -14,6 +14,17 @@ const StickyHeader = styled.div`
 const Main = styled.main`
   background-color: background;
   flex: 1;
+  
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding-left: 16px;
+  padding-right: 16px;
+`
+
+const DocMain = styled.main`
+  background-color: background;
+  flex: 1;
 `
 
 const Container = styled.div`
@@ -22,7 +33,8 @@ const Container = styled.div`
   min-height: 100vh;
 `
 
-export function PageLayout({ children, title }) {
+export function PageLayout({ children, title, isDoc = false }) {
+    console.log('PageLayout.js: PageLayout()', isDoc);
   return (
     <>
       <Head title={title} />
@@ -30,7 +42,7 @@ export function PageLayout({ children, title }) {
         <StickyHeader>
           <AppHeader />
         </StickyHeader>
-        <Main id="main">{children}</Main>
+        {isDoc? <DocMain id="main">{children}</DocMain> : <Main id="main">{children}</Main>}
       </Container>
     </>
   )

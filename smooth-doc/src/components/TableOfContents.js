@@ -107,7 +107,7 @@ export function useTocHighlight(ref) {
 const TocContainer = styled.div`
   position: sticky;
   top: ${th.px(50)};
-  padding: 5 0 4;
+  padding: 5 3 4; // 5 0 4;
   overflow-y: auto;
   height: calc(100vh - 50px);
   font-size: 15;

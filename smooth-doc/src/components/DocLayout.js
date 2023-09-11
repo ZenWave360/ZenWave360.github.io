@@ -45,7 +45,7 @@ const Container = styled.div`
     css`
       display: grid;
       grid-template-columns: 288px minmax(0, 1fr);
-      grid-gap: ${th.space(5)};
+      // grid-gap: ${th.space(5)};
 
       .sidebar-container {
         display: none;
@@ -175,6 +175,7 @@ function PrevNextLinks(props) {
 }
 
 export function DocLayout({ children, tableOfContents, editLink, ...props }) {
+  props.isDoc = true;
   const upMd = useUp('md')
   const sideNav = useSideNavState()
   return (

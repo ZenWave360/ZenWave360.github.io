@@ -20,6 +20,10 @@ export const theme = {
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
+    
+    img {
+      display: inline-block;
+    }
 
     :focus {
       outline-color: primary-500;
@@ -110,7 +114,7 @@ export const theme = {
     'control-focus': th.shadow('focus'),
   },
   sizes: {
-    screen: 1440,
+    screen: 1669, // 1440,
   },
   space: {
     0: 0,
