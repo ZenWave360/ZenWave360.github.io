@@ -1,0 +1,89 @@
+---
+section: Event-Driven Design
+title: Event Storming
+slug: /docs/event-driven-design/event-storming
+order: 1
+---
+
+# ZenWave SDK
+
+> 👉 ZenWave360 Helps You Create Software Easy to Understand
+
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.zenwave360.zenwave-sdk/zenwave-sdk.svg?label=Maven%20Central&logo=apachemaven)](https://search.maven.org/artifact/io.github.zenwave360.zenwave-sdk/zenwave-sdk)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/ZenWave360/zenwave-sdk?logo=GitHub)](https://github.com/ZenWave360/zenwave-sdk/releases)
+[![build](https://github.com/ZenWave360/zenwave-sdk/workflows/build/badge.svg)](https://github.com/ZenWave360/zenwave-sdk/actions/workflows/build.yml)
+[![coverage](https://raw.githubusercontent.com/ZenWave360/zenwave-sdk/badges/jacoco.svg)](https://github.com/ZenWave360/zenwave-sdk/actions/workflows/build.yml)
+[![branches coverage](https://raw.githubusercontent.com/ZenWave360/zenwave-sdk/badges/branches.svg)](https://github.com/ZenWave360/zenwave-sdk/actions/workflows/build.yml)
+[![GitHub](https://img.shields.io/github/license/ZenWave360/zenwave-sdk)](https://github.com/ZenWave360/zenwave-sdk/blob/main/LICENSE)
+
+## Domain Driven Design and API-First for Event Driven Microservices
+
+![ZenWave Domain Language for Event-Storming](/resources/EventStorming-ZDL-Mapping.png)
+
+ZenWave SDK is a configurable and extensible tool for **Domain Driven Design (DDD)** and **API-First** for **Event Driven Microservices** that can generate code from a mix of different models including:
+
+- [ZenWave Domain Language (ZDL)]() as **Ubiquitous Language** you can model the output of an Event-Storming.
+- [AsyncAPI](https://www.asyncapi.com/docs/getting-started/coming-from-openapi): Industry de-facto standard to describe Event-Driven Architectures for Message-based APIs.
+- [OpenAPI](https://swagger.io/specification/): Industry standard for Request-Response Architectures with REST APIs.
+
+Using ZenWave Domain Language as **Ubiquitous Language** for modeling and describing Bounded Contexts: aggregates, entities with their relationships, services, value objects, commands and events.
+
+ZenWave Domain Language can be considered as an *extended subset* of [JHipster Domain Language (JDL)](https://www.jhipster.tech/jdl/intro) that let's you describe your entities and relationships.
+
+Using ZenWave Domain Language as **Ubiquitous Language** for **Data on the Inside** and **API-First** specs like **AsyncAPI** and **OpenAPI** to describe Inter Process Communications (IPC) for **Data on the Outside**.
+
+![ZenWave Modeling Languages](/resources/ZenWave-ModelingLanguages.excalidraw.svg)
+
+- **ZenWave Domain Language (ZDL) as Ubiquitous Language:** To describe your domain core domain model.
+- **API-First specs like AsyncAPI and OpenAPI:** to describe Inter Process Communications (IPC) between bounded contexts/microservices.
+- **ZenWave SDK:** to generate (_a lot of_) infrastructure, functional and testing code from your models and APIs.
+
+ZenWave SDK is designed to be easily extensible and adaptable to your project or your organization needs and likes. You can always [fork an existing, standard or custom plugin](https://github.com/ZenWave360/zenwave-sdk/#forking-an-standard-or-custom-plugin).
+
+You can install the latest release using [jbang](https://www.jbang.dev) running the following command:
+
+```shell
+jbang alias add --fresh --name=zw release@zenwave360/zenwave-sdk
+```
+
+Please refer to [**ZenWave SDK**](https://github.com/ZenWave360/zenwave-sdk/) for more detailed installation options.
+
+**Note:** Official plugins are designed to generate functional code and tests on top of existing projects. Creating a base project is out of scope, but you can always go to [start.spring.io](http://start.spring.io) or [start.jhipster.tech](https://start.jhipster.tech/), in case your company doesn't already have a project starter or archetype.
+
+## Not (just) a Code Generator
+
+ZenWave SDK is a **Modeling Tool** for Domain Driven Design and API-First in disguise of a _code generator_.
+
+Its purpose is to produce successful software projects by dramatically shortening the feedback loop between the expert domain knowledge and working software and its tests.
+
+![Domain Driven Design Feedback Loop](docs/ZenWave-360-DDD-Feedback-Loop-with-ZW-Products.excalidraw.svg)
+
+In this way all team members: **Domain Experts**, **Product Owners**, **Software Architects**, **Developers** and **Testers** can provide early feedback based on an **Ubiquitous Language (JDL)** and the software and tests generated from that model.
+
+## Why Domain Driven Design?
+
+> "There are three types of developers implementing microservices. Those who use DDD, those who don't realise they do, and those who fail."
+
+**DDD:** is about building software around a domain model that represents the problem we want to solve. Expressed by and Ubiquitous Language that is shared by all team members. It helps understand the problem before thinking of a solution. It connects Domain Experts with Technical Experts building a shared understanding of the problem and the solution.
+
+**ZenWave360:** is about speeding up the feedback loop from idea -> model -> working software and tests.
+
+<div  markdown="1">
+  <img src="docs/ZenWave360-Design-Code-Loop.excalidraw.svg" alt="Design to Code" />
+</div>
+
+
+## Generate complete Event Driven Microservices using DDD and API-First
+
+You can generate complete Event Driven Microservices using DDD and API-First
+
+> 👉 Describe your Model → Generate Backend ⤳ Generate OpenAPI ⤳ Generate AsyncAPI → Generate API Implementations → Generate Tests and Contracts 👍
+
+1. Start by describing your core domain model using JDL entities and relationships, annotations and comments.
+2. Generate a complete Backend Application from your Domain Definition Model.
+3. Generate a draft OpenAPI definition from the JDL model. Edit collaboratively this OpenAPI document and then generate some more functional code and tests from that definition.
+4. Generate a draft AsyncAPI definition for consuming async request commands and publishing domain events. Now use zenwave maven plugin to generate strongly typed business interfaces implementing some Enterprise Integration Patterns like: transactional outbox, business dead letter queue...
+5. Generate E2E, Integration tests and Consumer Contracts for the public APIs you just produced.
+
+
+![ZenWave Features MindMap](docs/ZenWave-MindMap.svg)

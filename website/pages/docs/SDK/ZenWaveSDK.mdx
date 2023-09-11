@@ -1,0 +1,135 @@
+---
+section: ZenWave SDK
+title: ZenWave SDK
+slug: /docs/zenwave-sdk
+order: 0
+---
+import { x } from '@xstyled/styled-components'
+import { Image } from "smooth-doc/components";
+import modelingLanguagesDark from './images/SDK-ModelingLanguages.dark.png'
+import modelingLanguagesLight from './images/SDK-ModelingLanguages.light.png'
+import sdkHexagonalDark from './images/SDK-ServiceImplementation-Hexagonal.dark.png'
+import sdkHexagonalLight from './images/SDK-ServiceImplementation-Hexagonal.light.png'
+import sdkMindMapDark from './images/SDK-MindMap.dark.png'
+import sdkMindMapLight from './images/SDK-MindMap.light.png'
+
+
+# ZenWave SDK
+
+<div class="badges">
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.zenwave360.zenwave-sdk/zenwave-sdk.svg?label=Maven%20Central&logo=apachemaven)](https://search.maven.org/artifact/io.github.zenwave360.zenwave-sdk/zenwave-sdk)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/ZenWave360/zenwave-sdk?logo=GitHub)](https://github.com/ZenWave360/zenwave-sdk/releases)
+[![build](https://github.com/ZenWave360/zenwave-sdk/workflows/build/badge.svg)](https://github.com/ZenWave360/zenwave-sdk/actions/workflows/build.yml)
+[![coverage](https://raw.githubusercontent.com/ZenWave360/zenwave-sdk/badges/jacoco.svg)](https://github.com/ZenWave360/zenwave-sdk/actions/workflows/build.yml)
+[![branches coverage](https://raw.githubusercontent.com/ZenWave360/zenwave-sdk/badges/branches.svg)](https://github.com/ZenWave360/zenwave-sdk/actions/workflows/build.yml)
+[![GitHub](https://img.shields.io/github/license/ZenWave360/zenwave-sdk)](https://github.com/ZenWave360/zenwave-sdk/blob/main/LICENSE)
+</div>
+
+> 👉 ZenWave360 Helps You Create Software Easy to Understand
+
+## Modeling Data on the Inside and Data on the Outside
+
+<Image alt="ZenWave SDK Modeling Languages" light={modelingLanguagesLight} dark={modelingLanguagesDark} />
+
+Based on **Domain Driven Design (DDD)** and **API-First** for **Event Driven Microservices**.
+
+ZenWave SDK is a configurable and extensible tool for **Domain Driven Design (DDD)** and **API-First** for **Event Driven Microservices** that can generate code from a mix of different models including:
+
+- [ZenWave Domain Language (ZDL)]() as **Ubiquitous Language** you can model the output of an Event-Storming.
+- [AsyncAPI](https://www.asyncapi.com/docs/getting-started/coming-from-openapi): Industry de-facto standard to describe Event-Driven Architectures for Message-based APIs.
+- [OpenAPI](https://swagger.io/specification/): Industry standard for Request-Response Architectures with REST APIs.
+
+Using ZenWave Domain Language as **Ubiquitous Language** for modeling and describing Bounded Contexts: aggregates, entities with their relationships, services, value objects, commands and events.
+
+ZenWave Domain Language can be considered as an *extended subset* of [JHipster Domain Language (JDL)](https://www.jhipster.tech/jdl/intro) that let's you describe your entities and relationships.
+
+Using ZenWave Domain Language as **Ubiquitous Language** for **Data on the Inside** and **API-First** specs like **AsyncAPI** and **OpenAPI** to describe Inter Process Communications (IPC) for **Data on the Outside**.
+
+
+- **ZenWave Domain Language (ZDL) as Ubiquitous Language:** To describe your domain core domain model.
+- **API-First specs like AsyncAPI and OpenAPI:** to describe Inter Process Communications (IPC) between bounded contexts/microservices.
+- **ZenWave SDK:** to generate (_a lot of_) infrastructure, functional and testing code from your models and APIs.
+
+ZenWave SDK is designed to be easily extensible and adaptable to your project or your organization needs and likes. You can always [fork an existing, standard or custom plugin](https://github.com/ZenWave360/zenwave-sdk/#forking-an-standard-or-custom-plugin).
+
+## ZenWave SDK Installation
+
+You can install the latest release using [jbang](https://www.jbang.dev) running the following command:
+
+```shell
+jbang alias add --fresh --name=zw release@zenwave360/zenwave-sdk
+```
+
+Please refer to [**ZenWave SDK**](https://github.com/ZenWave360/zenwave-sdk/) for more detailed installation options.
+
+## ZenWave SDK Generated Code
+
+You can generate complete Event Driven Microservices using DDD and API-First
+
+> 👉 Describe your Model → Generate Backend ⤳ Generate OpenAPI ⤳ Generate AsyncAPI → Generate API Implementations → Generate Tests and Contracts 👍
+
+1. Start by describing your core domain model using JDL entities and relationships, annotations and comments.
+2. Generate a complete Backend Application from your Domain Definition Model.
+3. Generate a draft OpenAPI definition from the JDL model. Edit collaboratively this OpenAPI document and then generate some more functional code and tests from that definition.
+4. Generate a draft AsyncAPI definition for consuming async request commands and publishing domain events. Now use zenwave maven plugin to generate strongly typed business interfaces implementing some Enterprise Integration Patterns like: transactional outbox, business dead letter queue...
+5. Generate E2E, Integration tests and Consumer Contracts for the public APIs you just produced.
+
+<Image alt="ZenWave SDK Features MindMap" light={sdkMindMapLight} dark={sdkMindMapDark} />
+
+<details markdown="1">
+  <summary>ZenWave SDK Code Generator Features (expand to see)</summary>
+- [x] JDL Backend Application (flexible hexagonal architecture)
+  - [x] Domain Entities,
+  - [x] Inbound
+    - [x] Service Ports, DTOs, Mappers
+    - [x] Implementation for CRUD operations
+    - [x] Acceptance Tests: SpringData InMemory Repositories
+  - [x] Outbound: SpringData Repositories, ElasticSearch... (for REST or Async see other plugins)
+  - [x] Adapters:
+    - [x] Spring MVC
+    - [ ] ~~Spring WebFlux~~
+  - [x] Flavors
+    - [x] MongoDB
+      - [x] Imperative
+      - [ ] ~~Reactive~~
+    - [x] JPA
+      - [x] Imperative
+      - [ ] ~~Reactive~~
+  - [x] Unit/Integration Testing
+    - [x] Edge Integration Testing: partial spring-boot context for outbound adapters (with testcontainers)
+    - [x] Sociable Vertical Testing: manual dependency setup with in memory infrastructure _test-doubles_
+    - [x] Vertical Integration Testing: full spring-boot context for inbound adapters (with testcontainers)
+- [x] JDL OpenAPI Controllers
+- [x] OpenAPI to Spring WebTestClient
+- [x] AsyncAPI Spring Cloud Streams3
+  - [x] Consumer and Producer. Imperative and Reactive.
+    - [x] Business Exceptions Dead Letter Queues Routing
+  - [x] Producer with Transactional Outbox pattern
+    - [x] For MongoDB
+    - [x] For JDBC
+  - [x] Enterprise Envelop Pattern
+  - [x] Automatically fill headers at runtime from payload paths, tracing-id supplier...
+- [x] JDL to Specs
+  - [x] JDL to OpenAPI
+  - [x] JDL to AsyncAPI
+    - [x] AsyncAPI schemas
+    - [x] AVRO schemas
+- [x] API Testing
+  - [x] KarateDSL
+    - [x] OpenAPI to Karate E2E Tests (please use [KarateIDE VSCode Extension](https://github.com/ZenWave360/karate-ide) instead)
+    - [x] OpenAPI to Karate/ApiMock Stateful Mocks (please use [KarateIDE VSCode Extension](https://github.com/ZenWave360/karate-ide) and [ZenWave ApiMock](https://github.com/ZenWave360/zenwave-apimock) instead)
+  - [x] OpenAPI to Spring WebTestClient
+  - [x] OpenAPI to REST-assured
+  - [ ] ~~OpenAPI to Pact (_postponed sine die_)~~
+- [x] Reverser Engineering
+  - [x] OpenAPI 2 JDL
+  - [x] Java 2 JDL
+    - [x] Spring Data MongoDB annotations
+    - [x] JPA annotations
+
+</details>
+
+## Flexible Hexagonal Architecture
+
+<Image alt="ZenWave SDK Modeling Languages" src={sdkHexagonalDark} />
+

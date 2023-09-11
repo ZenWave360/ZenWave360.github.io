@@ -1,5 +1,5 @@
 ---
-section: ZenWave & API-First
+section: API-First
 title: OpenAPI
 slug: /API-First/OpenAPI
 parent: API-First

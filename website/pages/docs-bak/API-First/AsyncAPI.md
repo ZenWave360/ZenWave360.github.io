@@ -1,5 +1,5 @@
 ---
-section: ZenWave & API-First
+section: API-First
 title: AsyncAPI
 slug: /API-First/AsyncAPI
 parent: API-First

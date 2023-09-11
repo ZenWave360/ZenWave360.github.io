@@ -10,9 +10,9 @@ module.exports = {
         baseDirectory: path.resolve(__dirname, '../'),
         siteUrl: "https://zenwave360.io/",
         githubRepositoryURL: "https://github.com/zenwave360",
-        sections: ['API-First', 'Domain Driven Design', 'Event Driven Architectures', 'ZenWave SDK', 'Enterprise Integration Patterns'],
+        sections: ['ZenWave 360º', 'Event-Driven Design', 'ZenWave SDK', 'ZenWave & API-First', 'ZenWave & API Testing'],
         navItems: [
-          { title: 'Documentation', url: '/docs/' },
+          { title: 'Documentation', url: '/docs/zenwave360' },
           { title: 'Plugin', url: '/plugin/' },
           { title: 'Blog', url: '/blog/' },
         ],
