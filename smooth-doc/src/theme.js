@@ -28,23 +28,88 @@ export const theme = {
     :focus {
       outline-color: primary-500;
     }
+    blockquote.quote {
+      background-color: var(--xstyled-colors-editor-background,#18181b);
+      margin: 3vw 3vw;
+      box-sizing: border-box;
+      position: relative;
+      font-size: 24px;
+      padding: 1vw 5vw;
+      border-radius: 8px;
+      
+      font-style: italic;
+    }
+    @media (min-width: 768px) {
+      blockquote.quote:before {
+        width: 6vw;
+        height: 7vw;
+        top: 50%;
+        left: 0;
+        transform: translate(-50%, -50%);
+      }
+    }
+    blockquote.quote:before {
+      content: "";
+      background-image: url(/resources/quote.svg);
+      position: absolute;
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
   `,
   'prism-theme': () => ({
     styles: [
       {
-        types: ['variable', 'constant', 'deleted'],
+        types: ['comment'],
         style: {
-          color: 'rgb(224, 108, 117)',
+          color: 'rgb(106, 171, 115)',
+          fontStyle: 'italic',
         },
       },
       {
-        types: ['punctuation', 'char', 'number'],
+        types: ['line-comment'],
         style: {
-          color: 'rgb(209, 154, 102)',
+          color: 'rgb(99,103,100)',
+          fontStyle: 'italic',
         },
       },
       {
-        types: ['builtin', 'changed', 'namespace', 'class-name', 'tag'],
+        types: ['zdl-keyword', 'keyword'],
+        style: {
+          color: 'rgb(207, 142, 107)',
+        },
+      },
+      {
+        types: ['zdl-annotation', 'zdl-validation'],
+        style: {
+          color: 'rgb(179, 174, 96)',
+        },
+      },
+      {
+        types: ['zdl-class-name'],
+        style: {
+          color: 'rgb(102,127,209)',
+        },
+      },
+      {
+        types: ['zdl-field'],
+        style: {
+          color: 'rgb(198, 120, 221)',
+        },
+      },
+      {
+        types: ['punctuation'],
+        style: {
+          color: 'rgb(230,233,236)', // fixme
+        },
+      },
+      {
+        types: ['boolean', 'bool', 'char', 'number'],
+        style: {
+          color: 'rgb(33,51,157)',// fixme
+        },
+      },
+      {
+        types: ['tag'],
         style: {
           color: 'rgb(229, 192, 123)',
         },
@@ -56,7 +121,7 @@ export const theme = {
         },
       },
       {
-        types: ['inserted', 'string'],
+        types: ['string'],
         style: {
           color: 'rgb(152, 195, 121)',
         },
@@ -71,18 +136,6 @@ export const theme = {
         types: ['function'],
         style: {
           color: 'rgb(97, 175, 239)',
-        },
-      },
-      {
-        types: ['keyword', 'selector'],
-        style: {
-          color: 'rgb(198, 120, 221)',
-        },
-      },
-      {
-        types: ['symbol'],
-        style: {
-          color: 'rgb(86, 182, 194)',
         },
       },
     ],

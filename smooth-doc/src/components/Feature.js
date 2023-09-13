@@ -8,13 +8,14 @@ const InnerFeature = styled.box`
   border-left: 1;
   border-left-style: dashed;
   border-left-color: layout-border;
+  padding-left: 4 !important;
   padding-right: 5 !important;
 `
 
 export const Feature = React.forwardRef((props, ref) => (
   <InnerFeature
     ref={ref}
-    col={{ xs: 1, md: 1 / 4 }}
+    col={{ xs: 1, md: 1 / 3 }}
     px={2}
     pt={4}
     pb={{ xs: 2, md: 5 }}

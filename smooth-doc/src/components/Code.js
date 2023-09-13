@@ -1,12 +1,37 @@
 import React from 'react'
 import styled, { useTheme, th, up, css } from '@xstyled/styled-components'
 import Highlight, { defaultProps } from 'prism-react-renderer'
+import Prism from "prism-react-renderer/prism";
 import {
   LiveProvider,
   LiveEditor,
   LiveError,
   LivePreview as BaseLivePreview,
 } from 'react-live'
+
+const identifier = /[a-zA-Z_][a-zA-Z0-9_.]*\b/.source;
+
+Prism.languages.zdl = Prism.languages.extend('clike', {
+  'zdl-class-name': {
+    pattern: RegExp(/(\b(?:entity|enum|service|input|output|event|relationship)\s+)/.source + identifier),
+    lookbehind: true,
+  },
+  'zdl-keyword': /\b(?:config|apis|plugins|entity|enum|service|input|output|event|relationship|for|to|withEvents)\b/,
+  'zdl-field': [
+      /^\s*([a-z][a-zA-Z_][a-zA-Z0-9_.]*)\s+/,
+      /{([a-z][a-zA-Z_][a-zA-Z0-9_.]*)}/, // field in relationship (not working)
+    ],
+
+});
+
+Prism.languages.insertBefore('zdl', 'function', {
+  'zdl-annotation': /(?:@\w+)/,
+  'zdl-validation': /\b(?:required|unique|max|min|maxlength|minlength|pattern)\b/,
+});
+
+Prism.languages.insertBefore('zdl', 'comment', {
+  'line-comment': /(^|[^\\:])\/\/.*/
+});
 
 const Pre = styled.pre`
   font-size: 15;
