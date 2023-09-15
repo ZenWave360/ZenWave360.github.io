@@ -43,6 +43,7 @@ function createSchemaCustomization({ actions, schema }) {
     type BlogPost implements Node {
       id: ID!
       title: String!
+      author: String!
       body: String!
       slug: String!
       date: Date! @dateformat
@@ -211,6 +212,7 @@ async function onCreateMdxNode({ node, getNode, actions, createNodeId }, options
     const fieldData = {
       title: node.frontmatter.title,
       tags: node.frontmatter.tags || [],
+      author: node.frontmatter.author || '',
       slug,
       excerpt: node.frontmatter.excerpt || '',
       date: node.frontmatter.date,

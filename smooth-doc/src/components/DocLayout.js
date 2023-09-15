@@ -6,10 +6,10 @@ import { VscChevronUp } from 'react-icons/vsc'
 import { RiPencilLine } from 'react-icons/ri'
 import { ScreenContainer } from './ScreenContainer'
 import { SideNav, useSideNavState, useSideNavPrevNext } from './SideNav'
-import { PageLayout } from './PageLayout'
 import { SiblingNav, SiblingNavLink } from './SiblingNav'
 import { Article } from './Article'
 import { TableOfContents } from './TableOfContents'
+import { WebSiteLayout } from "./WebSiteLayout";
 
 const SidebarDialog = styled.div`
   background-color: background-light-a50;
@@ -179,7 +179,7 @@ export function DocLayout({ children, tableOfContents, editLink, ...props }) {
   const upMd = useUp('md')
   const sideNav = useSideNavState()
   return (
-    <PageLayout {...props}>
+    <WebSiteLayout {...props}>
       <ScreenContainer px={0}>
         <Container>
           <SidebarSticky>
@@ -215,6 +215,6 @@ export function DocLayout({ children, tableOfContents, editLink, ...props }) {
           </TocContainer>
         </Container>
       </ScreenContainer>
-    </PageLayout>
+    </WebSiteLayout>
   )
 }

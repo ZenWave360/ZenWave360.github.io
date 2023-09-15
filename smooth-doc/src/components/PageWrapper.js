@@ -1,7 +1,8 @@
 import React from 'react'
-import { PageLayout } from './PageLayout'
 import { DocLayout } from './DocLayout'
 import { PostLayout } from './PostLayout'
+import {PageLayout} from "./PageLayout";
+import {HomeLayout} from "./HomeLayout";
 
 export function PageWrapper({
   children,
@@ -9,6 +10,7 @@ export function PageWrapper({
     data: { mdx },
   },
 }) {
+  console.log(`PageWrapper.js ${mdx?.fields?.pageType}`)
   if (!mdx?.fields?.pageType) return children
   switch (mdx.fields.pageType) {
     case 'doc':
@@ -22,9 +24,14 @@ export function PageWrapper({
         </DocLayout>
       )
     case 'page':
-      return <PageLayout title={mdx.fields.title}>{children}</PageLayout>
+      console.log("PageWrapper", children);
+      if(children.key === '/') {
+        return <HomeLayout title={mdx.fields.title}>{children}</HomeLayout>
+      } else {
+        return <PageLayout title={mdx.fields.title}>{children}</PageLayout>
+      }
     case 'post':
-      return <PageLayout title={mdx.fields.title}>{children}</PageLayout>
+      return <PostLayout title={mdx.fields.title}>{children}</PostLayout>
     default:
       return children
   }

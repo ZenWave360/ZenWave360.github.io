@@ -1,37 +1,79 @@
 import React from 'react'
-import styled from '@xstyled/styled-components'
-import { AppHeader } from './AppHeader'
-import { Head } from './Head'
-
-const StickyHeader = styled.div`
-  position: sticky;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 10;
-`
-
-const Main = styled.main`
-  background-color: background;
-  flex: 1;
-`
+import styled, { x, css, up, down, th } from '@xstyled/styled-components'
+import { Article } from './Article'
+import { WebSiteLayout } from "./WebSiteLayout";
+import { TableOfContents } from "./TableOfContents";
+import PostHero from "./blog/PostHero";
+import PostTitle from "./blog/PostTitle";
+import PostDate from "./blog/PostDate";
 
 const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+  background-color: background;
+  flex: 1;
+
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding-left: 16px;
+  padding-right: 16px;
+  
+  z-index: 0;
+  position: relative;
+
+  ${up(
+    'md',
+    css`
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      // grid-gap: ${th.space(5)};
+
+      .sidebar-container {
+        display: none;
+      }
+    `,
+)}
+
+  ${up(
+    'xl',
+    css`
+      grid-template-columns: minmax(0, 1fr) 288px;
+
+      .sidebar-container {
+        display: none;
+      }
+    `,
+)}
 `
 
-export function PageLayout({ children, title }) {
-  return (
-    <>
-      <Head title={title} />
-      <Container>
-        <StickyHeader>
-          <AppHeader />
-        </StickyHeader>
-        <Main id="main">{children}</Main>
-      </Container>
-    </>
-  )
+const TocContainer = styled.div`
+  ${down(
+          'xl',
+          css`
+      display: none;
+    `,
+  )}
+`
+
+export function PostLayout({ children, tableOfContents, editLink, ...props }) {
+    console.log(`PostLayout.js`)
+    const post = children?.props?.pageContext?.frontmatter || {}
+    console.log(`post ${JSON.stringify(post)}`)
+    return (
+        <WebSiteLayout {...props}>
+            <Container>
+                <x.div pb={6} px={3}>
+                    <Article>
+                        <header>
+                            <p>{post.title}</p>
+                            <p>{post.date}</p>
+                        </header>
+                        {children}
+                    </Article>
+                </x.div>
+                <TocContainer>
+                    <TableOfContents />
+                </TocContainer>
+            </Container>
+        </WebSiteLayout>
+    )
 }

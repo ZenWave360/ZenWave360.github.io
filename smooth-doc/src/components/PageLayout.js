@@ -1,49 +1,68 @@
 import React from 'react'
-import styled from '@xstyled/styled-components'
-import { AppHeader } from './AppHeader'
-import { Head } from './Head'
+import styled, { x, css, up, down, th } from '@xstyled/styled-components'
+import { Article } from './Article'
+import { WebSiteLayout } from "./WebSiteLayout";
+import { TableOfContents } from "./TableOfContents";
 
-const StickyHeader = styled.div`
-  position: sticky;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 10;
-`
-
-const Main = styled.main`
+const Container = styled.div`
   background-color: background;
   flex: 1;
-  
+
   width: 100%;
   max-width: 1440px;
   margin: 0 auto;
   padding-left: 16px;
   padding-right: 16px;
+  
+  z-index: 0;
+  position: relative;
+
+  ${up(
+    'md',
+    css`
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      // grid-gap: ${th.space(5)};
+
+      .sidebar-container {
+        display: none;
+      }
+    `,
+)}
+
+  ${up(
+    'xl',
+    css`
+      grid-template-columns: minmax(0, 1fr) 288px;
+
+      .sidebar-container {
+        display: none;
+      }
+    `,
+)}
 `
 
-const DocMain = styled.main`
-  background-color: background;
-  flex: 1;
+const TocContainer = styled.div`
+  ${down(
+    'xl',
+    css`
+      display: none;
+    `,
+)}
 `
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-`
-
-export function PageLayout({ children, title, isDoc = false }) {
-    console.log('PageLayout.js: PageLayout()', isDoc);
-  return (
-    <>
-      <Head title={title} />
-      <Container>
-        <StickyHeader>
-          <AppHeader />
-        </StickyHeader>
-        {isDoc? <DocMain id="main">{children}</DocMain> : <Main id="main">{children}</Main>}
-      </Container>
-    </>
-  )
+export function PageLayout({ children, tableOfContents, editLink, ...props }) {
+    console.log(`PageLayout.js`)
+    return (
+        <WebSiteLayout {...props}>
+            <Container>
+                <x.div pb={6} px={3}>
+                    <Article>{children}</Article>
+                </x.div>
+                <TocContainer>
+                    <TableOfContents />
+                </TocContainer>
+            </Container>
+        </WebSiteLayout>
+    )
 }
