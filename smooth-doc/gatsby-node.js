@@ -49,7 +49,7 @@ function createSchemaCustomization({ actions, schema }) {
       date: Date! @dateformat
       tags: [String]!
       excerpt: String!
-      image: File
+      image: String
       imageAlt: String
       imageCaptionText: String
       imageCaptionLink: String
@@ -184,28 +184,6 @@ async function onCreateMdxNode({ node, getNode, actions, createNodeId }, options
     name: 'url',
     node,
     value: url.toString(),
-  })
-
-  function getEditLink() {
-    const {
-      baseDirectory,
-      githubDocRepositoryURL,
-      githubRepositoryURL,
-      githubDefaultBranch = 'main',
-    } = options
-    const repositoryURL = githubDocRepositoryURL || githubRepositoryURL
-    if (!baseDirectory || !repositoryURL) return ''
-    const relativePath = node.internal.contentFilePath.replace(
-      baseDirectory,
-      '',
-    )
-    return `${repositoryURL}edit/${githubDefaultBranch}${relativePath}`
-  }
-
-  createNodeField({
-    name: 'editLink',
-    node,
-    value: getEditLink(),
   })
 
   if(pageType === 'post') {

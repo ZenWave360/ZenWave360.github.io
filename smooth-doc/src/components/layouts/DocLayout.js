@@ -4,11 +4,11 @@ import { useDialogState, Dialog, DialogDisclosure } from 'ariakit/dialog'
 import { Portal } from 'ariakit/portal'
 import { VscChevronUp } from 'react-icons/vsc'
 import { RiPencilLine } from 'react-icons/ri'
-import { ScreenContainer } from './ScreenContainer'
-import { SideNav, useSideNavState, useSideNavPrevNext } from './SideNav'
-import { SiblingNav, SiblingNavLink } from './SiblingNav'
-import { Article } from './Article'
-import { TableOfContents } from './TableOfContents'
+import { ScreenContainer } from '../ScreenContainer'
+import { SideNav, useSideNavState, useSideNavPrevNext } from '../SideNav'
+import { SiblingNav, SiblingNavLink } from '../SiblingNav'
+import { Article } from '../Article'
+import { TableOfContents } from '../TableOfContents'
 import { WebSiteLayout } from "./WebSiteLayout";
 
 const SidebarDialog = styled.div`
@@ -174,7 +174,7 @@ function PrevNextLinks(props) {
   )
 }
 
-export function DocLayout({ children, tableOfContents, editLink, ...props }) {
+export function DocLayout({ children, tableOfContents, ...props }) {
   props.isDoc = true;
   const upMd = useUp('md')
   const sideNav = useSideNavState()
@@ -195,18 +195,6 @@ export function DocLayout({ children, tableOfContents, editLink, ...props }) {
           <x.div pb={6} px={3}>
             <Article>
               {children}
-              {editLink && (
-                <x.a
-                  mt={5}
-                  display="grid"
-                  gridTemplateColumns="min-content max-content"
-                  gridGap={1}
-                  alignItems="center"
-                  href={editLink}
-                >
-                  <RiPencilLine /> Edit this page on GitHub
-                </x.a>
-              )}
               <PrevNextLinks {...sideNav} />
             </Article>
           </x.div>

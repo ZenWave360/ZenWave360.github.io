@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from '@xstyled/styled-components'
-import { AppHeader } from './AppHeader'
-import { Head } from './Head'
+import { AppHeader } from '../AppHeader'
+import { Head } from '../Head'
 
 const StickyHeader = styled.div`
   position: sticky;

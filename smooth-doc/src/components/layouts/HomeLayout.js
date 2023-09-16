@@ -13,7 +13,7 @@ const HomeMain = styled.main`
   padding-right: 16px;
 `
 
-export function HomeLayout({ children, tableOfContents, editLink, ...props }) {
+export function HomeLayout({ children, tableOfContents, ...props }) {
     props.isDoc = false;
     props.isHome = children.key === '/';
     return <WebSiteLayout {...props}>

@@ -1,7 +1,7 @@
 import { graphql } from "gatsby"
-import PostsPage from "../components/blog/Posts"
+import BlogLayout from "../components/layouts/BlogLayout"
 
-export default PostsPage
+export default BlogLayout
 
 export const query = graphql`
   query PostsQuery($limit: Int!, $filter: BlogPostFilterInput) {
@@ -17,11 +17,12 @@ export const query = graphql`
     ) {
       nodes {
         id
-        excerpt
-        slug
         title
+        slug
         date(formatString: "MMMM DD, YYYY")
+        image
         tags
+        excerpt
       }
     }
   }

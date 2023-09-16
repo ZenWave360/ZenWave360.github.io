@@ -1,8 +1,8 @@
 import React from 'react'
-import { DocLayout } from './DocLayout'
-import { PostLayout } from './PostLayout'
-import {PageLayout} from "./PageLayout";
-import {HomeLayout} from "./HomeLayout";
+import { DocLayout } from './layouts/DocLayout'
+import { PostLayout } from './layouts/PostLayout'
+import {PageLayout} from "./layouts/PageLayout";
+import {HomeLayout} from "./layouts/HomeLayout";
 
 export function PageWrapper({
   children,
@@ -18,7 +18,6 @@ export function PageWrapper({
         <DocLayout
           title={mdx.fields.title}
           tableOfContents={mdx.tableOfContents}
-          editLink={mdx.fields.editLink}
         >
           {children}
         </DocLayout>

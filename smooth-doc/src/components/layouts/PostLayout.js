@@ -1,8 +1,11 @@
 import React from 'react'
 import styled, { x, css, up, down, th } from '@xstyled/styled-components'
-import { Article } from './Article'
+import { Article } from '../Article'
 import { WebSiteLayout } from "./WebSiteLayout";
-import { TableOfContents } from "./TableOfContents";
+import { TableOfContents } from "../TableOfContents";
+import PostHero from "../blog/PostHero";
+import PostTitle from "../blog/PostTitle";
+import PostDate from "../blog/PostDate";
 
 const Container = styled.div`
   background-color: background;
@@ -44,20 +47,28 @@ const Container = styled.div`
 
 const TocContainer = styled.div`
   ${down(
-    'xl',
-    css`
+          'xl',
+          css`
       display: none;
     `,
-)}
+  )}
 `
 
-export function PageLayout({ children, tableOfContents, editLink, ...props }) {
-    console.log(`PageLayout.js`)
+export function PostLayout({ children, tableOfContents, ...props }) {
+    console.log(`PostLayout.js`)
+    const post = children?.props?.pageContext?.frontmatter || {}
+    console.log(`post ${JSON.stringify(post)}`)
     return (
         <WebSiteLayout {...props}>
             <Container>
                 <x.div pb={6} px={3}>
-                    <Article>{children}</Article>
+                    <Article>
+                        <header>
+                            <p>{post.title}</p>
+                            <p>{post.date}</p>
+                        </header>
+                        {children}
+                    </Article>
                 </x.div>
                 <TocContainer>
                     <TableOfContents />
