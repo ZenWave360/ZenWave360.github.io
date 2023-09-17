@@ -1,6 +1,6 @@
 ---
 title: JDL To OpenAPI
-slug: /posts/JHipster-As-IDL-for-OpenAPIv3
+slug: /posts/JHipster-As-IDL-for-OpenAPIv3/
 image: JDL-2-OpenAPI.svg
 author: Ivan Garcia Sainz-Aja
 date: 2023-04-29T06:00:00+01:00
@@ -14,7 +14,7 @@ tags:
 
 # Generating OpenAPI definition files from JDL with ZenWaveSDK
 
-![JDL-2-OpenAPI](JDL-2-OpenAPI.svg)
+![JDL-2-OpenAPI](./JDL-2-OpenAPI.svg)
 
 Writing YAML by hand is no fun, but you can simplify the process of writing OpenAPI definition files by using a Domain Specific Language (DSL).
 

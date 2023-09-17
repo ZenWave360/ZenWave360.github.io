@@ -1,6 +1,6 @@
 ---
 title: JDL To AsyncAPI v2
-slug: /posts/JHipster-As-IDL-for-AsyncAPIv2
+slug: /posts/JHipster-As-IDL-for-AsyncAPIv2/
 image: JDL-2-AsyncAPI.svg
 author: Ivan Garcia Sainz-Aja
 date: 2023-04-29T06:00:00+01:00
@@ -14,7 +14,7 @@ tags:
 
 # Generating AsyncAPI definition files from JDL with ZenWaveSDK
 
-![JDL-2-AsyncAPI](JDL-2-AsyncAPI.svg)
+![JDL-2-AsyncAPI](./JDL-2-AsyncAPI.svg)
 
 
 Writing YAML by hand is no fun, but you can simplify the process of writing AsyncAPI definition files by using a Domain Specific Language (DSL).

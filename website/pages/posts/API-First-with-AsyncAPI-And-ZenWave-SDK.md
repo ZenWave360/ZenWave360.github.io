@@ -1,6 +1,6 @@
 ---
 title: API-First with AsyncAPI
-slug: /posts/API-First-with-AsyncAPI-And-ZenWave-SDK
+slug: /posts/API-First-with-AsyncAPI-And-ZenWave-SDK/
 image: api-first-with-asyncapi-banner.png
 author: Ivan Garcia Sainz-Aja
 date: 2023-03-03T06:00:00+01:00
@@ -28,7 +28,7 @@ And broker-based APIs, unlike Client-Server, are inherently **symmetric**.
 
 ## Broker-based APIs are Symmetric
 
-![Client-server vs broker-based EDAs](client-server-vs-broker-eda.excalidraw.svg)
+![Client-server vs broker-based EDAs](./client-server-vs-broker-eda.excalidraw.svg)
 
 Because APIs mediated by a broker are inherently **symmetric** it's difficult to establish the roles of client/server: what represents a `publish` operation from one side will be a `subscribe` operation seen from the other side. Also, a given service can act as a publisher and subscriber on the same API.
 

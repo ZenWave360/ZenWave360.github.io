@@ -1,6 +1,6 @@
 ---
 title: ZenWave AsyncAPI Code Generator
-slug: /posts/ZenWave-AsyncAPI-Code-Generator
+slug: /posts/ZenWave-AsyncAPI-Code-Generator/
 image: ZenWave360-AsyncAPI-SpringCloudStreams.excalidraw.svg
 author: Ivan Garcia Sainz-Aja
 date: 2023-03-03T06:00:00+01:00
@@ -12,7 +12,7 @@ tags:
   - Spring Cloud Streams
 ---
 
-![AsyncAPI and Spring Cloud Streams 3](ZenWave360-AsyncAPI-SpringCloudStreams.excalidraw.svg)
+![AsyncAPI and Spring Cloud Streams 3](./ZenWave360-AsyncAPI-SpringCloudStreams.excalidraw.svg)
 
 
 ## API-First with AsyncAPI and ZenWave SDK
@@ -96,7 +96,7 @@ See [AsyncAPI and Spring Cloud Streams 3 Configuration Options](https://zenwave3
 </plugin>
 ```
 
-![ZenWave StreamCloudStreams AsyncAPI](spring-cloud-streams3-generated.png)
+![ZenWave StreamCloudStreams AsyncAPI](./spring-cloud-streams3-generated.png)
 
 ### Provider vs Client
 
