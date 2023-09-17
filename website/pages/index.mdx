@@ -1,20 +1,21 @@
 import { Link } from 'gatsby';
 import {
-  ScreenContainer,
-  Button,
-  HeroSection,
-  Hero,
-  HeroBody,
-  HeroTitle,
-  HeroTeaser,
-  HeroActionList,
-  HeroAction,
-  FeatureSection,
-  FeatureList,
-  Feature,
-  FeatureImage,
-  FeatureTitle,
-  FeatureText,
+    ScreenContainer,
+    Button,
+    HeroSection,
+    Hero,
+    HeroBody,
+    HeroTitle,
+    HeroTeaser,
+    HeroActionList,
+    HeroAction,
+    FeatureSection,
+    FeatureList,
+    Feature,
+    FeatureImage,
+    FeatureTitle,
+    FeatureText, Image,
+    WideFeatureText, WideFeatureImage
 } from "smooth-doc/components";
 import heroBackgroundImageURL from "../images/hero-background.png";
 import markdownImageURL from '../images/markdown.png'
@@ -29,6 +30,12 @@ import openApiImageURL from '../static/logos/openapi-logo.png'
 import asyncApiImageURL from '../static/logos/asyncapi-logo.png'
 import tddImageURL from '../static/logos/tdd.png'
 import eventStormingZDLImageURL from '../static/resources/EvenStorming-ZDL.png'
+
+import dddLogosImage from "../images/home/ddd_logos_dimmed.svg";
+import sharedUnderstandingImage from "../images/home/shared-understanding_dimmed.svg";
+import gearsDarkImage from "../images/home/laptop-gears.svg";
+import gearsLightImage from "../images/home/laptop-gears.svg";
+
 
 <ScreenContainer>
   <HeroSection>
@@ -93,7 +100,7 @@ import eventStormingZDLImageURL from '../static/resources/EvenStorming-ZDL.png'
       </Feature>
       <Feature>
       <FeatureImage src={tddImageURL} />
-        <FeatureTitle>Test First</FeatureTitle>
+        <FeatureTitle>API-Testing</FeatureTitle>
         <FeatureText>
           Testing as first class citizen. Helps you scaffold complete test suites from your models and APIs.
         </FeatureText>
@@ -101,6 +108,48 @@ import eventStormingZDLImageURL from '../static/resources/EvenStorming-ZDL.png'
     </FeatureList>
   </FeatureSection>
 
-  ![eventStormingZDLImageURL](/resources/EvenStorming-ZDL.png)
+    <p>&nbsp;</p>
+    work in progress
 
+    <section>
+        <ScreenContainer>
+            <WideFeatureText>Because Good Maintainable software is not a matter of code but of understanding of the business domain</WideFeatureText>
+            <WideFeatureImage src={dddLogosImage} alt="" />
+        </ScreenContainer>
+    </section>
+
+    <section>
+        <ScreenContainer>
+            <WideFeatureText>
+                Closing the gap between domain knowledge and working software & tests.
+
+                With a Common Language:
+                - for communication between domain experts and technical experts
+                - following DDD principles
+                - for event-driven architectures
+            </WideFeatureText>
+            <WideFeatureImage src={sharedUnderstandingImage} alt="" align='right' />
+        </ScreenContainer>
+    </section>
+
+    <section>
+        <ScreenContainer>
+            <WideFeatureText>
+                And a set of tools, ZenWave SDK, to convert that model into software artifacts:
+                - APIs,
+                - hexagonal/clean architecture backend,
+                - API tests
+            </WideFeatureText>
+            <WideFeatureImage src={gearsDarkImage} alt="" width='400px' />
+        </ScreenContainer>
+    </section>
+
+
+    <div>
+        <ul>
+            <li><a href=''>Domain Modeling</a></li>
+            <li><a href=''>ZDL Modeling Language</a></li>
+            <li><a href=''>ZenWave SDK</a></li>
+        </ul>
+    </div>
 </ScreenContainer>

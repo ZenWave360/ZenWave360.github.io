@@ -1,0 +1,474 @@
+---
+section: Domain Modeling
+title: ZDL Domain Language
+slug: /docs/event-driven-design/zenwave-domain-language
+order: 2
+---
+import { x } from '@xstyled/styled-components'
+import { Image, Quote, QuoteAuthor } from "smooth-doc/components"
+import eventStormingZdlMapping from './images/EventStorming-ZDL-Mapping.png'
+
+
+# ZDL Domain Modeling Language
+ZDL is a domain specific language (DSL) for modeling Event-Driven microservices.
+
+<Quote>
+    Among all approaches to software development, Domain-Driven Design is the only one that focused on language as the key tool for a deep understanding of a given domain’s complexity.
+    <QuoteAuthor>- Alberto Brandolini in Event Storming</QuoteAuthor>
+</Quote>
+
+Inspired by JHipster JDL, and largely compatible with it, ZDL is a language for describing domain entities and their relationships, as well as services, commands, and events.
+
+It's designed to be compact, while still being readable and expressive. It's also designed to be business friendly, developer friendly, and machine friendly.
+
+
+It works as an Ubiquitous Language
+
+
+<Image alt="Event-Storming to ZDL Mapping" src={eventStormingZdlMapping} />
+
+## File Structure
+
+ZDL files are structured as follows:
+
+- A prolog section with `global javadoc`, `config` and `apis` sections that are used by ZenWave IntelliJ Editor and ZenWave SDK plugins for code generation.
+- A DDD and EDA sections with `entities`, `enums`, `services`, `inputs`, `outputs` and `events` declarations.
+
+`global javadoc`, `config`, `apis` are optional but should be at the top of the file, before any other declaration. After that `entities`, `enums`, `services`, `inputs`, `outputs` and `events` can be declared in any order and any number.
+
+```
+[<global javadoc>]
+[<config>]
+[<apis>]
+
+[<entity> | <enum> | <service> | <input> | <output> | <event>]*
+```
+
+The following is an example of a ZDL definition file describing an application with an aggregate exposing some core functionality, connected through a REST API adapter and publishing some domain events.
+
+```zdl
+/**
+ * This is the global javadoc comment.
+ */
+config {
+  basePackage "com.example.myapp"
+  persistence jpa
+
+  plugins {
+    /** generates backend core */
+    io.zenwave360.sdk.plugins.JDLBackendApplicationDefaultPlugin {
+        --force // overwite all files
+    }
+    /** generates OpenAPI (draft) from Service/Entities */
+    io.zenwave360.sdk.plugins.JDLToOpenAPIPlugin {
+        idType integer
+        idTypeFormat int64
+        targetFile "src/main/resources/model/openapi.yml"
+    }
+    /** generates AsyncAPI (draft) for outbound events */
+    io.zenwave360.sdk.plugins.ZDLToAsyncAPIPlugin {
+        idType integer
+        idTypeFormat int64
+        targetFile "src/main/resources/model/asyncapi.yml"
+    }
+  }
+}
+
+apis {
+    openapi(provider) default {
+        uri "src/main/resources/model/openapi.yml"
+    }
+    asyncapi(provider) default {
+        uri "src/main/resources/model/asyncapi.yml"
+    }
+}
+
+// ===============================
+// core domain entities/aggregates
+// ===============================
+
+@aggregate
+@auditing
+entity Customer {
+  name String required /** the name field */
+}
+
+@auditing
+entity Address {
+    street String required
+    city String required
+    /** country iso code */
+    country String required minlength(2) maxlength(3)
+}
+
+relationship OneToMany {
+  Customer{addresses} to Address{customer}
+}
+
+// ===============================
+// aggregate services
+// ===============================
+
+@rest("/customers")
+service CustomerService for (Customer) {
+    createCustomer(Customer) Customer withEvents CustomerUpdated
+    updateCustomer(id, Customer) Customer?  withEvents CustomerUpdated
+    getCustomer(id) Customer?
+    listCustomers() Customer[]
+    deleteCustomer(id)  withEvents CustomerUpdated
+}
+
+// ===============================
+// outbound domain events
+// ===============================
+
+event CustomerUpdated (customerChannelName) {
+    customerId Integer required
+    customer Customer
+}
+```
+
+
+
+## Entities and Aggregates
+
+Entities are used to describe your domain model. The core of your Bounded Context and can be grouped by aggregates, annotating your aggregate root with `@aggregate`.
+
+An  entity declaration is done as follows:
+
+```
+[<entity javadoc>]
+[<entity annotation>*]
+entity <entity name> [(<table name>)] {
+  [<field javadoc>]
+  [<field annotation>*]
+  <field name> <field type> [<validation>*] [<field suffix javadoc>] [,]
+}
+```
+
+They are compatible with [JHipster JDL entities](https://www.jhipster.tech/jdl/entities-fields) with some extensions like annotation values, nested entities directly on fields and field types that can be also other entities or custom types.
+
+### Annotations
+
+Similar to Java, or Typescript, annotations are “decorators”, options to entities. They are optional, and can be used to add additional information to the entities, enums, fields, relationships, services, commands, events...
+
+They accept as parameter: keywords, single and double-quoted strings, numbers, booleans and json objects.
+
+```zdl
+@aggregate
+@extends(BaseEntity)
+entity ParkingLot {
+
+}
+```
+
+SDK plugins can treat some annotations as special, and use them to generate code, configuration, documentation...: for instance `@extends` or `@copy` are describe "java extension" and "copy fields but not extend" respectively.
+
+### Fields
+
+```zdl
+entity A {
+  /** the name field */
+  name String required unique
+
+  age Integer min(16) /** the age field */
+
+  /**
+   * the favorite meal field
+   */
+  favoriteMeal String maxlength(255)
+
+  anotherField String
+}
+```
+
+#### Field Types and Validations
+
+ZDL is not limited to the following field types, but you can also use any other entity, enum or custom type.
+
+- `String`, `Integer`, `Long`, `BigDecimal`, `Float`, `Double`, `Enum`, `Boolean`, `LocalDate`, `ZonedDateTime`, `Instant`, `Duration`, `UUID`, `Blob`, `AnyBlob`, `ImageBlob`, `TextBlob`.
+
+Some validations are dependent on the field types. Currently supported validations are:
+
+- `required`, `unique`, `min(value)`, `max(value)`, `minlength(value)`, `maxlength(value)`, `pattern(/expression/)`
+
+### Documentation Comments
+
+As with Java, Javascript... ZDL supports line and block and javadoc style comments. Fields also support single line suffix javadoc style comments.
+
+- `// an ignored line comment`
+- `/* an ignored block */`
+- `/** not an ignored documentation comment */`
+
+### Relationships
+
+Relationships remain mostly compatible with [JDL Relationships](https://www.jhipster.tech/jdl/relationships).
+
+ZDL does not support `display field` or `with builtInEntity` and options are any valid annotation name/value pair.
+
+There are four relationship types: `OneToOne`, `OneToMany`, `ManyToOne` and `ManyToMany`:
+
+```
+relationship (OneToMany | ManyToOne | OneToOne | ManyToMany) {
+  [<from relationship javadoc>]
+  [<from relationship annotation>*]
+  <from entity>[{<relationship field name>}] to
+  [<to relationship javadoc>]
+  [<to relationship annotation>*] <to entity>[{<relationship field name>}]
+}
+```
+Relationships can be grouped under the same `relationship` keyword or under separate keywords.
+
+```zdl
+relationship ManyToMany {
+  EntityA{fieldPointingB} to EntityB{fieldPointingToA}
+  EntityC{fieldPointingD} to EntityD{fieldPointingToC}
+}
+```
+ZenWave SDK tries to follow DDD rules for aggregates, cascading persistence from aggregate root to dependent entities. Generating unit tests, as executable documentation, to validate that those cascades work as expected.
+
+#### Relationships between aggregates
+
+From a DDD perspective, aggregates are self-contained units of consistency that are not supposed to hold 'rich' relationships with other aggregates and relationships between aggregates should be modeled by reference/id.
+
+However, modeling relationships by id looses information about the relationship being modeled. ZenWave SDK supports modeling 'rich' relationships between aggregates, and generated code will still use reference/id to model the relationship, but will also provide a read-only 'rich' relationship object that can be used to access the related aggregate.
+
+```zdl
+@aggregate
+entity Customer {
+  name String required
+}
+
+@aggregate
+entity CustomerOrder {
+    orderDate ZonedDateTime required
+    /* customerId Integer */ // with this type of mapping some information about the relationship being modeled is lost
+}
+
+relationship ManyToOne {
+  // From a DDD perspective a relationship between aggregates should be modeled by reference/id
+  // This mapping will result in a CustomerOrder.[get/set]CustomerId() field
+  // and a read-only CustomerOrder.getCustomer() field
+  CustomerOrder{customer} to Customer
+}
+```
+
+### Nested Entities
+
+When working with large object graphs, sometimes is more expressive to nest entities directly on fields, instead of defining them separately.
+
+Nested entities are supported for entities, inputs, outputs and events.
+
+The following two mappings are equivalent:
+
+<table markdown="1" width="100%">
+<tr valign="top">
+    <td>
+```zdl
+entity Customer {
+    name String required
+    address Address[] {
+        street String required
+        city String required
+        country String required
+    }
+}
+```
+    </td>
+    <td valign="middle">-></td>
+    <td>
+```zdl
+entity Customer {
+    name String required
+    address Address[]
+}
+
+@embedded
+entity Address {
+    street String required
+    city String required
+    country String required
+}
+```
+    </td>
+</tr>
+</table>
+
+NOTE: For entities, the code generated by ZenWave SDK plugins will depend on the persistence technology used. For MongoDB will generate a nested object and for JPA an embedded entity with all columns on the same table (nested arrays are not supported in JPA).
+
+## Enums
+
+Enums are also compatible with to [JDL enums](https://www.jhipster.tech/jdl/enums), but enum keys are not required to be uppercase.
+
+```
+enum <enum name> {
+  <ENUM KEY> [(<enum value>)]
+}
+```
+
+## Services and Commands
+
+Services and commands are used to describe the operations, beyond CRUD, that can be performed on your domain aggregates.
+
+Services follow this structure:
+
+```
+[<service javadoc>]
+[<service annotation>*]
+service <service name> for (<aggregate>[,<aggregate>]*)] {
+  [<command javadoc>]
+  [<command annotation>*]
+  <command name>([<id>], [<CommandInput>]) [<CommandOutput>] [withEvents <DomainEvent>*]
+}
+```
+
+### Service Commands
+
+Service commands are transactional units of work to perform operations on aggregate entities.
+
+They represent functionality of your inner ring/hexagon. They should be connected to the outside world via APIs, Adapters & Mappers. They can be documented with annotations pointing to the adapters that will be used to expose them, like @rest or @async. It's up to the SDK how these annotations are interpreted, but they should not be confused with public APIs.
+
+Some SDK plugins can also generate draft OpenAPI and AsyncAPI definition files from these annotations, but are those APIs (OpenAPI, AsyncAPI) to be considered as the source of truth.
+
+Service commands resemble but should not be confused wit java methods. They support only two types of parameters:
+
+- **id**: the presence of this parameter specifies that this command operates on an aggregate entity instance with the given id.
+- **CommandInput**: it can point to an `entity` or `input` type, and it's used to pass data to the command.
+
+`CommandOutput` can be any valid `entity` or `output` type, of be unspecified. If CommandOutput is an entity, it expresses that entity will be created or updated with the command input data. CommandOutput can be marked as `optional` with a `?` to express that the command may not return any output.
+
+`withEvents` is used to specify the domain events that will be published after the command is executed.
+
+```zdl
+/**
+* Service for Order Attachments.
+*/
+@rest("/order-attachments")
+service AttachmentService for (CustomerOrder) {
+
+  @post
+  uploadFile(id, AttachmentFileInput) CustomerOrder? withEvents [AttachmentFileUploaded|AttachmentFileUploadFailed]
+
+  @get("/{orderId}")
+  listAttachmentFiles(id) AttachmentFileOutput[]
+
+  @get("/{orderId}/{attachmentFileId}")
+  downloadAttachmentFile(AttachmentFileId) AttachmentFileOutput
+}
+
+entity CustomerOrder {}
+input AttachmentFileInput {}
+output AttachmentFileOutput {}
+```
+
+### Service CRUD Commands
+
+Service methods matching a CRUD pattern are treated as special by the SDK and an according CRUD implementation would be generated:
+
+```zdl
+service CustomerService for (Customer) {
+    createCustomer(CustomerOrCustomerInput) Customer?
+    updateCustomer(id, CustomerOrCustomerInput) Customer?
+    getCustomer(id) Customer?
+    listCustomers() Customer[]
+    deleteCustomer(id)
+}
+```
+
+CRUD commands may emit any domain events.
+
+Command parameter type can be an aggregate entity or an input type. In some cases, and depending on configured settings, ZenWave SDK may generate input dtos even if entity types are used, following hexagonal/clean/onion architecture principles.
+
+
+### Inputs
+
+Inputs follow the same structure as entities, but they are not persistent. They belong to the outer ring/hexagon of your application, along with the Mappers. They are used to pass data to service commands.
+
+They can reference other entities and enums but not they other way around. They also support [nested entities](#nested-entities).
+
+```zdl
+input AttachmentFileInput {
+  name String required
+  file Blob required
+  mimetype AttachmentFileType required
+}
+```
+
+### Outputs
+
+Outputs follow the same structure as entities, but they are not persistent. They belong to the outer ring/hexagon of your application, along with the Mappers. They are used to pass data to service commands.
+
+They can reference other entities, inputs and enums but not they other way around. They also support [nested entities](#nested-entities).
+
+```zdl
+input AttachmentFileOutput {
+  customerOrderId Integer required
+  name String required
+  file Blob required
+  mimetype AttachmentFileType required
+}
+```
+
+## Domain Events
+
+Domain events are used to describe the events that are published by your domain aggregates.
+
+```
+[<event javadoc>]
+[<event annotation>*]
+event <event name> [(<channel name>)] {
+  [<field javadoc>]
+  [<field annotation>*]
+  <field name> <field type> [<validation>*] [<field suffix javadoc>] [,]
+}
+```
+
+## Configuration Section
+
+SDK plugin options can be configured in the `config` section.
+
+This config options are inherited by all the SDK plugins, but each plugin can also define its own options.
+
+```zdl
+config {
+  basePackage "com.example.myapp"
+  persistence mongodb
+}
+```
+
+IMPORTANT NOTE: `config` and `apis` sections should be at the top of the file, before any other declaration and after `global javadoc`.
+
+### SDK Plugins
+
+Plugins configured in the config section can be executed directly from ZenWave Editor (IntelliJ IDEA).
+
+In addition to their own configuration, they will inherit the following options:
+
+- `specFile` pointing to the current file,
+- `targetFolder` to the project folder (not the file folder)
+- and all configuration from `config` section.
+
+```zdl
+config {
+    basePackage "com.example.myapp"
+    persistence mongodb
+
+    plugins {
+        /** generates backend core */
+        io.zenwave360.sdk.plugins.JDLBackendApplicationDefaultPlugin {
+            inputDTOSuffix "" // do not create separate Input DTOs for entities
+            --force // overwite all files
+        }
+        /**
+        * Convenience plugin to generate OpenAPI from Service/Entities.
+        * Warning: This will overwrite existing customizations. */
+        disabled io.zenwave360.sdk.plugins.JDLToOpenAPIPlugin {
+            idType integer
+            idTypeFormat int64
+            targetFile "src/main/resources/model/openapi.yml"
+        }
+    }
+}
+```
+
+## APIs Section

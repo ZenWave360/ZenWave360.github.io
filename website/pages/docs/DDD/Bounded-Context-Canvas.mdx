@@ -1,0 +1,64 @@
+---
+section: Domain Modeling
+title: Bounded Context Canvas
+slug: /docs/event-driven-design/bounded-context-canvas/
+order: 3
+---
+import { x } from '@xstyled/styled-components'
+import { Image, Quote, QuoteAuthor } from "smooth-doc/components";
+
+# Bounded Context Canvas
+
+https://github.com/ddd-crew/bounded-context-canvas
+
+<Image src="https://raw.githubusercontent.com/ddd-crew/bounded-context-canvas/master/tools/excalidraw-version/bounded-context-canvas-excalidraw.svg" alt="Bounded Context Canvas" width="100%" />
+
+
+```zdl
+apis {
+    asyncapi(provider) MyEventsApi {
+        uri "src/main/resources/asyncapi.yml"
+    }
+    openapi(provider) MyRestApi {
+        uri "src/main/resources/openapi.yml"
+    }
+    asyncapi(client) ThirdPartyEventsApi {
+        uri "https://.../asyncapi.yml"
+    }
+    openapi(client) ThirdPartyRestApi {
+        uri "https://.../openapi.yml"
+    }
+}
+// ============
+
+@aggregate
+entity MyEntity {}
+
+input MyEntityInput {}
+
+output MyEntityReadModel {}
+
+service MyService for (MyEntity) {
+
+    // inbound async command
+    @command({api: ThirdPartyRestApi, operationId: "createMyEntity"})
+    createMyEntity(MyEntityInput) MyEntity withEvents ThirdPartyAsyncRequest MyEntityUpdatedEvent // outbound events
+
+    // inbound sync command
+    @rest({api: MyRestApi, operationId: "showMyEntityById"})
+    @uses({api: ThirdPartyRestApi, operationId: "fetchRelatedData"}) // outbound query
+    synchMyEntityWithThirdPartyData(id) MyEntityReadModel
+
+    // inbound query
+    @rest({api: MyRestApi, operationId: "listMyEntities"})
+    listMyEntities() MyEntityReadModel[]
+}
+
+
+@asyncapi({api: MyEventsApi, operationId: "onMyEntity"}) // outbound event
+event MyEntityUpdatedEvent {}
+
+@asyncapi({api: ThirdPartyEventsApi, operationId: "thirdPartyRequestsChannel"}) // outbound command
+event ThirdPartyAsyncRequest {}
+
+```

@@ -8,9 +8,9 @@ module.exports = {
         name: "ZenWave 360º",
         description: "ZenWave 360: DDD and API-First Modeling Tools for Modern Distributed Applications.",
         baseDirectory: path.resolve(__dirname, '../'),
-        siteUrl: "https://zenwave360.io/",
+        siteUrl: "https://zenwave360.github.io/",
         githubRepositoryURL: "https://github.com/zenwave360",
-        sections: ['ZenWave 360º', 'Event-Driven Design', 'ZenWave SDK', 'ZenWave & API-First', 'ZenWave & API Testing'],
+        sections: ['ZenWave 360º', 'Domain Modeling', 'ZenWave SDK', 'ZenWave & API-First', 'ZenWave & API Testing'],
         navItems: [
           { title: 'Documentation', url: '/docs/zenwave360' },
           { title: 'Plugin', url: '/plugin/' },

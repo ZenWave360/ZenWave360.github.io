@@ -1,28 +1,17 @@
 ---
-section: Event Driven Architectures
-title: POST API-First with AsyncAPI
-slug: /blog/API-First-with-AsyncAPI
-date: 2023-06-17T06:00:00+01:00
-excerpt: API-First with AsyncAPI
+title: API-First with AsyncAPI
+slug: /posts/API-First-with-AsyncAPI-And-ZenWave-SDK
+image: api-first-with-asyncapi-banner.png
+author: Ivan Garcia Sainz-Aja
+date: 2023-03-03T06:00:00+01:00
+excerpt: 'If you are familiar with OpenAPI and OpenAPI Generator API-First process, doing API-First with AsyncAPI is similar.'
+tags:
+  - API-First
+  - EDA
+  - Specification
 ---
 
-# API-First with AsyncAPI
-
-- [API-First with AsyncAPI](#api-first-with-asyncapi)
-  - [Broker-based APIs are Symmetric](#broker-based-apis-are-symmetric)
-  - [Events, Commands, and Messages](#events-commands-and-messages)
-  - [Understanding AsyncAPI Definition](#understanding-asyncapi-definition)
-    - [Info](#info)
-    - [Servers](#servers)
-    - [Channels: Publish / Subscribe](#channels-publish--subscribe)
-    - [Messages](#messages)
-    - [Message Payloads / Schemas](#message-payloads--schemas)
-    - [Reusing Configurations: Operation Traits, Message Traits...](#reusing-configurations-operation-traits-message-traits)
-  - [Different Styles of Event Messages](#different-styles-of-event-messages)
-    - [Notification Messages](#notification-messages)
-    - [State Transfer Messages](#state-transfer-messages)
-    - [Domain Event Messages](#domain-event-messages)
-  - [Next: Java Code Generator for AsyncAPI](#next-java-code-generator-for-asyncapi)
+# API-First with AsyncAPI 
 
 If you are familiar with OpenAPI and OpenAPI Generator API-First workflow:
 
@@ -39,7 +28,7 @@ And broker-based APIs, unlike Client-Server, are inherently **symmetric**.
 
 ## Broker-based APIs are Symmetric
 
-![Client-server vs broker-based EDAs](/resources/client-server-vs-broker-eda.excalidraw.svg)
+![Client-server vs broker-based EDAs](client-server-vs-broker-eda.excalidraw.svg)
 
 Because APIs mediated by a broker are inherently **symmetric** it's difficult to establish the roles of client/server: what represents a `publish` operation from one side will be a `subscribe` operation seen from the other side. Also, a given service can act as a publisher and subscriber on the same API.
 
@@ -264,7 +253,3 @@ Domain Event Messages **contains information about the event and interesting por
 }
 ```
 
- 
-## Next: Java Code Generator for AsyncAPI
-
-[Next: Java Code Generator for AsyncAPI](/Event-Driven-Architectures/AsyncAPI-Code-Generator)

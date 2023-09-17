@@ -5,7 +5,7 @@ slug: /docs/zenwave-sdk
 order: 0
 ---
 import { x } from '@xstyled/styled-components'
-import { Image } from "smooth-doc/components";
+import { Image, Quote, QuoteAuthor } from "smooth-doc/components";
 import modelingLanguagesDark from './images/SDK-ModelingLanguages.dark.png'
 import modelingLanguagesLight from './images/SDK-ModelingLanguages.light.png'
 import sdkHexagonalDark from './images/SDK-ServiceImplementation-Hexagonal.dark.png'
@@ -28,6 +28,11 @@ import sdkMindMapLight from './images/SDK-MindMap.light.png'
 > 👉 ZenWave360 Helps You Create Software Easy to Understand
 
 ## Modeling Data on the Inside and Data on the Outside
+
+<Quote>
+    The term 'model' has a dual meaning in DDD: it's a representation of a concept in the problem space and a representation of a concept in the solution space.
+    <QuoteAuthor>- Eric Evans in Domain Driven Design</QuoteAuthor>
+</Quote>
 
 <Image alt="ZenWave SDK Modeling Languages" light={modelingLanguagesLight} dark={modelingLanguagesDark} />
 
@@ -54,6 +59,8 @@ ZenWave SDK is designed to be easily extensible and adaptable to your project or
 
 ## ZenWave SDK Installation
 
+### Command Line Interface (CLI)
+
 You can install the latest release using [jbang](https://www.jbang.dev) running the following command:
 
 ```shell
@@ -61,6 +68,8 @@ jbang alias add --fresh --name=zw release@zenwave360/zenwave-sdk
 ```
 
 Please refer to [**ZenWave SDK**](https://github.com/ZenWave360/zenwave-sdk/) for more detailed installation options.
+
+### Maven Plugin
 
 ## ZenWave SDK Generated Code
 
