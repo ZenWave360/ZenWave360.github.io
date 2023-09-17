@@ -10,7 +10,6 @@ const InnerImage = styled.img`
   display: inline-block;
 `
 const src = (props, colorMode) => {
-    console.log('colorMode', colorMode)
     return colorMode === 'dark'? props.dark || props.src : props.light || props.src;
 }
 export const Image = React.forwardRef((props, ref) => (
