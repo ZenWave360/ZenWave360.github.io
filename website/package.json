@@ -6,7 +6,8 @@
     "clean": "rimraf .cache public",
     "dev": "npm run clean && gatsby develop",
     "build": "gatsby build",
-    "serve": "gatsby serve"
+    "serve": "gatsby serve",
+    "deploy": "gatsby build && gh-pages -d public -b main"
   },
   "dependencies": {
     "@xstyled/styled-components": "^3.5.1",
@@ -20,6 +21,7 @@
     "styled-components": "^5.3.3"
   },
   "devDependencies": {
+    "gh-pages": "^6.0.0",
     "rimraf": "^5.0.1"
   }
 }
