@@ -26,6 +26,7 @@ export function WebSiteLayout({ children, title }) {
                     <AppHeader />
                 </StickyHeader>
                 {children}
+                {/*<footer> <p>ZenWave360 © 2023 - DDD and API-First Modeling Tools for Modern Distributed Applications.</p> </footer>*/}
             </Container>
         </>
     )

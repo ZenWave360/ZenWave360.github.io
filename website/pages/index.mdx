@@ -15,7 +15,7 @@ import {
     FeatureImage,
     FeatureTitle,
     FeatureText, Image,
-    WideFeatureText, WideFeatureImage
+    WideFeatureSection, WideFeature, WideFeatureText, WideFeatureImage
 } from "smooth-doc/components";
 import heroBackgroundImageURL from "../images/hero-background.png";
 import markdownImageURL from '../images/markdown.png'
@@ -109,48 +109,52 @@ import gearsLightImage from "../images/home/laptop-gears.svg";
     </FeatureList>
   </FeatureSection>
 
-    <p>&nbsp;</p>
-    work in progress
-
-    <section>
-        <ScreenContainer>
-            <WideFeatureText>Good and Maintainable Software is <strong>not a matter of code</strong> but of <strong>understanding of the business domain</strong></WideFeatureText>
-            <WideFeatureImage src={dddLogosImage} alt="" />
-        </ScreenContainer>
-    </section>
-
-    <section>
-        <ScreenContainer>
-            <WideFeatureText>
-                Common Language. Closing the gap between:
-
-                - Business Experts
-                - Technical Experts
-                - Working Software & Tests
+  <WideFeatureSection>
+    <ScreenContainer>
+        <WideFeature>
+            <WideFeatureText className="wide-feature-text">
+                <h3>Good and Maintainable Software</h3>
+                - is <strong>not a matter of code</strong>
+                - but a matter of <strong>understanding the business domain</strong>
             </WideFeatureText>
-            <WideFeatureImage src={sharedUnderstandingImage} alt="" align='right' />
-[//]: # (<WideFeatureImage src={triangle} alt="" align='right' />)
-        </ScreenContainer>
-    </section>
+            <WideFeatureImage src={dddLogosImage} alt="Domain Driven Design is about Business Understanding" />
+        </WideFeature>
 
-    <section>
-        <ScreenContainer>
-            <WideFeatureText>
-                ZenWave SDK: And a set of tools to convert that models into software artifacts:
-                - APIs,
-                - Backend,
-                - API tests
+        <WideFeature>
+            <WideFeatureImage src={sharedUnderstandingImage} alt="Gap between Domain Experts - Technical Knwoledge" width='300px'  />
+            [//]: # (<WideFeatureImage src={triangle} alt="Gap between Domain Experts - Technical Knwoledge" />)
+            <WideFeatureText className="wide-feature-text">
+                <h3>Common Language (DSL)</h3>
+
+                Closes the gap between:
+                - <strong>Domain Experts</strong>
+                - <strong>Technical Experts</strong>
+                - Working <strong>Software & Tests</strong>
             </WideFeatureText>
-            <WideFeatureImage src={gearsDarkImage} alt="" width='400px' />
-        </ScreenContainer>
-    </section>
+        </WideFeature>
+
+        <WideFeature>
+            <WideFeatureText className="wide-feature-text">
+                <h3>SDK</h3>
+
+                <strong>Convert Models</strong> into <strong>Software Artifacts:</strong>
+                - API Definitions: OpenAPI, AsyncAPI...
+                - SpringBoot/SpringCloud...
+                - API Testing: KarateDSL, Spring WebTestClient...
+            </WideFeatureText>
+            <WideFeatureImage src={gearsDarkImage} alt="" width='300px' />
+        </WideFeature>
+    </ScreenContainer>
+  </WideFeatureSection>
 
 
-    <div>
-        <ul>
-            <li><a href=''>Domain Modeling</a></li>
-            <li><a href=''>ZDL Modeling Language</a></li>
-            <li><a href=''>ZenWave SDK</a></li>
-        </ul>
-    </div>
+    <ScreenContainer>
+        <section>
+            <div className="home-links">
+                <div><a href='/docs/domain-modeling/business-domain-modeling'>Domain Modeling</a></div>
+                <div><a href='/docs/event-driven-design/zenwave-domain-language'>ZDL Modeling Language</a></div>
+                <div><a href='/docs/zenwave-sdk'>ZenWave SDK</a></div>
+            </div>
+        </section>
+    </ScreenContainer>
 </ScreenContainer>

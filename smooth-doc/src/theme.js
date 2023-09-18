@@ -55,6 +55,38 @@ export const theme = {
       background-size: contain;
       background-repeat: no-repeat;
     }
+    .wide-feature-text h3 {
+        font-size: 38px;
+        text-align: center;
+    }
+    .wide-feature-text p {
+        font-size: 24px;
+        margin: 0.5em auto;
+    }
+    .wide-feature-text ul {
+        font-size: 24px;
+        list-style-type: "👉 ";
+        margin-left: 3rem;
+    }
+    .wide-feature-text li {
+      margin: 0.5em auto;
+    }
+    .wide-feature-text strong {
+      color: rgb(229, 192, 123);
+    }
+    .home-links {
+        text-align: center;
+        display: flex;
+    }
+    .home-links > * {
+      width:30%;
+      padding: 1rem;
+    }
+
+    .home-links a {
+        color: var(--xstyled-colors-on-background, #ffffff)!important;
+    }
+
   `,
   'prism-theme': () => ({
     styles: [
