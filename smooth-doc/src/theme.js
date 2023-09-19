@@ -74,6 +74,22 @@ export const theme = {
     .wide-feature-text strong {
       color: rgb(229, 192, 123);
     }
+    
+    .home-screenshots {
+      margin-bottom: 2rem;
+    }
+    .home-screenshots h2 {
+      font-size: 34px;
+      font-weight: 400;
+      margin-top: 3rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .home-screenshots img {
+        width: 80%;
+    }
+    
+    
     .home-links {
         text-align: center;
         display: flex;

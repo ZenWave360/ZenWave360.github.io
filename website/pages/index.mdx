@@ -19,30 +19,31 @@ import {
 } from "smooth-doc/components";
 import heroBackgroundImageURL from "../images/hero-background.png";
 import markdownImageURL from '../images/markdown.png'
-import jdlImageURL from '../static/logos/conceptual-model-white.png'
+import zdlImageURL from '../static/logos/conceptual-model.svg'
 import sdkImageURL from '../static/logos/zenwave-sdk-dark.png'
-import springBootImageURL from '../static/logos/spring-boot-logo.png'
+import springBootImageURL from '../static/logos/spring-boot.svg'
 import springImageURL from '../static/logos/spring.svg'
-import dddImageURL from '../static/logos/ddd.png'
-import edaImageURL from '../static/logos/event-storming.png'
-import osiImageURL from '../static/logos/osi.webp'
-import openApiImageURL from '../static/logos/openapi-logo.png'
+import dddImageURL from '../static/logos/ddd.svg'
+import edaImageURL from '../images/event-driven-architectures-logo.svg'
+import osiImageURL from '../static/logos/osi.svg'
+import openApiImageURL from '../static/logos/openapi-logo.svg'
 import asyncApiImageURL from '../static/logos/asyncapi-logo.png'
-import tddImageURL from '../static/logos/tdd.png'
-import eventStormingZDLImageURL from '../static/resources/EvenStorming-ZDL.png'
+import tddImageURL from '../static/logos/tdd.svg'
 
-import dddLogosImage from "../images/home/ddd_logos_dimmed.svg";
-import sharedUnderstandingImage from "../images/home/shared-understanding_dimmed.svg";
-import triangle from '../images/home/business-developers-software-triangle.png'
+import dddLogosImage from "../images/home/spiral.svg";
+import sharedUnderstandingImage from "../images/home/common-language.svg";
 import gearsDarkImage from "../images/home/laptop-gears.svg";
-import gearsLightImage from "../images/home/laptop-gears.svg";
 
+import eventStormingZDL from '../pages/docs/DDD/images/EventStorming-ZDL-Mapping.png'
+import boundedContextMapping from '../images/home/bounded-context-mapping.svg'
+
+import pluginScreenshot from './plugin-screenshot.png'
 
 <ScreenContainer>
   <HeroSection>
     <Hero backgroundImageURL={heroBackgroundImageURL}>
       <HeroBody>
-        <HeroTitle>ZenWave Helps You Create Software Easy To Understand!</HeroTitle>
+        <HeroTitle>Create Software Easy To Understand!</HeroTitle>
         <HeroTeaser>DDD and API-First Modeling Tools for Modern Distributed Applications.</HeroTeaser>
         <HeroActionList>
           <HeroAction>
@@ -61,7 +62,7 @@ import gearsLightImage from "../images/home/laptop-gears.svg";
   <FeatureSection>
     <FeatureList>
       <Feature>
-        <FeatureImage src={jdlImageURL} />
+        <FeatureImage src={zdlImageURL} />
         <FeatureTitle>Domain Model Language</FeatureTitle>
         <FeatureText>
           Concise and complete DDD modeling language for Event-Driven Architectures.
@@ -109,24 +110,24 @@ import gearsLightImage from "../images/home/laptop-gears.svg";
     </FeatureList>
   </FeatureSection>
 
+
   <WideFeatureSection>
     <ScreenContainer>
         <WideFeature>
             <WideFeatureText className="wide-feature-text">
-                <h3>Good and Maintainable Software</h3>
-                - is <strong>not a matter of code</strong>
-                - but a matter of <strong>understanding the business domain</strong>
+                <h3>Maintainable Software</h3>
+                - is <strong>not a matter of code</strong> but a matter of <strong>understanding the business domain</strong>
+                - software well designed <strong>should be easy to understand by all</strong>
             </WideFeatureText>
             <WideFeatureImage src={dddLogosImage} alt="Domain Driven Design is about Business Understanding" />
         </WideFeature>
 
         <WideFeature>
             <WideFeatureImage src={sharedUnderstandingImage} alt="Gap between Domain Experts - Technical Knwoledge" width='300px'  />
-            [//]: # (<WideFeatureImage src={triangle} alt="Gap between Domain Experts - Technical Knwoledge" />)
             <WideFeatureText className="wide-feature-text">
                 <h3>Common Language (DSL)</h3>
 
-                Closes the gap between:
+                A common language closes the gap between:
                 - <strong>Domain Experts</strong>
                 - <strong>Technical Experts</strong>
                 - Working <strong>Software & Tests</strong>
@@ -139,7 +140,7 @@ import gearsLightImage from "../images/home/laptop-gears.svg";
 
                 <strong>Convert Models</strong> into <strong>Software Artifacts:</strong>
                 - API Definitions: OpenAPI, AsyncAPI...
-                - SpringBoot/SpringCloud...
+                - SpringBoot/SpringCloud Backend...
                 - API Testing: KarateDSL, Spring WebTestClient...
             </WideFeatureText>
             <WideFeatureImage src={gearsDarkImage} alt="" width='300px' />
@@ -147,6 +148,30 @@ import gearsLightImage from "../images/home/laptop-gears.svg";
     </ScreenContainer>
   </WideFeatureSection>
 
+
+    <ScreenContainer>
+        <section>
+            <div className="home-links">
+                <div><a href='/docs/domain-modeling/business-domain-modeling'>Domain Modeling</a></div>
+                <div><a href='/docs/event-driven-design/zenwave-domain-language'>ZDL Modeling Language</a></div>
+                <div><a href='/docs/zenwave-sdk'>ZenWave SDK</a></div>
+            </div>
+        </section>
+    </ScreenContainer>
+
+    <ScreenContainer className="home-screenshots">
+        <h2>A Domain Language Designed for Event-Driven Architectures</h2>
+        <Image src={eventStormingZDL} alt="Event Storming" width="100%"/>
+
+        <h2>... And Bounded Context Mapping</h2>
+        <Image src={boundedContextMapping} alt="Bounded Context Mapping with ZDL" width="100%"/>
+
+        <h2>Can be read as documentation</h2>
+        <Image src={pluginScreenshot} />
+
+        <h2>And easily converted into working software & tests</h2>
+        <Image src={pluginScreenshot} />
+    </ScreenContainer>
 
     <ScreenContainer>
         <section>
