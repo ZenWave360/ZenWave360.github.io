@@ -17,7 +17,9 @@ ZDL is a domain specific language (DSL) for modeling Event-Driven microservices.
     <QuoteAuthor>- Alberto Brandolini in Event Storming</QuoteAuthor>
 </Quote>
 
-Inspired by JHipster JDL, and largely compatible with it, ZDL is a language for describing domain entities and their relationships, as well as services, commands, and events.
+Inspired by JHipster JDL, and largely compatible with its entities and relationships format.
+
+ZDL is a language for describing domain entities and their relationships, as well as services, commands, events and business policies. Reference external API definitions, and configure SDK plugins.
 
 It's designed to be compact, while still being readable and expressive. It's also designed to be business friendly, developer friendly, and machine friendly.
 
@@ -41,7 +43,7 @@ ZDL files are structured as follows:
 [<config>]
 [<apis>]
 
-[<entity> | <enum> | <service> | <input> | <output> | <event>]*
+[<entity> | <enum> | <polcies> | <service> | <input> | <output> | <event>]*
 ```
 
 The following is an example of a ZDL definition file describing an application with an aggregate exposing some core functionality, connected through a REST API adapter and publishing some domain events.
@@ -109,8 +111,13 @@ relationship OneToMany {
 // aggregate services
 // ===============================
 
+policies (Customer) {
+  policy001 "Describe here the content of this business rule"
+}
+
 @rest("/customers")
 service CustomerService for (Customer) {
+    @policy(policy001)
     createCustomer(Customer) Customer withEvents CustomerUpdated
     updateCustomer(id, Customer) Customer?  withEvents CustomerUpdated
     getCustomer(id) Customer?
@@ -379,6 +386,20 @@ CRUD commands may emit any domain events.
 
 Command parameter type can be an aggregate entity or an input type. In some cases, and depending on configured settings, ZenWave SDK may generate input dtos even if entity types are used, following hexagonal/clean/onion architecture principles.
 
+### Business Policies
+
+Policies documents business decisions and rules. They can be associated with a particular aggregate and then referenced with the `@policy(policy_code)` annotation.
+
+```zdl
+policies (Customer) {
+  policy001 "Describe here the content of this business rule"
+}
+
+service CustomerService for (Customer) {
+    @policy(policy001)
+    createCustomer(Customer) Customer withEvents CustomerUpdated
+}
+```
 
 ### Inputs
 
@@ -472,3 +493,35 @@ config {
 ```
 
 ## APIs Section
+
+APIs are used to document APIs exposed by your application (provider) or Third Party APIs consumed by you (client).
+
+Use it to document the API `uri` along with any other field/value that you want to include. It also supports javadoc comments.
+
+```
+apis {
+    <api type>([provider|client]) <api name> {
+        uri <api uri>
+        (<field> <value>)*
+    }
+}
+```
+
+Example:
+
+```zdl
+apis {
+    asyncapi(provider) MyEventsApi {
+        uri "src/main/resources/asyncapi.yml"
+    }
+    openapi(provider) MyRestApi {
+        uri "src/main/resources/openapi.yml"
+    }
+    asyncapi(client) ThirdPartyEventsApi {
+        uri "https://.../asyncapi.yml"
+    }
+    openapi(client) ThirdPartyRestApi {
+        uri "https://.../openapi.yml"
+    }
+}
+```

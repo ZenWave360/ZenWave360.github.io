@@ -7,77 +7,110 @@ order: 1
 import { x } from '@xstyled/styled-components'
 import { Image, Quote, QuoteAuthor } from "smooth-doc/components";
 import eventStorming from './images/DLES-Brandolini.png'
-
-
+import eventStormingZdlMapping from './images/EventStorming-ZDL-Mapping.png'
+import eventDark from './images/event-storming/event.dark.png'
+import eventLight from './images/event-storming/event.light.png'
+import commandDark from './images/event-storming/command.dark.png'
+import commandLight from './images/event-storming/command.light.png'
+import userCommandDark from './images/event-storming/user-command-event.dark.png'
+import userCommandLight from './images/event-storming/user-command-event.light.png'
+import policyCommandDark from './images/event-storming/policies.dark.png'
+import policyCommandLight from './images/event-storming/policies.light.png'
+import commandSystemEventDark from './images/event-storming/command-system-event.dark.png'
+import commandSystemEventLight from './images/event-storming/command-system-event.light.png'
+import commandAggregateEventDark from './images/event-storming/command-aggregate-event.dark.png'
+import commandAggregateEventLight from './images/event-storming/command-aggregate-event.light.png'
+import readModelCommandAggregateEventDark from './images/event-storming/read-model-command-aggregate-event.dark.png'
+import readModelCommandAggregateEventLight from './images/event-storming/read-model-command-aggregate-event.light.png'
 
 # Event Storming
 
-> 👉 ZenWave360 Helps You Create Software Easy to Understand
+Flexible workshop format for collaborative exploration of complex business domains
+
+<Quote>Event Storming provides a shared language that bridges the gap between business experts and technical teams.</Quote>
 
 <Image src={eventStorming} alt="Event Storming" />
 
-TODO: work in progress
-
-"Event Storming helps in surfacing everyone’s assumptions, discovering requirements and finding ambiguities."
-
-"Event Storming encourages a mindset shift from big upfront design to ongoing, adaptive design."
-
-"Event Storming is about creating a shared understanding of complex domains, not just drawing on a whiteboard."
-
-"The heart of Event Storming is in the dialog that happens around a problem space, not in the sticky notes."
-
-"Event Storming brings together different perspectives and knowledge levels in a constructive way."
-
-"Event Storming helps in discovering boundaries and responsibilities in a domain."
-
-"In Event Storming, we use visualization to explore the intricacies of the domain."
-
-"Event Storming is not just a technique; it’s a mindset of continuous learning and discovery."
-
-"Event Storming is not about producing documents; it’s about producing understanding."
-
-"Event Storming helps in visualizing the flow of events and the interactions in a domain."
-
-"With Event Storming, we're not just modeling events, we're modeling business processes and communication flows."
-
-"Event Storming provides a shared language that bridges the gap between business experts and technical teams."
-
-"The power of Event Storming lies in its ability to uncover hidden complexities and unknown unknowns."
-
-"Event Storming is a catalyst for continuous improvement and innovation in software development."
-
-"Event Storming helps in avoiding the 'analysis paralysis' often associated with complex domains."
-
-"Event Storming is a tool for knowledge crunching; it's not about lengthy meetings, but about meaningful conversations."
-
 ## Event Storming
 
-Collaborative Workshop Technique: Event Storming is a collaborative workshop technique used to explore complex business domains.
+It was created by Alberto Brandolini, and is described in his book [Introducing EventStorming](https://leanpub.com/introducing_eventstorming).
 
-Shared Understanding: Its primary goal is to create a shared understanding among stakeholders, including business experts and technical teams.
+Event Storming is a collaborative workshop technique used to explore complex business domains.
 
-Visualization: Event Storming involves visually mapping out the flow of events and their interactions in a domain. This helps in making complex processes more tangible.
+Its primary goal is to create a shared understanding among stakeholders, including business experts and technical teams.
 
-Sticky Notes and Markers: The technique typically uses sticky notes and markers to represent events, commands, and other domain elements. This provides a hands-on, interactive way to work through the domain.
+It helps to make complex processes more tangible.
 
-Focus on Events: Events play a central role in Event Storming. They represent significant occurrences in the domain that trigger changes or reactions.
+Events represent significant occurrences in the domain that trigger changes or reactions.
 
-Temporal Order: Events are arranged in a temporal order, helping to understand the sequence of actions and reactions in the system.
+Commands and Policies are also used to represent actions and rules within the domain.
 
-Aggregates and Entities: Event Storming helps in identifying aggregates and entities within the domain. Aggregates are clusters of related objects that are treated as a single unit.
+Design Level Event Storming helps in identifying Aggregates and Entities within the domain. Aggregates are clusters of related objects that are treated as a single unit.
 
-Commands and Policies: Alongside events, commands and policies are also used to represent actions and rules within the domain.
+## ZDL ~ A Domain Modeling Language for DDD and Event Storming
 
-Discovery and Exploration: Event Storming is an exploratory process. It encourages participants to ask questions, clarify concepts, and uncover hidden complexities.
+ZenWave Domain Language ([ZDL](/docs/event-driven-design/zenwave-domain-language)) is a Domain Specific Language that maps Event Storming discoveries with DDD principles in mind into a developer friendly format.
 
-Ubiquitous Language: It promotes the use of a shared, domain-specific language (Ubiquitous Language) that is understood by all stakeholders. This helps in bridging the gap between business experts and technical teams.
+It works as an Ubiquitous Language, retaining the language of the domain and because is machine friendly it propagates automatically to documentation, code and tests.
 
-Iterative Process: Event Storming is often an iterative process. As understanding deepens, the model evolves to reflect new insights and knowledge.
+<Image alt="Event-Storming to ZDL Mapping" src={eventStormingZdlMapping} />
 
-Focus on Business Value: It helps in identifying areas of high business value, enabling teams to prioritize development efforts effectively.
+Jump to [Bounded Context Canvas](/docs/event-driven-design/bounded-context-canvas/) for details about how to map Event-Storming concepts into ZDL format.
 
-Avoidance of Analysis Paralysis: Event Storming encourages a pragmatic approach, avoiding over-analysis and emphasizing meaningful conversations and actions.
 
-Continuous Learning and Improvement: It fosters a mindset of continuous learning and improvement, enabling teams to adapt to changing domain requirements.
+## Big Picture EventStorming
 
-Facilitation Skills: Effective facilitation is crucial for a successful Event Storming session. A skilled facilitator guides the discussion, encourages participation, and ensures productive outcomes.
+Big Picture EventStorming is ideal for Analysis of a whole Business Domain or Subdomain. Beyond silos, it requires the participation of business experts
+
+![Big Picture EventStorming](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*e1bMa2Q-hVumzGJO27jM5g.jpeg)
+(Source: https://medium.com/@springdo/a-facilitators-recipe-for-event-storming-941dcb38db0d)
+
+## Design Level EventStorming for Designing Event-Driven Systems for a Bonded Context
+
+Design Level EventStorming is ideal for Designing Event-Driven Systems for a given Bonded Context and while it can be performed by the development team alone, it is recommended to request feedback and validation from domain experts.
+
+![Design Level EventStorming](https://mrpicky.dev/wp-content/uploads/2021/12/DLES-offer-1024x589.jpg)
+(Source: https://mrpicky.dev/design-level-event-storming-with-examples/)
+
+## Events
+
+Events play a central role in Event Storming. They represent significant occurrences in the domain that trigger changes or reactions.
+
+<Image dark={eventDark} light={eventLight} alt="Event Storming - Event" style={{maxWidth: '650px'}}/>
+
+## Commands and Policies
+
+Commands and Policies are used to represent actions and rules within the domain.
+
+<Image dark={commandDark} light={commandLight} alt="Event Storming - Command" style={{maxWidth: '600px'}} />
+
+### User Initiated Command Produces Event
+
+Commands can be initiated by users.
+
+<Image dark={userCommandDark} light={userCommandLight} alt="Event Storming - User Initiated Command Produces Event" style={{maxWidth: '700px'}} />
+
+### Policy Initiated Command
+
+Commands can also be initiated by policies. Rules triggering in the background, spanning for other systems events, temporal triggers, external systems, etc.
+
+<Image dark={policyCommandDark} light={policyCommandLight} alt="Event Storming - Policy Initiated Command" style={{maxWidth: '800px'}} />
+
+## Command invoked on System produces Event
+
+Commands do not directly triggers events, but they are invoked on a system, which in turn produces events.
+
+<Image dark={commandSystemEventDark} light={commandSystemEventLight} alt="Event Storming - Command invoked on System produces Event" style={{maxWidth: '800px'}} />
+
+## Command invoked on Aggregate produces Event
+
+DDD systems are comprised of Aggregates, which are clusters of related objects that are treated as a single unit. Commands are invoked on Aggregates, which in turn produces events.
+
+<Image dark={commandAggregateEventDark} light={commandAggregateEventLight} alt="Event Storming - Command invoked on Aggregate produces Event" style={{maxWidth: '850px'}} />
+
+## Read Models in Commands and Events
+
+Read Models represents Value Objects associated to Commands and Events.
+
+<Image dark={readModelCommandAggregateEventDark} light={readModelCommandAggregateEventLight} alt="Event Storming - Command invoked on Aggregate produces Event" style={{maxWidth: '850px'}} />
+

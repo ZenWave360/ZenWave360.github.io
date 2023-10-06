@@ -1,0 +1,62 @@
+---
+title: ZenWave Editor - IntelliJ Plugin
+slug: /getting-started/
+order: 2
+---
+
+# Getting Started with ZenWave 360º
+
+## Installation
+
+We recommend using [SDKMAN!](https://sdkman.io/) to install ZenWave SDK requirements: [Java 17+](https://sdkman.io/jdks), [Maven](https://sdkman.io/sdks#maven) and [JBang](https://sdkman.io/sdks#jbang).
+
+NOTE: Temurin (Eclipse) is a good option for Java JDK as it is high performance, enterprise-caliber and open-sourced licensed.
+
+## ZenWave SDK Installation
+
+Use JBang to install an _evergreen_ self updating CLI for the ZenWave SDK.
+
+```bash
+jbang alias add --fresh --name=zw release@zenwave360/zenwave-sdk
+```
+NOTE: You can install ZenWave versions from different channel: `release` for latest stable version, `snapshots` for development versions compatible with current releases or `next` for experimental versions. They can be installed side by side (using different `--name=<alias>`) or independently.
+
+## Install ZenWave Editor IntelliJ Plugin
+
+Install ZenWave Editor IntelliJ Plugin from JetBrains Marketplace:
+
+<iframe width="384px" height="319px" src="https://plugins.jetbrains.com/embeddable/card/22858"></iframe>
+
+For rendering class diagrams in markdown preview, install [PlantUML Integration](https://plugins.jetbrains.com/plugin/7017-plantuml-integration) plugin.
+
+NOTE: ZenWave Editor requires ZenWave SDK CLI to be installed as `jbang zw` alias.
+
+## Create Your Spring-Boot base Project
+
+ZenWave SDK expects most companies and teams to have their own starter base project. If you don't have one you can create one from https://start.spring.io or clone one of the ZenWave 360 base template projects from our GitHub repository.
+
+- ZenWave Starter Project for JPA: TODO add link
+- ZenWave Starter Project for MongoDB: TODO add link
+
+ZenWave SDK only generates business logic code and tests. It is expected to work with any compatible Spring-Boot base project.
+
+ZenWave SDK generated code was tested with Spring-Boot 3.1.4, Hibernate 6.x, MongoDB 5 and Spring-Cloud xxx.
+
+## ZDL Modeling and Code Generation
+
+Create a new ZDL model or use one of ZDL examples as base:
+
+1. Create a new file with `.zdl` extension
+2. Model your Bounded Context adding some entities, services, inputs and events...
+3. Add ZenWave SDK Plugins to ZDL `config` section. You can use IntelliJ live templates provided for this task.
+4. Follow these steps to generate code and tests from your model:
+    1. Generate API definitions from your model: OpenAPI and AsyncAPI v2/v3 are supported.
+    2. Customize your API definitions. They are the source of truth for outbound/inbound communications.
+    3. Configure API-First generators in `pom.xml` for OpenAPI and AsyncAPI.
+    4. Generate your Core Backed code and tests. ZenWave SDK can generate CRUD implementation for your services.
+    5. Customize generated code implementing non-CRUD service commands and customize generated tests.
+    6. Implement Adapters code (web, event) connecting API-First generated code with your Core Backend. ZenWave SDK can generate Stub implementation for some adapters.
+5. Run your tests and start your application.
+
+TODO add video
+

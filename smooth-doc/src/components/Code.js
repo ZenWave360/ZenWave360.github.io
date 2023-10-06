@@ -16,7 +16,7 @@ Prism.languages.zdl = Prism.languages.extend('clike', {
     pattern: RegExp(/(\b(?:entity|enum|service|input|output|event|relationship)\s+)/.source + identifier),
     lookbehind: true,
   },
-  'zdl-keyword': /\b(?:config|apis|plugins|entity|enum|service|input|output|event|relationship|for|to|withEvents)\b/,
+  'zdl-keyword': /\b(?:config|apis|plugins|entity|enum|service|input|output|event|relationship|for|to|withEvents|policies)\b/,
   'zdl-field': [
       /^\s*([a-z][a-zA-Z_][a-zA-Z0-9_.]*)\s+/,
       /{([a-z][a-zA-Z_][a-zA-Z0-9_.]*)}/, // field in relationship (not working)
