@@ -19,7 +19,7 @@ Use JBang to install an _evergreen_ self updating CLI for the ZenWave SDK.
 ```bash
 jbang alias add --fresh --name=zw release@zenwave360/zenwave-sdk
 ```
-NOTE: You can install ZenWave versions from different channel: `release` for latest stable version, `snapshots` for development versions compatible with current releases or `next` for experimental versions. They can be installed side by side (using different `--name=<alias>`) or independently.
+**NOTE:** You can install ZenWave versions from different channel: `release` for latest stable version, `snapshots` for development versions compatible with current releases or `next` for experimental versions. They can be installed side by side (using different `--name=<alias>`) or independently.
 
 ## Install ZenWave Editor IntelliJ Plugin
 
@@ -31,9 +31,9 @@ For rendering class diagrams in markdown preview, install [PlantUML Integration]
 
 NOTE: ZenWave Editor requires ZenWave SDK CLI to be installed as `jbang zw` alias.
 
-## Create Your Spring-Boot base Project
+## Spring-Boot base Project
 
-ZenWave SDK only generates business logic code and tests. It is expected to work with any compatible Spring-Boot base project.
+ZenWave SDK only generates business logic code and tests. It is expected to work with any compatible Spring-Boot project. Default backend generator is based ona maven single module project.
 
 We expect most companies and teams to have their own starter base project. If you don't have one you can create one from https://start.spring.io or clone one of the ZenWave 360 base projects from our GitHub playground repository.
 
@@ -61,3 +61,4 @@ Create a new ZDL model or use one of ZDL examples as base:
 ## Generating a complete Spring-Boot Application with ZenWave SDK
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/G93Mkf1xaXQ?si=XVghVSdbiy8yQA3j" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen></iframe>
+p
