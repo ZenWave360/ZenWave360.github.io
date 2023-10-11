@@ -3,6 +3,24 @@ title: Getting Started
 slug: /docs/getting-started/
 order: 1
 ---
+import { Image, Quote, QuoteAuthor } from "smooth-doc/components";
+import {
+    CarouselProvider,
+    Slider,
+    Slide,
+    ButtonBack,
+    ButtonNext,
+    ImageWithZoom,
+    ButtonFirst,
+    ButtonLast, DotGroup
+} from 'pure-react-carousel';
+import 'pure-react-carousel/dist/react-carousel.es.css';
+import zdlConfig from './images/getting-started/zdl-config.png'
+import zdlEntities from './images/getting-started/zdl-entities.png'
+import zdlEntitiesJPA from './images/getting-started/zdl-entities-jpa.png'
+import zdlService from './images/getting-started/zdl-service.png'
+import zdlEvents from './images/getting-started/zdl-events.png'
+
 
 # Getting Started with ZenWave 360º
 
@@ -44,6 +62,40 @@ ZenWave SDK generated code was tested with Spring-Boot 3.1.4, Hibernate 6.x, Mon
 
 ## ZDL Modeling and Code Generation
 
+
+<CarouselProvider
+    visibleSlides={1}
+    totalSlides={5}
+    step={1}
+    naturalSlideWidth="100%"
+    naturalSlideHeight={220}
+    lockOnWindowScroll>
+    <Slider className="{s.slider}">
+        <Slide index={0}>
+            <h3>ZDL Config Section with SDK Plugins</h3>
+            <Image src={zdlConfig} />
+        </Slide>
+        <Slide index={1}>
+            <h3>ZDL Entities (with Nested Entities for MongoDB)</h3>
+            <Image src={zdlEntities} />
+        </Slide>
+        <Slide index={2}>
+            <h3>ZDL Entities (with Relationships for JPA)</h3>
+            <Image src={zdlEntitiesJPA} />
+        </Slide>
+        <Slide index={3}>
+            <h3>ZDL Service (with @annotations for REST API)</h3>
+            <Image src={zdlService} />
+        </Slide>
+        <Slide index={4}>
+            <h3>ZDL Events (with @annotations for AsyncAPI)</h3>
+            <Image src={zdlEvents} />
+        </Slide>
+    </Slider>
+    <ButtonFirst>First</ButtonFirst><ButtonBack>Back</ButtonBack><ButtonNext>Next</ButtonNext><ButtonLast>Last</ButtonLast>
+</CarouselProvider>
+
+
 Create a new ZDL model or use one of ZDL examples as base:
 
 1. Create a new file with `.zdl` extension
@@ -61,4 +113,4 @@ Create a new ZDL model or use one of ZDL examples as base:
 ## Generating a complete Spring-Boot Application with ZenWave SDK
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/G93Mkf1xaXQ?si=XVghVSdbiy8yQA3j" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen></iframe>
-p
+
