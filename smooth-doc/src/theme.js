@@ -55,6 +55,12 @@ export const theme = {
       background-size: contain;
       background-repeat: no-repeat;
     }
+    .xstyled-color-mode-light blockquote.quote {
+      color: black;
+      background-color: #d4d4d8;
+      border-color: #a8a8af;
+    }
+    
     .wide-feature-text h3 {
         font-size: 38px;
         text-align: center;
@@ -72,7 +78,8 @@ export const theme = {
       margin: 0.5em auto;
     }
     .wide-feature-text strong {
-      color: rgb(229, 192, 123);
+      color: #F2A41F;
+      font-weight: normal;
     }
     
     .home-screenshots {
@@ -101,6 +108,15 @@ export const theme = {
 
     .home-links a {
         color: var(--xstyled-colors-on-background, #ffffff)!important;
+    }
+    
+    h3 {
+      font-size: 1.17em;
+      margin-bottom: 0.5em;
+    }
+    
+    .carousel__back-button, .carousel__next-button {
+      background: transparent;
     }
 
   `,

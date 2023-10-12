@@ -47,7 +47,7 @@ Install ZenWave Editor IntelliJ Plugin from JetBrains Marketplace:
 
 For rendering class diagrams in markdown preview, install [PlantUML Integration](https://plugins.jetbrains.com/plugin/7017-plantuml-integration) plugin.
 
-NOTE: ZenWave Editor requires ZenWave SDK CLI to be installed as `jbang zw` alias.
+**NOTE:** ZenWave Editor requires ZenWave SDK CLI to be installed as `jbang zw` alias.
 
 ## Spring-Boot base Project
 
@@ -62,37 +62,38 @@ ZenWave SDK generated code was tested with Spring-Boot 3.1.4, Hibernate 6.x, Mon
 
 ## ZDL Modeling and Code Generation
 
+Scroll left/right for a quick overview of how ZDL modeling looks like, with an example. And then follow the instructions below.
 
 <CarouselProvider
     visibleSlides={1}
     totalSlides={5}
     step={1}
-    naturalSlideWidth="100%"
-    naturalSlideHeight={220}
+    naturalSlideWidth={500}
+    naturalSlideHeight={295}
     lockOnWindowScroll>
     <Slider className="{s.slider}">
         <Slide index={0}>
-            <h3>ZDL Config Section with SDK Plugins</h3>
+            <h3>👇 ZDL Config Section with SDK Plugins <ButtonNext>👉</ButtonNext></h3>
             <Image src={zdlConfig} />
         </Slide>
         <Slide index={1}>
-            <h3>ZDL Entities (with Nested Entities for MongoDB)</h3>
+            <h3><ButtonBack>👈</ButtonBack> 👇 ZDL Entities (with Nested Entities for MongoDB) <ButtonNext>👉</ButtonNext></h3>
             <Image src={zdlEntities} />
         </Slide>
         <Slide index={2}>
-            <h3>ZDL Entities (with Relationships for JPA)</h3>
+            <h3><ButtonBack>👈</ButtonBack> 👇 ZDL Entities (with Relationships for JPA) <ButtonNext>👉</ButtonNext></h3>
             <Image src={zdlEntitiesJPA} />
         </Slide>
         <Slide index={3}>
-            <h3>ZDL Service (with @annotations for REST API)</h3>
+            <h3><ButtonBack>👈</ButtonBack> 👇 ZDL Service (with @annotations for REST API) <ButtonNext>👉</ButtonNext></h3>
             <Image src={zdlService} />
         </Slide>
         <Slide index={4}>
-            <h3>ZDL Events (with @annotations for AsyncAPI)</h3>
+            <h3><ButtonBack>👈</ButtonBack> 👇 ZDL Events (with @annotations for AsyncAPI)</h3>
             <Image src={zdlEvents} />
         </Slide>
     </Slider>
-    <ButtonFirst>First</ButtonFirst><ButtonBack>Back</ButtonBack><ButtonNext>Next</ButtonNext><ButtonLast>Last</ButtonLast>
+    <ButtonBack>👈</ButtonBack><ButtonNext>👉</ButtonNext>
 </CarouselProvider>
 
 

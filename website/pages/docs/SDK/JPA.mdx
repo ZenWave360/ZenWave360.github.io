@@ -10,3 +10,15 @@ import { Image, Quote, QuoteAuthor } from "smooth-doc/components";
     The term 'model' has a dual meaning in DDD: it's a representation of a concept in the problem space and a representation of a concept in the solution space.
     <QuoteAuthor>- Eric Evans in Domain Driven Design</QuoteAuthor>
 </Quote>
+
+
+TODO:
+
+| **Annotation**                  | **Entity** | **@Persistence** | **Repository** | **Id** |
+|:--------------------------------|------------|:-----------------|:---------------|:-------|
+| **entity**                      | yes        | yes              |                | yes    |
+| **@aggregate**                  | yes        | yes              | yes            | yes    |
+| **@embedded**                   | yes        | yes              |                |        |
+| **@vo**                         | yes        |                  |                |        |
+| **@searchCriteria(entityName)** |            |                  |                |        |
+| **@skip**                       | no         |                  |                |        |
