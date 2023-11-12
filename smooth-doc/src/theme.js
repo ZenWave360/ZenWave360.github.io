@@ -77,9 +77,10 @@ export const theme = {
     .wide-feature-text li {
       margin: 0.5em auto;
     }
-    .wide-feature-text strong {
+    .wide-feature-text strong,
+    strong.orange {
       color: #F2A41F;
-      font-weight: normal;
+      // font-weight: normal;
     }
     
     .home-screenshots {

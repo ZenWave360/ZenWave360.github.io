@@ -8,8 +8,6 @@ order: 2
 
 ## API-First with AsyncAPI
 
-![ZenWave360 - API-First with AsyncAPI](/resources/ZenWave360-API-First_with_AsyncAPI.png)
-
 With ZenWave's `spring-cloud-streams3` and `jsonschema2pojo` sdk plugins you can generate:
 - Strongly typed **business interfaces**
 - **Payload DTOs** and
@@ -30,3 +28,7 @@ If you are already doing API-First with OpenAPI, with ZenWave360 you can generat
 - Generates In-Memory Test-Doubles for your message producers.
 - Reverse Engineering JDL Models from AsyncAPI schemas
 - Generate [AsyncAPI definitions from JDL Models](https://zenwave360.github.io/zenwave-sdk/plugins/jdl-to-asyncapi/), for both json-schema or avro.
+
+&nbsp;
+
+<iframe width="1050" height="591" src="https://www.youtube.com/embed/gUsoD8RaCuw?si=KLGLktrNQqjxodg2" title="Code Generation For Enterprise Integration Patterns w/ AsyncAPI & ZenWave SDK - Ivan Garcia Sain-Aja" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen></iframe>

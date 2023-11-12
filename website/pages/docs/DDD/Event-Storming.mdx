@@ -8,6 +8,10 @@ import { x } from '@xstyled/styled-components'
 import { Image, Quote, QuoteAuthor } from "smooth-doc/components";
 import eventStorming from './images/DLES-Brandolini.png'
 import eventStormingZdlMapping from './images/EventStorming-ZDL-Mapping.png'
+import eventStormingTimeline from './images/event-storming-timeline.png'
+import eventStormingWithCommandsAndPolicies from './images/event-storming-with-commands-and-policies.png'
+import eventStormingWithAggregates from './images/event-storming-with-aggregates.png'
+import eventStormingBoundedContexts from './images/event-storming-bounded-contexts.png'
 import eventDark from './images/event-storming/event.dark.png'
 import eventLight from './images/event-storming/event.light.png'
 import commandDark from './images/event-storming/command.dark.png'
@@ -72,45 +76,70 @@ Design Level EventStorming is ideal for Designing Event-Driven Systems for a giv
 ![Design Level EventStorming](https://mrpicky.dev/wp-content/uploads/2021/12/DLES-offer-1024x589.jpg)
 (Source: https://mrpicky.dev/design-level-event-storming-with-examples/)
 
-## Events
+## Event Storming Elements
+
+### Events
 
 Events play a central role in Event Storming. They represent significant occurrences in the domain that trigger changes or reactions.
 
 <Image dark={eventDark} light={eventLight} alt="Event Storming - Event" style={{maxWidth: '650px'}}/>
 
-## Commands and Policies
+### Commands and Policies
 
 Commands and Policies are used to represent actions and rules within the domain.
 
 <Image dark={commandDark} light={commandLight} alt="Event Storming - Command" style={{maxWidth: '600px'}} />
 
-### User Initiated Command Produces Event
+#### User Initiated Command Produces Event
 
 Commands can be initiated by users.
 
 <Image dark={userCommandDark} light={userCommandLight} alt="Event Storming - User Initiated Command Produces Event" style={{maxWidth: '700px'}} />
 
-### Policy Initiated Command
+#### Policy Initiated Command
 
 Commands can also be initiated by policies. Rules triggering in the background, spanning for other systems events, temporal triggers, external systems, etc.
 
 <Image dark={policyCommandDark} light={policyCommandLight} alt="Event Storming - Policy Initiated Command" style={{maxWidth: '800px'}} />
 
-## Command invoked on System produces Event
+### Command invoked on System produces Event
 
 Commands do not directly triggers events, but they are invoked on a system, which in turn produces events.
 
 <Image dark={commandSystemEventDark} light={commandSystemEventLight} alt="Event Storming - Command invoked on System produces Event" style={{maxWidth: '800px'}} />
 
-## Command invoked on Aggregate produces Event
+### Command invoked on Aggregate produces Event
 
 DDD systems are comprised of Aggregates, which are clusters of related objects that are treated as a single unit. Commands are invoked on Aggregates, which in turn produces events.
 
 <Image dark={commandAggregateEventDark} light={commandAggregateEventLight} alt="Event Storming - Command invoked on Aggregate produces Event" style={{maxWidth: '850px'}} />
 
-## Read Models in Commands and Events
+### Read Models in Commands and Events
 
 Read Models represents Value Objects associated to Commands and Events.
 
 <Image dark={readModelCommandAggregateEventDark} light={readModelCommandAggregateEventLight} alt="Event Storming - Command invoked on Aggregate produces Event" style={{maxWidth: '850px'}} />
 
+## Event Storming Steps
+
+### Establish the Timeline
+
+First step is discover all relevant events that happened in the domain and sort them in a timeline from left to right.
+
+Find out <strong className="orange">pivotal events</strong>: those events where the flow splits into different paths or joins back together. These pivotal events would be good candidates for Context boundaries.
+
+<Image src={eventStormingTimeline} alt="Event Storming Timeline" />
+
+### Join events with commands and policies
+
+<Image src={eventStormingWithCommandsAndPolicies} alt="Event Storming with Commands and Policies" />
+
+### Identify Aggregates
+
+<Image src={eventStormingWithAggregates} alt="Event Storming with Aggregates" />
+
+### Split into Bounded Contexts
+
+<Image src={eventStormingBoundedContexts} alt="Event Storming with Bounded Contexts" />
+
+### Describe the Bounded Contexts using Bounded Context Canvas and ZDL Model Language

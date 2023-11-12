@@ -16,20 +16,50 @@ import { Image, Quote, QuoteAuthor } from "smooth-doc/components";
 
 ## Understand the mental model of the business experts
 
+This approach emphasizes <strong className="orange">the importance of understanding the business domain</strong> in order to create effective software.
 
-> TODO: work in progress
+In essence, Business Domain Modeling is about creating software that matches the mental model of the problem domain, making it more intuitive and easier to work with. It encourages close collaboration between technical experts (like software developers) and domain experts (like business stakeholders or users).
 
-First step is to understand de mental model in the heads of the business experts because all requirements and assumptions will come from that mental model.
+The first step is to understand the mental model of the business experts because <strong className="orange">all requirements and assumptions will come from this mental model</strong>. Embedding the perspective of domain experts into your model is by far the most important aspect to create good maintainable software.
 
-Embedding the perspective of domain experts into your model is by far the most important aspect to create good maintainable software.
+If we don't get right the mental model of business experts, no amount of <strong className="orange">Clean Code</strong>, <strong className="orange">Clean Architecture</strong>, <strong className="orange">Hexagonal Architecture</strong>, etc... will help in creating good and maintainable software.
 
-If your don't get right the mental model of business experts, no amount of Clean Code, Clean Architecture, Hexagonal Architecture, etc... will help you in creating good and maintainable software.
+<strong className="orange">Event-Storming</strong> is the method we employ to grasp the mental model of business experts. Because it's technological low entry barrier, and because is a <strong className="orange">perfect fit for modeling Event-Driven Architectures</strong>.
 
-## Use the Ubiquitous Language to reflect the mental model of the business experts
 
-As a technical expert you want from this Domain Specific Language is being able to communicate back to domain experts in their own language, and narrate them the story expressed by that model.
+## Use the Ubiquitous Language to reflect the mental model of the Business Experts
 
 <Quote>
     It is not the domain experts’ knowledge that goes to production, it is the assumption of the developers.
     <QuoteAuthor>- Alberto Brandolini</QuoteAuthor>
 </Quote>
+
+As a technical expert you want from this Domain Specific Language is being able to communicate back to domain experts in their own language, and narrate them the story expressed by that model.
+
+The goal of Ubiquitous Language is to create a common language that reduces misunderstandings and improves communication between technical and non-technical team members.
+
+- Shared and Common: The language is shared by all team members, including developers, domain experts, and stakeholders. It's used in all forms of communication, from meetings and emails to code and documentation.
+- Domain-Specific: The language is specific to the business domain. It uses terms and phrases that are familiar to domain experts and accurately represent the concepts in the domain.
+- Model-Based: The language is based on the domain model. It reflects the structures and relationships in the model.
+- Evolutionary: The language evolves over time as the team's understanding of the domain improves and as the domain itself changes.
+- Explicit: The language is explicit, meaning that each term has a specific and clear definition. This reduces ambiguity and misunderstanding.
+- Used in Code: The language is used in the codebase. Class names, method names, variable names, etc., should all be based on the Ubiquitous Language.
+
+## Convert the Ubiquitous Language into different Software Artifacts with ZenWave SDK
+
+<Quote>
+    The best way to validate a conceptual model is to implement it.
+</Quote>
+
+Working software is the best way to evaluate the validity of a conceptual model. It allows for early feedback from all members of the development team, including developers, testers, and others, which can be crucial for the iterative refinement of the model.
+
+ZenWave SDK is a set of tools that allows you to convert the Ubiquitous Language into different software artifacts, like:
+
+- API Definitions: AsyncAPI v2/v3, OpenAPI...
+- Drawings and Documentation: PlantUML, Mermaid, Markdown...
+- Multiple Backend Implementations for Spring-Boot, Spring-Cloud, JPA, MongoDB...
+- API-First Code for AsyncAPI and OpenAPI
+- API-Testing...
+
+It automatically propagates the Ubiquitous Language across code and provides the building blocks to put together a working implementation of your domain in no time.
+
