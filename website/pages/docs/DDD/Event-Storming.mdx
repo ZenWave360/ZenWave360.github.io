@@ -26,6 +26,7 @@ import commandAggregateEventDark from './images/event-storming/command-aggregate
 import commandAggregateEventLight from './images/event-storming/command-aggregate-event.light.png'
 import readModelCommandAggregateEventDark from './images/event-storming/read-model-command-aggregate-event.dark.png'
 import readModelCommandAggregateEventLight from './images/event-storming/read-model-command-aggregate-event.light.png'
+import boundedContextMapping from '../../../images/home/bounded-context-mapping.svg'
 
 # Event Storming
 
@@ -126,20 +127,34 @@ Read Models represents Value Objects associated to Commands and Events.
 
 First step is discover all relevant events that happened in the domain and sort them in a timeline from left to right.
 
-Find out <strong className="orange">pivotal events</strong>: those events where the flow splits into different paths or joins back together. These pivotal events would be good candidates for Context boundaries.
+Find <strong className="orange">pivotal events</strong>: those events where the flow splits into different paths or joins back together. These pivotal events would be <strong className="orange">good candidates for Context boundaries</strong>.
 
 <Image src={eventStormingTimeline} alt="Event Storming Timeline" />
 
 ### Join events with commands and policies
 
+Next join events (facts) with commands and policies (actions and rules).
+
 <Image src={eventStormingWithCommandsAndPolicies} alt="Event Storming with Commands and Policies" />
 
 ### Identify Aggregates
+
+Identify Aggregates and Entities within the domain. Alternatively you can just identify Systems and leave Aggreate discovery for a posterior technical design phase.
 
 <Image src={eventStormingWithAggregates} alt="Event Storming with Aggregates" />
 
 ### Split into Bounded Contexts
 
+A Bounded Context is a self-contained entity with its own domain model and its own Ubiquitous Language that is not affected by the outside world.
+
+They help in organizing the domain into manageable parts and in defining the interactions between different parts of the system.
+
 <Image src={eventStormingBoundedContexts} alt="Event Storming with Bounded Contexts" />
 
 ### Describe the Bounded Contexts using Bounded Context Canvas and ZDL Model Language
+
+Use a Bounded Context Canvas to describe the inputs, outputs, aggregates and policies of  Bounded Context.
+
+You can describe the Bounded Context directly using the developer friendly and machine friendly ZDL Model Language.
+
+<Image src={boundedContextMapping} alt="Bounded Context Mapping with ZDL" width="100%"/>

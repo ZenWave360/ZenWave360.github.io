@@ -342,7 +342,7 @@ Service commands resemble but should not be confused wit java methods. They supp
 - **id**: the presence of this parameter specifies that this command operates on an aggregate entity instance with the given id.
 - **CommandInput**: it can point to an `entity` or `input` type, and it's used to pass data to the command.
 
-`CommandOutput` can be any valid `entity` or `output` type, of be unspecified. If CommandOutput is an entity, it expresses that entity will be created or updated with the command input data. CommandOutput can be marked as `optional` with a `?` to express that the command may not return any output.
+`CommandOutput` can be any valid `entity` or `output` type, or be unspecified. If CommandOutput is an entity, it expresses that entity will be created or updated with the command input data. CommandOutput can be marked as `optional` with a `?` to express that the command may not return any output.
 
 `withEvents` is used to specify the domain events that will be published after the command is executed.
 
