@@ -17,14 +17,11 @@ ZDL is a domain specific language (DSL) for modeling Event-Driven microservices.
     <QuoteAuthor>- Alberto Brandolini in Event Storming</QuoteAuthor>
 </Quote>
 
-Inspired by JHipster JDL, and largely compatible with its entities and relationships format.
+Inspired by JHipster JDL, ZDL is a language for describing DDD Bounded Contexts, including domain entities and their relationships, services, commands, events and business policies... for Event-Driven Architectures.
 
-ZDL is a language for describing domain entities and their relationships, as well as services, commands, events and business policies. Reference external API definitions, and configure SDK plugins.
+It's designed to be compact, readable and expressive. Business friendly, developer friendly, and machine friendly.
 
-It's designed to be compact, while still being readable and expressive. It's also designed to be business friendly, developer friendly, and machine friendly.
-
-
-It works as an Ubiquitous Language
+ZDL works well as an Ubiquitous Language format.
 
 
 <Image alt="Event-Storming to ZDL Mapping" src={eventStormingZdlMapping} />
@@ -33,8 +30,12 @@ It works as an Ubiquitous Language
 
 ZDL files are structured as follows:
 
-- A prolog section with `global javadoc`, `config` and `apis` sections that are used by ZenWave IntelliJ Editor and ZenWave SDK plugins for code generation.
-- A DDD and EDA sections with `entities`, `enums`, `services`, `inputs`, `outputs` and `events` declarations.
+- A prolog section.
+- A DDD and EDA sections.
+
+Prolog section contains `global javadoc`, `config` and `apis` sections that are used by ZenWave IntelliJ Editor and ZenWave SDK plugins for code generation.
+
+DDD and EDA sections contain `entities`, `enums`, `services`, `inputs`, `outputs` and `events` declarations.
 
 `global javadoc`, `config`, `apis` are optional but should be at the top of the file, before any other declaration. After that `entities`, `enums`, `services`, `inputs`, `outputs` and `events` can be declared in any order and any number.
 
@@ -46,7 +47,7 @@ ZDL files are structured as follows:
 [<entity> | <enum> | <polcies> | <service> | <input> | <output> | <event>]*
 ```
 
-The following is an example of a ZDL definition file describing an application with an aggregate exposing some core functionality, connected through a REST API adapter and publishing some domain events.
+The following is a <strong class="orange">Complete ZDL Example</strong> describing an application with an aggregate exposing some core functionality, connected through a REST API adapter and publishing some domain events.
 
 ```zdl
 /**

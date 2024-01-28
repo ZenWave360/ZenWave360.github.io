@@ -6,19 +6,146 @@ order: 2
 ---
 import { Image, Quote, QuoteAuthor } from "smooth-doc/components";
 
-<Quote>
-    The term 'model' has a dual meaning in DDD: it's a representation of a concept in the problem space and a representation of a concept in the solution space.
-    <QuoteAuthor>- Eric Evans in Domain Driven Design</QuoteAuthor>
-</Quote>
+# Backend Application with JPA
+Modeling your JPA entities following DDD Aggregates principles.
+
+ZenWave favors modeling JPA relationships following DDD Aggregate principles where Aggregates are:
+
+1. **Treated as a Single Unit**.
+
+2. **Root Entity**: Each aggregate has a root entity, also known as the aggregate root. All external references to the aggregate should only point to the aggregate root. This ensures the integrity of the aggregate.
+
+3. **Consistency Boundaries**: The aggregate defines the transactional units of consistency boundaries.
+
+4. **Reference by Identity**: Aggregates should be referenced by their identifiers (IDs) rather than direct object references. This promotes loose coupling between aggregates and enhances the system's scalability and maintainability.
+
+5. **Invariants**: The aggregate root is responsible for maintaining all invariants within the aggregate. An invariant is a business rule that must always be consistent.
+
+6. **Persistence**: Persistence of an aggregate should be done as a whole. It's the responsibility of the aggregate root to handle this.
+
+7. **Size**: Ideally, an aggregate should be as small as possible, based on the business rules. A smaller aggregate is easier to maintain and understand.
 
 
-TODO:
+So in this DDD context, preferred relationships are: `OneToMany` and `OneToOne` but you can still use `ManyToOne` and `ManyToMany` if you need to.
 
-| **Annotation**                  | **Entity** | **@Persistence** | **Repository** | **Id** |
-|:--------------------------------|------------|:-----------------|:---------------|:-------|
-| **entity**                      | yes        | yes              |                | yes    |
-| **@aggregate**                  | yes        | yes              | yes            | yes    |
-| **@embedded**                   | yes        | yes              |                |        |
-| **@vo**                         | yes        |                  |                |        |
-| **@searchCriteria(entityName)** |            |                  |                |        |
-| **@skip**                       | no         |                  |                |        |
+ZenWave also supports describing relationships between aggregates using `ManyToXXX` yet mapping those relationships by ID and providing a read-only and lazy-loading reference to the entity. Improving expresiviness and still following DDD principles. Checkout [Relationships Between Aggregates](#relationships-between-aggregates) section for more details.
+
+## Mapping Relationships
+
+
+### OneToMany
+
+Let’s start with two entities, a Owner and a Car. A owner can have many cars, and a car can have only one owner. This is a classic OneToMany relationship.
+
+You can map it bidirectionally with the following code:
+
+```zdl
+@aggregate
+entity Owner { }
+
+entity Car { }
+
+relationship OneToMany {
+  Owner{cars} to Car{owner}
+}
+```
+
+Or unidirectional with the following code:
+
+```zdl
+relationship OneToMany {
+  Owner{cars} to Car
+}
+```
+
+### ManyToOne
+
+### ManyToMany
+
+### OneToOne
+
+#### Using JPA Derived Identifiers(@MapsId) for one-to-one relationship
+
+TODO
+
+
+## Relationships Between Aggregates
+
+In Domain-Driven Design (DDD), because an aggregate is a cluster of domain objects that should be treated as a single unit. Relationships between aggregates are be mapped by their IDs rather than direct object references.
+
+```zdl
+@aggregate
+entity Customer {
+}
+
+@aggregate
+entity Address {
+  customerId Long
+}
+```
+
+This helps to maintain consistency and integrity of the data within the aggregate but is way less expressive because in terms of modelling.
+
+ZenWave SDK allows you to define `@ManyToNNN` relationships between aggregates, which are then mapped by their IDs this an extra a read-only and lazy-loading reference to the entity.
+
+
+```zdl
+@aggregate
+entity Customer { }
+
+@aggregate
+entity Address { }
+
+relationship ManyToOne {
+    // ManyTo___ relationships between @aggregates are mapped by id, with a read-only reference to the entity
+    Address{customer} to Customer
+}
+```
+
+The above ZDL model will generate the following JPA mapping:
+
+```java
+@Table(name = "address")
+public class Address implements Serializable {
+
+    // ...
+
+    @Column(name = "customer_id") // Mapped by id
+    private Long customerId;
+
+    @ManyToOne(fetch = FetchType.LAZY) // Read-only reference to the entity
+    @JoinColumn(name = "customer_id", updatable = false, insertable = false)
+    private Customer customer;
+}
+```
+
+And an `IntegrationTest` to validate your Aggregates relationships are working as expected:
+
+```java
+public class AddressRepositoryIntegrationTest extends BaseRepositoryIntegrationTest {
+
+	@Test
+	public void saveTest() {
+		Address address = new Address();
+		address.setStreet("");
+		address.setCity("");
+		address.setState("");
+		address.setZip("");
+		address.setType(AddressType.values()[0]);
+
+		// ManyToOne customer. owner: true
+		var customerId = 1L;
+		address.setCustomerId(customerId); // using id to write relationship
+
+		// Persist aggregate root
+		var created = addressRepository.save(address);
+
+		entityManager.refresh(created); // reloading to get relationships persisted by id
+		Assertions.assertTrue(created.getId() != null);
+		Assertions.assertTrue(created.getVersion() != null);
+
+        // loading and validating relationship
+		Assertions.assertTrue(address.getCustomer().getId() == customerId);
+	}
+}
+```

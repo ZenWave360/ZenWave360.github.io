@@ -17,7 +17,7 @@ Converting your ZDL models into a Spring Boot/Spring Cloud backend application w
     <QuoteAuthor>- Eric Evans in Domain Driven Design</QuoteAuthor>
 </Quote>
 
-With ZenWave SDK you can quickly convert your ZDL models, the results of your analysis and design, into a Spring Boot/Spring Cloud backend application.
+With ZenWave SDK you can quickly convert your ZDL models, the results of your analysis and design, into a working Spring Boot/Spring Cloud backend application.
 
 In this section we will guide you into the process of modeling your application into ZDL models and using ZenWave SDK plugins to generate the building blocks you can assemble to create your backend application.
 
@@ -57,24 +57,26 @@ This structure can be **parameterized** to some extent using configuration param
 
 ## Start Modeling with ZDL
 
-Depending on your particular use case you have different ways to start modeling with ZDL:
+Depending on your particular use case you have different approaches to start modeling with ZDL:
 
-- **Entities and Aggregates:** Traditional you would start your application modeling your data.
+- **Entities and Aggregates:** Traditionally you would start your application modeling your data.
 - **Services and Commands:** You can also start modeling the external behaviour of your application, describing which endpoints it exposes and which commands it listens to.
 - **Events:** If you came from a big-picture exploratory Event-Storming you can start describing the events and the commands that trigger them.
 
+We will start with the first approach: describing the data model, then the behaviour and last the domain events emitted to outside world, but you can use any of the other two options to start modeling your application.
+
 ## Entities and Aggregates
 
-Start describing your data model with the `entity` keyword.
+So we start describing our data model with the `entity` keyword.
 
-You can describe `fields` with `fieldName` `fieldType`, `validations` and `javadoc comments`.
+Adding some `fields` with `fieldName`, `fieldType`, `validations` and `javadoc comments`.
 
-These javadoc comments can either precede the field definition on a separate line or be appended to the end of the line where the field is defined, which is a departure from the typical Java convention.
+These javadoc comments can either precede the field definition on a separate line, typical Java convention, or be appended to the end of the line where the field is defined, which is a departure from the typical Java convention but is very handy for small comments.
 
 
 For field types, you can use any valid type in `java.lang`, `java.math.*`, `java.time.*` or `java.util.*`, or reference any other `entity` or `enum`. But only [these field types](/docs/event-driven-design/zenwave-domain-language#fields) were tested.
 
-Fields can also be arrays of the above types or references, but direct references and arrays only work with Mongodb, for JPA you will need to configure a `OneToOne`, `ManyToOne`, `ManyToOne`, `ManyToMany`... relationship, and direct references will work only in places where JPA `@Embeddable` is allowed.
+Field types can also be **arrays** of the above types or references, but direct references and arrays only work with Mongodb, for JPA you will need to configure `OneToOne`, `ManyToOne`, `ManyToOne`, `ManyToMany`... relationships, and direct references will work only in places where JPA `@Embeddable` is allowed.
 
 
 ```zdl
@@ -106,7 +108,7 @@ enum AddressType {  HOME(1) /** home description */,  WORK(1) /** work descripti
 
 ### Special annotations
 
-ZDL Modeling Language allows any custom annotation on entities and fields, it's the job of ZenWave Plugins to interpret them and generate code accordingly.
+ZDL Language allows any annotation name on entities and fields, it's the job of ZenWave Plugins to interpret those annotations and generate code accordingly.
 
 The following annotations are special and will be interpreted by ZenWave SDK Backend Application Plugin in regard to entities and enums. They control aspects of generated code regarding persistence...
 
@@ -126,9 +128,15 @@ The most important ones are `@aggregate`, `@embedded`, `@copy` and `@extends`.
 
 `@aggregate` marks an entity as an aggregate root. Aggregate entities will have Spring Data Repository interfaces generated for them, which will be included as dependencies in you Service Implementations.
 
-`@embedded` entities do not contain id, createdDate, lastModifiedDate... and will not have a Spring Data Repository interface generated for them.
+`@embedded` entities do not contain id and version fields and will not have a Spring Data Repository interface generated for them.
 
-You can reuse entity definitions or create a class hierarchy using `@copy` and `@extends` annotations.
+For `@auditing` entities it will add **createdDate/By**, **lastModifiedDate/By** fields to the entity. Usually you will use this annotation in your aggregate root entities.
+
+With `@vo` it will generate a Java object without id, version and persistence annotations in the same package as persistent entities.
+
+You can use `@skip` for entities you are just using to `@copy`properties.
+
+You can also reuse entity definitions or create a class hierarchy using `@copy` and `@extends` annotations.
 
 ```zdl
 entity BaseEntity {
@@ -146,7 +154,7 @@ entity EntityB {
 }
 ```
 
-While `@extend` will create a class hierarchy, `@copy` will copy all the fields from the referenced entity into the current entity and can be used when you need to reuse fields in entities that belong to different packages (like domain, inputs, outpus and events)
+While `@extend` will create a class hierarchy, `@copy` will copy all the fields from the referenced entity into the current entity and can be used when you need to reuse fields in entities that belong to different packages (like domain, inputs, outputs and events)
 
 ```zdl
 @skip
@@ -164,11 +172,11 @@ input InputA {
 
 Services bundle together the operations that your aggregates expose to the outside world. They are the entry point to the core, innermost layer, or hexagon of your application.
 
-In the context of Domain-Driven Design (DDD), is the combination of entities annotated with `@aggregate` and the associated service commands collectively what form an Aggregate. Encapsulating a cluster of domain objects that can be treated as a single unit, ensuring consistency and enforcing business rules.
+In a Domain-Driven Design (DDD) sense, is the combination of entities annotated with `@aggregate` and the associated service commands collectively what form an Aggregate. Encapsulating a cluster of domain objects that can be treated as a transactional single unit, ensuring consistency and enforcing business rules.
 
-This combination is sometimes referred as [Anemic Domain Model](https://en.wikipedia.org/wiki/Anemic_domain_model). We call it **Separation of Concerns**, clearly separating logic from data and works just fine for most microservice applications.
+This combination is sometimes referred as the [Anemic Domain Model](https://en.wikipedia.org/wiki/Anemic_domain_model). We call it **Separation of Concerns**, clearly separating where data is defined and the business process you apply to it, and it works just fine for most microservice applications.
 
-Services are still the only entry point for your aggregates and it greatly simplifies how domain events are published to external brokers.
+Services are still the only entry point for your aggregates functionality, and this programming model greatly simplifies how to interact with external dependencies such as persistence, APIs and publishing domain events to an external broker.
 
 [Services Section](http://localhost:8000/docs/event-driven-design/zenwave-domain-language#services-and-commands) in ZDL Reference provides more details on the syntax. This section will provide you guidance on how to use them.
 
@@ -185,6 +193,8 @@ service CustomerService for (Customer) {
   getCustomer(id) Customer?
   @paginated
   listCustomers() Customer[]
+  /* this is will generate (almos) empty implementation placeholders for service and tests */
+  updateCustomerAddress(id, Address) Customer? withEvents CustomerEvent
 }
 ```
 
@@ -214,21 +224,20 @@ input CustomerFilter {
 }
 
 service CustomerService for (Customer) {
-  // this will produce the following Java method signature:
-  // Page<Customer> searchCustomers(String firstName, String lastName, String email)
   @paginated
-  searchCustomers(CustomerFilter) Customer[]
+  searchCustomers(CustomerFilter) Customer[]  // this will produce the following Java method signature:
+  // Page<Customer> searchCustomers(String firstName, String lastName, String email)
 }
 
 ```
 
 ## Inputs and Outputs
 
-You can also create specific `input` and `output` types for service commands parameters and return types. But you can directly use any `entity` type.
+You can directly use `entity` types as command parameters, or you can create specific `input` and `output` types for service commands parameters and return types.
 
-There is the option `inputDTOSuffix` in ZenWave SDK Backend Plugin to automatically generate an input class for your entities when is not empty.
+Using ZenWave SDK Backend Plugin option `inputDTOSuffix` to a non-empty string, it will automatically create an input class for your entities, copying all the fields from each entity.
 
-If you use an `entity` as command parameter, and you don't set `inputDTOSuffix` ZenWave SDK will still use a mapstruct mapper to copy parameter fields into persistent entity.
+Also, if you use an `entity` as command parameter, and you don't set `inputDTOSuffix`, ZenWave SDK will still use a mapstruct mapper to copy parameter fields into persistent entity. So you are always in control of how you map your input data into your persistent entities.
 
 ```javascript
 @Transactional
@@ -265,6 +274,64 @@ If you need to create an enum in the input package, you can use the `@input` ann
 @input // this will create an enum in the input package
 enum CustomerStatusInput { ACTIVE, INACTIVE }
 ```
+
+## Exposing your Services to Outside World
+
+Your services represent the core of your application and are not exposed by default to the outside world, through adapters or primary ports.
+
+ZenWave proposed architecture is to use API-First to describe your adapters and primary ports interface.
+
+You can still annotate your Service Commands with `@rest` and `@asyncapi`annotations for two different purposes:
+
+1. Document how each service command will be exposed to the outside world.
+2. Generate draft versions of AsyncAPI and OpenAPI from your ZDL models. Then you can generate code from those API-First specifications using ZenWave AsyncAPI and OpenAPI Plugins.
+
+ZDL Language is very compact and concise for this, but remember that API-First definitions are the source of truth for outside communication.
+
+With [ZDLToAsyncAPIPlugin](https://zenwave360.github.io/zenwave-sdk/plugins/zdl-to-asyncapi/) and [ZDLToOpenAPIPlugin](https://zenwave360.github.io/zenwave-sdk/plugins/zdl-to-openapi/) plugins you can create complete draft versions of AsyncAPI and OpenAPI specifications from your annotated Services and Events.
+
+```zdl
+/**
+ * Customer Service annotated for REST and AsyncAPI serves two purposes:
+ *   1. Document how each service command will be exposed to the outside world.
+ *   2. Generate draft versions of AsyncAPI and OpenAPI from your ZDL models.
+ */
+@rest("/customers")
+service CustomerService for (Customer) {
+    @post
+    createCustomer(Customer) Customer withEvents CustomerEvent
+    @put("/{customerId}")
+    updateCustomer(id, Customer) Customer? withEvents CustomerEvent
+    @put("/{customerId}/address/{identifier}")
+    updateCustomerAddress(id, AddressInput) Customer? withEvents CustomerEvent CustomerAddressUpdated
+    @delete("/{customerId}")
+    deleteCustomer(id) withEvents CustomerEvent
+    @get("/{customerId}")
+    getCustomer(id) Customer?
+    @get({params: {search: "string"}}) @paginated
+    listCustomers() Customer[]
+}
+
+@skip // skip generating this domain enum, it will genereate by asyncapi code generator.
+enum EventType {  CREATED(1),  UPDATED(1),  DELETED(1) }
+
+@asyncapi({channel: "CustomerEventsChannel", topic: "customer.events"})
+event CustomerEvent {
+    customerId String
+    eventType EventType
+    customer Customer
+}
+
+@asyncapi({channel: "CustomerAddressEventsChannel", topic: "customer.address-events"})
+event CustomerAddressUpdated {
+    customerId String
+    addressDescription String
+    originalAddress Address
+    newAddress Address
+}
+```
+
+See [Producing Domain Events](/docs/zenwave-sdk/producing-domain-events), [Consuming Async Commands and Events](/docs/zenwave-sdk/consuming-async-commands) and [Exposing a REST API](/docs/zenwave-sdk/exposing-a-rest-api) for specific details on how to use ZenWave SDK Plugins to generate code for your adapters and primary ports.
 
 ## Events
 
@@ -325,7 +392,9 @@ public Customer createCustomer(Customer input) {
 
 ## Generating Code with CLI or IntelliJ Plugin
 
-As always, you can run ZenWave SDK plugin from the command line using jbang:
+Now you can ZenWave SDK [BackendApplicationDefaultPlugin](https://zenwave360.github.io/zenwave-sdk/plugins/backend-application-default/) plugin to generate your backend application.
+
+From the command line using JBang:
 
 ```bash
 jbang zw -p BackendApplicationDefaultPlugin \

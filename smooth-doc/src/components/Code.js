@@ -29,9 +29,11 @@ Prism.languages.insertBefore('zdl', 'function', {
   'zdl-validation': /\b(?:required|unique|max|min|maxlength|minlength|pattern)\b/,
 });
 
-Prism.languages.insertBefore('zdl', 'comment', {
-  'line-comment': /(^|[^\\:])\/\/.*/
-});
+Prism.languages.java = Prism.languages.extend('javascript', {});
+
+// Prism.languages.insertBefore('zdl', 'comment', {
+//   'line-comment': /(^|[^\\:])\/\/.*/
+// });
 
 const Pre = styled.pre`
   font-size: 15;
