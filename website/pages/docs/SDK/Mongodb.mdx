@@ -4,3 +4,86 @@ title: With Mongodb
 slug: /docs/zenwave-sdk/mongodb
 order: 3
 ---
+
+# Backend Application with MongoDB
+With MongoDB each DDD Aggregate becomes a Collection Document.
+
+With a Documental Database like MongoDB, mapping OneToMany and OneToOne relationships is trivial because they are represented as nested documents.
+
+On the other hand ManyToOne and ManyToMany relationships needs a little more thought, and it greatly depends on the use case how you decide to denormalize the data.
+
+## OneToMany and OneToOne with Direct References
+
+With ZenWave ZDL you map OneToOne and OneToMany relationships as direct references to `@embedded` entities:
+
+```zdl
+@aggregate
+@auditting
+entity Customer {
+  username String required unique /** username javadoc comment */
+  email String required unique /** email javadoc comment */
+  tags String[] /** tags javadoc comment */
+  /**
+   * addresses is a direct reference to an embedded entity
+   */
+  addresses Address[]
+}
+
+@embedded
+entity Address {
+    street String /** street javadoc comment */
+    city String /** city javadoc comment */
+    state String /** state javadoc comment */
+    zip String /** zip javadoc comment */
+    type AddressType /** address type is an enum */
+}
+```
+## OneToMany and OneToOne with Nested Objects
+
+The following example is equivalent to the previous one, but it uses nested objects instead of direct references. This improves readability and expressiveness.
+
+```zdl
+@aggregate
+@auditting
+entity Customer {
+  username String required unique /** username javadoc comment */
+  email String required unique /** email javadoc comment */
+  tags String[] /** tags javadoc comment */
+  /**
+   * addresses is a nested entity
+   */
+  addresses Address[] {
+    street String /** street javadoc comment */
+    city String /** city javadoc comment */
+    state String /** state javadoc comment */
+    zip String /** zip javadoc comment */
+    type AddressType /** address type is an enum */
+  }
+}
+```
+
+## OneToMany and OneToOne with @DBRef and @DocumentedReference
+
+```zdl
+@aggregate
+@auditting
+entity Customer {
+  username String required unique /** username javadoc comment */
+  email String required unique /** email javadoc comment */
+  tags String[] /** tags javadoc comment */
+  /**
+   * addresses is mapped using @DocumentedReference
+   */
+  @ref addresses Address[]
+}
+
+@aggregate
+@auditting
+entity Address {
+    street String /** street javadoc comment */
+    city String /** city javadoc comment */
+    state String /** state javadoc comment */
+    zip String /** zip javadoc comment */
+    type AddressType /** address type is an enum */
+}
+```

@@ -4,3 +4,223 @@ title: Spring WebTestClient
 slug: /docs/zenwave-sdk/api-testing/spring-webtestclient
 order: 1
 ---
+
+# Generating Spring WebTestClient
+Generate Unit and Business Tests right from your OpenAPI definition.
+
+
+Don't treat testing as an afterthought.
+
+Generate SpringMVC or Spring WebFlux Unit or Business Tests skeletons using WebTestClient based on OpenAPI definition.
+
+You can generate both:
+
+- <strong className={"orange"}>Unit/Vertical/Integration Tests</strong> for each OpenAPI Operation, it's up to you how you configure your BaseTest class.
+- <strong className={"orange"}>Business Flow Tests</strong> for a group of OpenAPI Operations that work together as a Business Use Case.
+
+## Unit Tests for each OpenAPI Operation
+
+You can use ZenWave IntelliJ Plugin with ZDL plugins:
+
+```zdl
+config {
+    plugins {
+▶️      SpringWebTestClientPlugin {
+            groupBy service
+            specFile "modules/customers/src/main/resources/apis/openapi.yml"
+            // these should match the values of openapi-generator-maven-plugin
+            openApiApiPackage "{{basePackage}}.adapters.web"
+            openApiModelPackage "{{basePackage}}.adapters.web.model"
+            openApiModelNameSuffix DTO
+            targetFolder "src/test/java"
+        }
+    }
+}
+```
+
+Or JBang CLI:
+
+```shell
+jbang zw -p io.zenwave360.sdk.plugins.SpringWebTestClientPlugin \
+    specFile=src/main/resources/model/openapi.yml \
+    targetFolder=src/test/java \
+    testsPackage=io.zenwave360.example.adapters.web.tests \
+    openApiApiPackage=io.zenwave360.example.adapters.web \
+    openApiModelPackage=io.zenwave360.example.adapters.web.model \
+    openApiModelNameSuffix=DTO \
+    groupBy=service
+```
+This is a sample of the code you get for a single OpenAPI Operation:
+
+```java
+/**
+* Integration tests for the {@link CustomerApi} REST controller.
+*/
+public class CustomerApiIT extends BaseWebTestClientTest {
+
+    /**
+    * Test: Create customer javadoc comment for OK.
+    */
+    @Test
+    public void testCreateCustomer_201() {
+        CustomerDTO requestBody = new CustomerDTO();
+        requestBody.setId(null);
+        requestBody.setVersion(null);
+        requestBody.setFirstName(null);
+        requestBody.setLastName(null);
+        requestBody.setEmail(null);
+        requestBody.setPhone(null);
+        requestBody.setAddresses(new java.util.ArrayList<>());
+        requestBody.getAddresses().get(0).setIdentifier("aaa");
+        requestBody.getAddresses().get(0).setStreet("aaa");
+        requestBody.getAddresses().get(0).setCity("aaa");
+        requestBody.getAddresses().get(0).setState("aaa");
+        requestBody.getAddresses().get(0).setZip("aaa");
+        requestBody.getAddresses().get(0).setType(new AddressTypeDTO());
+
+        webTestClient.method(POST).uri("/api/customers")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(requestBody)
+            .exchange()
+            .expectStatus().isEqualTo(201)
+            .expectHeader().contentType(MediaType.APPLICATION_JSON)
+            .expectBody()
+            .jsonPath("$.id").isNotEmpty()
+            .jsonPath("$.version").isNotEmpty()
+            .jsonPath("$.firstName").isNotEmpty()
+            .jsonPath("$.lastName").isNotEmpty()
+            .jsonPath("$.email").isNotEmpty()
+            .jsonPath("$.phone").isNotEmpty()
+            .jsonPath("$.addresses").isNotEmpty()
+            .jsonPath("$.addresses").isArray()
+            .jsonPath("$.addresses[0].identifier").isNotEmpty()
+            .jsonPath("$.addresses[0].street").isNotEmpty()
+            .jsonPath("$.addresses[0].city").isNotEmpty()
+            .jsonPath("$.addresses[0].state").isNotEmpty()
+            .jsonPath("$.addresses[0].zip").isNotEmpty()
+            .jsonPath("$.addresses[0].type").isNotEmpty();
+    }
+}
+```
+
+## Business Flow Test for some OpenAPI Operations that work together
+
+You can use ZenWave IntelliJ Plugin with ZDL plugins:
+
+```zdl
+config {
+    plugins {
+▶️      SpringWebTestClientPlugin {
+            groupBy businessFlow
+            businessFlowTestName CustomerCRUDTest
+            operationIds createCustomer,getCustomer,updateCustomer,deleteCustomer
+
+            specFile "modules/customers/src/main/resources/apis/openapi.yml"
+            // these should match the values of openapi-generator-maven-plugin
+            openApiApiPackage "{{basePackage}}.adapters.web"
+            openApiModelPackage "{{basePackage}}.adapters.web.model"
+            openApiModelNameSuffix DTO
+            targetFolder "src/test/java"
+        }
+    }
+}
+```
+
+Or JBang CLI:
+
+```shell
+jbang zw -p io.zenwave360.sdk.plugins.SpringWebTestClientPlugin \
+    specFile=src/main/resources/model/openapi.yml \
+    targetFolder=src/test/java \
+    testsPackage=io.zenwave360.example.adapters.web.tests \
+    openApiApiPackage=io.zenwave360.example.adapters.web \
+    openApiModelPackage=io.zenwave360.example.adapters.web.model \
+    openApiModelNameSuffix=DTO \
+    groupBy=businessFlow \
+    businessFlowTestName=CustomerCRUDTest \
+    operationIds=createCustomer,getCustomer,updateCustomer,deleteCustomer
+```
+
+This is the code you will get. Now it's just a matter of filling in the blanks and complete how each operation connects to the next one.
+
+```java
+public class CustomerCRUDTest extends BaseWebTestClientTest {
+
+    /**
+    * Business Flow Test for: createCustomer, updateCustomer, deleteCustomer, getCustomer.
+    */
+    @Test
+    public void testCustomerCRUDTest() {
+        // createCustomer: Create customer javadoc comment
+        CustomerDTO customerRequestBody0 = new CustomerDTO();
+        customerRequestBody0.setId(null);
+        customerRequestBody0.setVersion(null);
+        customerRequestBody0.setFirstName(null);
+        customerRequestBody0.setLastName(null);
+        customerRequestBody0.setEmail(null);
+        customerRequestBody0.setPhone(null);
+        customerRequestBody0.setAddresses(new java.util.ArrayList<>());
+        customerRequestBody0.getAddresses().get(0).setIdentifier("aaa");
+        customerRequestBody0.getAddresses().get(0).setStreet("aaa");
+        customerRequestBody0.getAddresses().get(0).setCity("aaa");
+        customerRequestBody0.getAddresses().get(0).setState("aaa");
+        customerRequestBody0.getAddresses().get(0).setZip("aaa");
+        customerRequestBody0.getAddresses().get(0).setType(new AddressTypeDTO());
+
+        var createCustomerResponse0 = webTestClient.method(POST).uri("/api/customers")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(customerRequestBody0)
+            .exchange()
+            .expectStatus().isEqualTo(201)
+            .expectHeader().contentType(MediaType.APPLICATION_JSON)
+            .returnResult(CustomerDTO.class);
+
+        // updateCustomer: updateCustomer
+        CustomerDTO customerRequestBody1 = new CustomerDTO();
+        customerRequestBody1.setId(null);
+        customerRequestBody1.setVersion(null);
+        customerRequestBody1.setFirstName(null);
+        customerRequestBody1.setLastName(null);
+        customerRequestBody1.setEmail(null);
+        customerRequestBody1.setPhone(null);
+        customerRequestBody1.setAddresses(new java.util.ArrayList<>());
+        customerRequestBody1.getAddresses().get(0).setIdentifier("aaa");
+        customerRequestBody1.getAddresses().get(0).setStreet("aaa");
+        customerRequestBody1.getAddresses().get(0).setCity("aaa");
+        customerRequestBody1.getAddresses().get(0).setState("aaa");
+        customerRequestBody1.getAddresses().get(0).setZip("aaa");
+        customerRequestBody1.getAddresses().get(0).setType(new AddressTypeDTO());
+        var customerId1 = "";
+
+        var updateCustomerResponse1 = webTestClient.method(PUT).uri("/api/customers/{customerId}", customerId1)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(customerRequestBody1)
+            .exchange()
+            .expectStatus().isEqualTo(200)
+            .expectHeader().contentType(MediaType.APPLICATION_JSON)
+            .returnResult(CustomerDTO.class);
+
+        // deleteCustomer: deleteCustomer
+        var customerId2 = "";
+
+        webTestClient.method(DELETE).uri("/api/customers/{customerId}", customerId2)
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+            .expectStatus().isEqualTo(204);
+
+        // getCustomer: getCustomer
+        var customerId3 = "";
+
+        var getCustomerResponse3 = webTestClient.method(GET).uri("/api/customers/{customerId}", customerId3)
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+            .expectStatus().isEqualTo(200)
+            .expectHeader().contentType(MediaType.APPLICATION_JSON)
+            .returnResult(CustomerDTO.class);
+
+    }
+}
+```

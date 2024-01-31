@@ -26,16 +26,16 @@ ZenWave favors modeling JPA relationships following DDD Aggregate principles whe
 7. **Size**: Ideally, an aggregate should be as small as possible, based on the business rules. A smaller aggregate is easier to maintain and understand.
 
 
-So in this DDD context, preferred relationships are: `OneToMany` and `OneToOne` but you can still use `ManyToOne` and `ManyToMany` if you need to.
+So in this DDD context, preferred relationships are: `OneToMany` and `OneToOne` from the aggregate root to each dependent, but you can still use `ManyToOne` and `ManyToMany` to suit your specific needs.
 
-ZenWave also supports describing relationships between aggregates using `ManyToXXX` yet mapping those relationships by ID and providing a read-only and lazy-loading reference to the entity. Improving expresiviness and still following DDD principles. Checkout [Relationships Between Aggregates](#relationships-between-aggregates) section for more details.
+ZenWave also supports describing relationships between aggregates using `ManyToXXX` where an aggregate root references another aggregate root, yet those relationships will be mapped by *by-id* and providing a read-only and lazy-loading reference to the entity. This improves expressiveness and still following DDD principles. Checkout [Relationships Between Aggregates](#relationships-between-aggregates) section for more details.
 
 ## Mapping Relationships
 
 
 ### OneToMany
 
-Let’s start with two entities, a Owner and a Car. A owner can have many cars, and a car can have only one owner. This is a classic OneToMany relationship.
+Let’s start with a classic OneToMany relationship: an Owner and a Car. An owner can have many cars, and a car can have only one owner.
 
 You can map it bidirectionally with the following code:
 
@@ -50,7 +50,7 @@ relationship OneToMany {
 }
 ```
 
-Or unidirectional with the following code:
+Or unidirectional as:
 
 ```zdl
 relationship OneToMany {
@@ -58,16 +58,149 @@ relationship OneToMany {
 }
 ```
 
+### OneToOne
+
+```zdl
+@aggregate
+entity Customer { }
+
+entity Address { }
+
+relationship OneToOne {
+    Customer{address} to Address{customer}
+}
+```
+
+Will result in the following JPA mapping:
+
+```java
+@Entity
+@Table(name = "customer")
+public class Customer implements Serializable {
+    //...
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(unique = true)
+	private Address address;
+}
+
+@Entity
+@Table(name = "address")
+public class Address implements Serializable {
+    //...
+	@OneToOne(mappedBy = "address")
+	private Customer customer;
+}
+```
+
+### OneToOne between Aggregates
+
+If your use a `OneToOne` relationship between aggregates, ZenWave will map it by id, with a read-only reference to the entity.
+
+```zdl
+@aggregate
+entity Customer { }
+@aggregate
+entity Address { }
+
+relationship OneToOne {
+    Customer{address} to Address{customer}
+}
+```
+
+Will result in the following JPA mapping:
+
+```java
+@Entity
+@Table(name = "customer")
+public class Customer implements Serializable {
+    //...
+	@Column(name = "address_id")
+	private Long addressId;
+
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(unique = true)
+	private Address address;
+}
+
+@Entity
+@Table(name = "address")
+public class Address implements Serializable {
+    //...
+	@OneToOne(mappedBy = "address", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Customer customer;
+}
+```
+
+See [Relationships Between Aggregates](#relationships-between-aggregates) section for more details.
+
+### @MapsId with OneToOne
+
+You can use JPA Derived Identifiers(@MapsId) for one-to-one relationship
+
+```zdl
+@aggregate
+entity Customer { }
+
+entity Address { }
+
+relationship OneToOne {
+    Customer{address} to @Id Address{customer}
+}
+```
+
+Will result in the following JPA mapping:
+
+```java
+// TODO: coming soon
+```
+
+
 ### ManyToOne
+
+If your use an unidirectional `ManyToOne` relationship from an aggregate to another aggregate root, ZenWave will map it by id, with a read-only reference to the entity.
+
+```zdl
+@aggregate
+entity Customer { }
+@aggregate
+entity Address { }
+
+relationship ManyToOne {
+    Address{customer} to Customer
+}
+```
+
+Will result in the following JPA mapping:
+
+```java
+@Entity
+@Table(name = "address")
+public class Address implements Serializable {
+    //...
+	@Column(name = "customer_id")
+	private Long customerId;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "customer_id", updatable = false, insertable = false)
+	private Customer customer;
+
+}
+```
+
+See [Relationships Between Aggregates](#relationships-between-aggregates) section for more details.
 
 ### ManyToMany
 
-### OneToOne
+ManyToMany relationships are not very common in DDD, but you can still use ZenWave ZDL to model them and get your JPA entities generated.
 
-#### Using JPA Derived Identifiers(@MapsId) for one-to-one relationship
+```zdl
+entity Driver {}
+entity Car {}
 
-TODO
-
+relationship ManyToMany {
+  Car{driver} to Driver{car}
+}
+```
 
 ## Relationships Between Aggregates
 
@@ -97,7 +230,7 @@ entity Customer { }
 entity Address { }
 
 relationship ManyToOne {
-    // ManyTo___ relationships between @aggregates are mapped by id, with a read-only reference to the entity
+    // ManyToNNN relationships between @aggregates are mapped by id, with a read-only reference to the entity
     Address{customer} to Customer
 }
 ```

@@ -4,3 +4,441 @@ title: Exposing a REST API
 slug: /docs/zenwave-sdk/exposing-a-rest-api
 order: 6
 ---
+import { Image, Quote, QuoteAuthor } from "smooth-doc/components";
+import openapiCustomerServiceOutline from './images/openapi-customer-service-outline.png'
+
+# Exposing a REST API for your Service
+
+While ZDL Models the inside of your application, OpenAPI (whether generated, or manually written) will be the source of truth for your REST API.
+
+You can still document your ZDL Models for:
+
+- Annotate each service command documenting how it is connected to the REST API.
+- Generate a quite complete draft versions of OpenAPI from these ZDL models annotations.
+
+## Using ZenWave ZDL as Definition Language for OpenAPI
+
+Annotating each service command to document how is connected to the REST API.
+
+ZenWave SDK will use the service command name for matching with OpenAPI operationId, but you can always set it explicitly like this: `@get({path: "/somepath", operationId: "someOperationId"})`
+
+Supported annotations are:
+
+- `@rest("/customers")` marks this service as exposed via REST API and defines the base path for all operations in this service.
+- `@get`, `@post`, `@put`, `@delete`, `@patch` defines the HTTP method for the operation.
+- `@paginated` defines that the operation will return a paginated response.
+
+So the following definition:
+
+```zdl
+/**
+ * Customer Service annotated for REST and AsyncAPI serves two purposes:
+ *   1. Document how each service command will be exposed to the outside world.
+ *   2. Generate draft versions of AsyncAPI and OpenAPI from your ZDL models.
+ */
+@rest("/customers")
+service CustomerService for (Customer) {
+    @post
+    createCustomer(Customer) Customer
+    @put("/{customerId}")
+    updateCustomer(id, Customer) Customer?
+    @put("/{customerId}/address/{identifier}")
+    updateCustomerAddress(id, AddressInput) Customer?
+    @delete("/{customerId}")
+    deleteCustomer(id)
+    @get("/{customerId}")
+    getCustomer(id) Customer?
+    @paginated
+    @get({path: "/search", params: {search: "string"}})
+    listCustomers() Customer[]
+}
+
+@inline
+input AddressInput {
+    identifier String
+    address Address
+}
+```
+
+Will produce the following OpenAPI definition:
+
+<Image src={openapiCustomerServiceOutline} alt="OpenAPI Customer Service Outline" align={"left"}/>
+
+> ⚠️ REMEMBER: Once generated, OpenAPI definition becomes the source of truth for your REST API.
+
+### Pagination Flavor(s)
+
+ZDLToOpenAPI supports the following pagination style out of the box:
+
+```zdl
+@rest("/customers")
+service CustomerService for (Customer) {
+    @paginated
+    @get("/search")
+    listCustomers() Customer[]
+}
+```
+becomes ...
+
+```yaml
+paths:
+  /customers/search:
+    get:
+      operationId: listCustomers
+      description: "listCustomers"
+      tags: [Customer]
+      parameters:
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/sort"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerPaginated"
+components:
+  schemas:
+    CustomerPaginated:
+      allOf:
+      - $ref: "#/components/schemas/Page"
+      - x-business-entity-paginated: "Customer"
+      - properties:
+          content:
+            type: "array"
+            items:
+              $ref: "#/components/schemas/Customer"
+
+    Page:
+      type: object
+      required:
+        - "content"
+        - "totalElements"
+        - "totalPages"
+        - "size"
+        - "number"
+      properties:
+        number:
+          type: integer
+          minimum: 0
+        numberOfElements:
+          type: integer
+          minimum: 0
+        size:
+          type: integer
+          minimum: 0
+          maximum: 200
+          multipleOf: 25
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
+
+  parameters:
+    page:
+      name: page
+      in: query
+      description: The number of results page
+      schema:
+        type: integer
+        format: int32
+        default: 0
+    limit:
+      name: limit
+      in: query
+      description: The number of results in a single page
+      schema:
+        type: integer
+        format: int32
+        default: 20
+    sort:
+      name: sort
+      in: query
+      description: The number of results page
+      schema:
+        type: array
+        items:
+          type: string
+```
+
+> Currently, you will need to create a custom implementation of ZDLToOpenAPI to support your own pagination style.
+
+We are working on providing different pagination flavors out of the box and providing a way to customize the pagination style without the need to create your own plugin.
+
+## Generating SpringMVC Controller Interfaces with official OpenAPI Generator
+
+Use the following configuration to generate SpringMVC Controller Interfaces from OpenAPI with the official [OpenAPI Generator - Spring](https://openapi-generator.tech/docs/generators/spring/):
+
+```xml
+<plugin>
+    <groupId>org.openapitools</groupId>
+    <artifactId>openapi-generator-maven-plugin</artifactId>
+    <version>6.6.0</version>
+    <executions>
+        <execution>
+            <id>openapi-generator-server</id>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+                <inputSpec>${project.basedir}/src/main/resources/apis/openapi.yml</inputSpec>
+                <generatorName>spring</generatorName>
+                <apiPackage>${basePackage}.adapters.web</apiPackage>
+                <modelPackage>${basePackage}.adapters.web.model</modelPackage>
+                <modelNameSuffix>DTO</modelNameSuffix>
+                <addCompileSourceRoot>true</addCompileSourceRoot>
+                <supportingFilesToGenerate>
+                    ApiUtil.java
+                </supportingFilesToGenerate>
+                <typeMappings>
+                    <typeMapping>Double=java.math.BigDecimal</typeMapping>
+                </typeMappings>
+                <configOptions>
+                    <useSpringBoot3>true</useSpringBoot3>
+                    <documentationProvider>none</documentationProvider>
+                    <openApiNullable>false</openApiNullable>
+                    <useOptional>true</useOptional>
+                    <useTags>true</useTags>
+                    <interfaceOnly>true</interfaceOnly>
+                    <delegatePattern>false</delegatePattern>
+                </configOptions>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+```
+
+These settings are compatible with [OpenAPI: REST Controllers Generator](https://zenwave360.github.io/zenwave-sdk/plugins/openapi-controllers/):
+
+- `<typeMapping>Double=java.math.BigDecimal</typeMapping>`
+- `<useSpringBoot3>true</useSpringBoot3>` (use SpringBoot 3 and jakarta annotations)
+- `<openApiNullable>false</openApiNullable>` (we use java.util.Optional instead)
+- `<useOptional>true</useOptional>` (we use java.util.Optional)
+- `<useTags>true</useTags>` (required for grouping the operations in services by tag)
+- `<interfaceOnly>true</interfaceOnly>`
+- `<delegatePattern>false</delegatePattern>`
+
+## Generating SpringMVC Controller from OpenAPI (skeletons)
+
+You can use ZenWave SDK [OpenAPI: REST Controllers Generator](https://zenwave360.github.io/zenwave-sdk/plugins/openapi-controllers/) to generate SpringMVC Controllers (skeletons) from OpenAPI.
+
+You can both use IntelliJ Plugin:
+
+```zdl
+/**
+ * ZenWave Online Food Delivery - Customers Module.
+ */
+config {
+    title "ZenWave Online Food Delivery - Customers Module"
+    basePackage "io.zenwave360.example.customers"
+    targetFolder "modules/customers"
+    persistence mongodb
+
+    // these can be executed directly from ZenWave IntelliJ Plugin
+    plugins {
+
+        ZDLToOpenAPIPlugin {
+            idType string
+            targetFile "{{targetFolder}}/src/main/resources/apis/openapi.yml"
+        }
+
+        OpenAPIControllersPlugin {
+            specFile "modules/customers/src/main/resources/apis/openapi.yml" // relative to project root
+            zdlFile "models/customers.zdl" // this file: relative project root
+
+            // these should match the values of openapi-generator-maven-plugin
+            openApiApiPackage "{{basePackage}}.adapters.web"
+            openApiModelPackage "{{basePackage}}.adapters.web.model"
+            openApiModelNameSuffix DTO
+        }
+    }
+}
+```
+
+Or JBang CLI:
+
+```bash
+jbang zw -p io.zenwave360.sdk.plugins.OpenAPIControllersPlugin
+    specFile=src/main/resources/model/openapi.yml \
+    zdlFile=src/main/resources/model/orders-model.jdl \
+    basePackage=io.zenwave360.example \
+    controllersPackage={{basePackage}}.adapters.web \
+    openApiApiPackage=io.zenwave360.example.adapters.web \
+    openApiModelPackage=io.zenwave360.example.adapters.web.model \
+    openApiModelNameSuffix=DTO \
+    targetFolder=.
+```
+
+Generated Code:
+
+```
+ src/main/java/
+   📦 <basePackage>
+       📦 adapters
+           └─ web (controllersPackage)
+              ├─ 📦 mappers
+              |   └─ CustomerDTOsMapper.java (MapStruct mapper)
+              └─ CustomerApiController (SpringMVC: implements CustomerApi)
+ src/test/java/
+   📦 <basePackage>
+       📦 adapters
+           └─ web (controllersPackage)
+              └─ CustomerApiControllerTest (UnitTest using ServicesInMemoryConfig)
+```
+
+Given you configured rest annotations in your ZDL model, or customize it like `@get({path: "/somepath", operationId: "someOperationId"})`, this is the implementation you will get out of the box:
+
+```java
+@RestController
+@RequestMapping("/api")
+public class CustomerApiController implements CustomerApi {
+
+	private final Logger log = LoggerFactory.getLogger(getClass());
+
+	@Autowired
+	private NativeWebRequest request;
+
+	private CustomerService customerService;
+
+	@Autowired
+	public CustomerApiController setCustomerService(CustomerService customerService) {
+		this.customerService = customerService;
+		return this;
+	}
+
+	private CustomerDTOsMapper mapper = CustomerDTOsMapper.INSTANCE;
+
+	@Override
+	public Optional<NativeWebRequest> getRequest() {
+		return Optional.ofNullable(request);
+	}
+
+	@Override
+	public ResponseEntity<CustomerDTO> createCustomer(CustomerDTO reqBody) {
+		var input = mapper.asCustomer(reqBody);
+		var customer = customerService.createCustomer(input);
+		CustomerDTO responseDTO = mapper.asCustomerDTO(customer);
+		return ResponseEntity.status(201).body(responseDTO);
+	}
+
+	@Override
+	public ResponseEntity<CustomerPaginatedDTO> listCustomers(Optional<Integer> page, Optional<Integer> limit,
+			Optional<List<String>> sort) {
+		var customerPage = customerService.listCustomers(pageOf(page, limit, sort));
+		var responseDTO = mapper.asCustomerPaginatedDTO(customerPage);
+		return ResponseEntity.status(200).body(responseDTO);
+	}
+
+	@Override
+	public ResponseEntity<CustomerDTO> updateCustomer(String customerId, CustomerDTO reqBody) {
+		var input = mapper.asCustomer(reqBody);
+		var customer = customerService.updateCustomer(customerId, input);
+		if (customer.isPresent()) {
+			CustomerDTO responseDTO = mapper.asCustomerDTO(customer.get());
+			return ResponseEntity.status(200).body(responseDTO);
+		}
+		else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	@Override
+	public ResponseEntity<Void> deleteCustomer(String customerId) {
+		// TODO: customerService.deleteCustomer(customerId);
+		return ResponseEntity.status(204).build();
+	}
+
+	@Override
+	public ResponseEntity<CustomerDTO> getCustomer(String customerId) {
+		var customer = customerService.getCustomer(customerId);
+		if (customer.isPresent()) {
+			CustomerDTO responseDTO = mapper.asCustomerDTO(customer.get());
+			return ResponseEntity.status(200).body(responseDTO);
+		}
+		else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	@Override
+	public ResponseEntity<CustomerDTO> updateCustomerAddress(String customerId, String identifier, AddressDTO reqBody) {
+		var input = mapper.asAddress(reqBody);
+		var customer = customerService.updateCustomerAddress(customerId, identifier, input);
+		if (customer.isPresent()) {
+			CustomerDTO responseDTO = mapper.asCustomerDTO(customer.get());
+			return ResponseEntity.status(200).body(responseDTO);
+		}
+		else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	protected Pageable pageOf(Optional<Integer> page, Optional<Integer> limit, Optional<List<String>> sort) {
+		return PageRequest.of(page.orElse(0), limit.orElse(10));
+	}
+
+}
+```
+
+And this for the Unit Test:
+
+```java
+public class CustomerApiControllerTest {
+
+	private final Logger log = LoggerFactory.getLogger(getClass());
+
+	ServicesInMemoryConfig context = new ServicesInMemoryConfig();
+
+	CustomerApiController controller = new CustomerApiController().setCustomerService(context.customerService());
+
+	@Test
+	public void createCustomerTest() {
+		CustomerDTO reqBody = null;
+		var response = controller.createCustomer(reqBody);
+		Assertions.assertEquals(201, response.getStatusCode().value());
+	}
+
+	@Test
+	public void listCustomersTest() {
+		Optional<Integer> page = null;
+		Optional<Integer> limit = null;
+		Optional<List<String>> sort = null;
+		var response = controller.listCustomers(page, limit, sort);
+		Assertions.assertEquals(200, response.getStatusCode().value());
+	}
+
+	@Test
+	public void updateCustomerTest() {
+		String customerId = null;
+		CustomerDTO reqBody = null;
+		var response = controller.updateCustomer(customerId, reqBody);
+		Assertions.assertEquals(200, response.getStatusCode().value());
+	}
+
+	@Test
+	public void deleteCustomerTest() {
+		String customerId = null;
+		var response = controller.deleteCustomer(customerId);
+		Assertions.assertEquals(204, response.getStatusCode().value());
+	}
+
+	@Test
+	public void getCustomerTest() {
+		String customerId = null;
+		var response = controller.getCustomer(customerId);
+		Assertions.assertEquals(200, response.getStatusCode().value());
+	}
+
+	@Test
+	public void updateCustomerAddressTest() {
+		String customerId = null;
+		String identifier = null;
+		AddressDTO reqBody = null;
+		var response = controller.updateCustomerAddress(customerId, identifier, reqBody);
+		Assertions.assertEquals(200, response.getStatusCode().value());
+	}
+
+}
+```
