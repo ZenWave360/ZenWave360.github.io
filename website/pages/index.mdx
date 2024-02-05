@@ -82,14 +82,14 @@ import pluginRunScreenshot from './plugin-run-screenshot.png'
         <FeatureImage src={dddImageURL} />
         <FeatureTitle>Domain Driven Design</FeatureTitle>
         <FeatureText>
-          Business, Developer and Computer friendly Ubiquitous Language for your Domain and Bounded Contexts.
+          Business, Developer and Computer friendly Ubiquitous Language for your Domain Models and Bounded Contexts.
         </FeatureText>
       </Feature>
       <Feature>
         <FeatureImage src={edaImageURL} />
         <FeatureTitle>Event-Driven Architectures</FeatureTitle>
         <FeatureText>
-          Leveraging Event-Storming to model your Event-Driven Architectures and applying Enterprise Integration Patterns with minimal effort.
+          Designed for Event-Driven Architectures, mapping Event-Storming discoveries into your models.
         </FeatureText>
       </Feature>
       <Feature>
@@ -105,7 +105,7 @@ import pluginRunScreenshot from './plugin-run-screenshot.png'
       <FeatureImage src={tddImageURL} />
         <FeatureTitle>API-Testing</FeatureTitle>
         <FeatureText>
-          Testing as first class citizen. Helps you scaffold complete test suites from your models and APIs.
+          Testing as first class citizen. Helps you create complete test suites from your Models and APIs.
         </FeatureText>
       </Feature>
     </FeatureList>
@@ -115,16 +115,17 @@ import pluginRunScreenshot from './plugin-run-screenshot.png'
   <WideFeatureSection>
     <ScreenContainer>
         <WideFeature>
+            <WideFeatureImage src={dddLogosImage} alt="Domain Driven Design is about Business Understanding" className="only-small" />
             <WideFeatureText className="wide-feature-text">
                 <h3>Maintainable Software</h3>
                 - It is <strong>not a matter of code</strong> but a matter of <strong>understanding the business domain</strong>
                 - Software well designed <strong>should be easy to understand by all</strong>
             </WideFeatureText>
-            <WideFeatureImage src={dddLogosImage} alt="Domain Driven Design is about Business Understanding" />
+            <WideFeatureImage src={dddLogosImage} alt="Domain Driven Design is about Business Understanding" className="only-wide" />
         </WideFeature>
 
         <WideFeature>
-            <WideFeatureImage src={sharedUnderstandingImage} alt="Gap between Domain Experts - Technical Knwoledge" width='300px'  />
+            <WideFeatureImage src={sharedUnderstandingImage} alt="Gap between Domain Experts - Technical Knwoledge" />
             <WideFeatureText className="wide-feature-text">
                 <h3>Common Language (DSL)</h3>
 
@@ -136,6 +137,7 @@ import pluginRunScreenshot from './plugin-run-screenshot.png'
         </WideFeature>
 
         <WideFeature>
+            <WideFeatureImage src={gearsDarkImage} alt="" width='300px' className="only-small" />
             <WideFeatureText className="wide-feature-text">
                 <h3>ZenWave SDK</h3>
 
@@ -144,7 +146,7 @@ import pluginRunScreenshot from './plugin-run-screenshot.png'
                 - SpringBoot/SpringCloud Backend...
                 - API Testing: KarateDSL, Spring WebTestClient...
             </WideFeatureText>
-            <WideFeatureImage src={gearsDarkImage} alt="" width='300px' />
+            <WideFeatureImage src={gearsDarkImage} alt="" width='300px' className="only-wide" />
         </WideFeature>
     </ScreenContainer>
   </WideFeatureSection>

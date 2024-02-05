@@ -47,6 +47,14 @@ export const theme = {
         left: 0;
         transform: translate(-50%, -50%);
       }
+      .only-small {
+        display: none;
+      }
+    }
+    @media (max-width: 768px) {
+      .only-wide {
+        display: none;
+      }
     }
     blockquote.quote:before {
       content: "";

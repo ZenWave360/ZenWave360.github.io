@@ -62,7 +62,7 @@ const src = (props, colorMode) => {
   return colorMode === 'dark'? props.dark || props.src : props.light || props.src;
 }
 export const WideFeatureImage = React.forwardRef((props, ref) => (
-    <WideFeatureImageContainer>
+    <WideFeatureImageContainer className={props.className}>
       <InnerImage ref={ref} src={src(props, useColorMode()[0])} {...props} />
     </WideFeatureImageContainer>
 ))

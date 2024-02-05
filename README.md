@@ -5,6 +5,10 @@ Website for https://zenwave360.github.io/
 # Development
 
 ```bash
+npm install --legacy-peer-deps
+```
+
+```bash
 npm run --workspace website dev
 ```
 
