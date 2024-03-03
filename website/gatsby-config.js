@@ -13,6 +13,7 @@ module.exports = {
         sections: ['ZenWave 360º', 'Domain Modeling', 'ZenWave SDK', 'ZenWave & API-First', 'ZenWave & API Testing', 'Examples'],
         navItems: [
           { title: 'Documentation', url: '/docs/zenwave360' },
+          { title: 'SDK', url: '/zenwave-sdk/' },
           { title: 'Plugin', url: '/plugin/' },
           { title: 'Blog', url: '/blog/' },
         ],

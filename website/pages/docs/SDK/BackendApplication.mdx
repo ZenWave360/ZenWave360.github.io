@@ -59,9 +59,9 @@ This structure can be **parameterized** to some extent using configuration param
 
 Depending on your particular use case you have different approaches to start modeling with ZDL:
 
-- **Entities and Aggregates:** Traditionally you would start your application modeling your data.
-- **Services and Commands:** You can also start modeling the external behaviour of your application, describing which endpoints it exposes and which commands it listens to.
-- **Events:** If you came from a big-picture exploratory Event-Storming you can start describing the events and the commands that trigger them.
+- <strong className="orange">Entities and Aggregates:</strong> Traditionally you would start your application modeling your data.
+- <strong className="orange">Services and Commands:</strong> You can also start modeling the external behaviour of your application, describing which endpoints it exposes and which commands it listens to.
+- <strong className="orange">Events:</strong> If you came from a big-picture exploratory Event-Storming you can start describing the events and the commands that trigger them.
 
 We will start with the first approach: describing the data model, then the behaviour and last the domain events emitted to outside world, but you can use any of the other two options to start modeling your application.
 
@@ -121,8 +121,9 @@ The following annotations are special and will be interpreted by ZenWave SDK Bac
 | **@vo**        | yes        |                |                    |                         |                 |                |
 | **@skip**      | no         |                |                    |                         |                 |                |
 | **@input**     | no         |                |                    |                         |                 |                |
+| **@abstract**  | yes        | no             |                    |                         |                 |                |
 
-The most important ones are `@aggregate`, `@embedded`, `@copy` and `@extends`.
+The most important ones are `@aggregate`, `@embedded`, `@copy`, `@extends` and `@abstract`.
 
 `@aggregate` marks an entity as an aggregate root. Aggregate entities will have Spring Data Repository interfaces generated for them, which will be included as dependencies in you Service Implementations.
 
@@ -134,7 +135,7 @@ With `@vo` it will generate a Java object without id, version and persistence an
 
 You can use `@skip` for entities you are just using to `@copy`properties.
 
-You can also reuse entity definitions or create a class hierarchy using `@copy` and `@extends` annotations.
+You can also reuse entity definitions or create a class hierarchy using `@copy` and `@extends` annotations, and mark some entities as `@abstract`.
 
 ```zdl
 entity BaseEntity {
@@ -166,6 +167,8 @@ input InputA {
 }
 ```
 
+Entity fields annotated with `@transient` will be annotated with the appropriate `@Transient` persistence annotation in the generated code.
+
 ## Services  Commands
 
 Services bundle together the operations that your aggregates expose to the outside world. They are the entry point to the core, innermost layer, or hexagon of your application.
@@ -193,6 +196,9 @@ service CustomerService for (Customer) {
   listCustomers() Customer[]
   /* this is will generate (almos) empty implementation placeholders for service and tests */
   updateCustomerAddress(id, Address) Customer? withEvents CustomerEvent
+  // This will generate two methods: 'longRunningOperation' and 'longRunningOperationSync'
+  @async("executorName")
+  longRunningOperation(id) withEvents CustomerEvent
 }
 ```
 

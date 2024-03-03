@@ -135,7 +135,7 @@ See [Relationships Between Aggregates](#relationships-between-aggregates) sectio
 
 ### @MapsId with OneToOne
 
-You can use JPA Derived Identifiers(@MapsId) for one-to-one relationship
+You can use JPA Derived Identifiers (`@MapsId`) for one-to-one relationship
 
 ```zdl
 @aggregate
@@ -144,14 +144,25 @@ entity Customer { }
 entity Address { }
 
 relationship OneToOne {
-    Customer{address} to @Id Address{customer}
+    Customer{address required} to @Id Address{customer}
 }
 ```
 
 Will result in the following JPA mapping:
 
 ```java
-// TODO: coming soon
+public class Customer implements Serializable {
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@NotNull
+	@MapsId
+	@JoinColumn(name = "id")
+	private Address address;
+}
+
+public class Address implements Serializable {
+	@OneToOne(mappedBy = "address", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private Customer customer;
+}
 ```
 
 

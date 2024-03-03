@@ -36,30 +36,30 @@ ZenWave SDK Helps you Create Software Easy to Understand
 
 <Image alt="ZenWave SDK Modeling Languages" light={modelingLanguagesLight} dark={modelingLanguagesDark} />
 
-ZenWave SDK is a set of tools to convert your [Domain Models](/docs/domain-modeling/business-domain-modeling) into working software and tests.
+ZenWave SDK is a set of tools to convert your <strong className="orange">Domain Models</strong> into working software and tests.
 
-It is designed to be modular, configurable and extensible. It uses the standard java classpath as loading mechanism, so you can extend its functionality adding your own custom plugins.
+It is designed to be modular, configurable and extensible. It uses the standard java classpath as loading mechanism, so you can extend its functionality adding your own custom plugins. Visit [ZenWave SDK](/zenwave-sdk) for all configuration options.
 
-Based on **Domain Driven Design (DDD)** and **API-First** principles for **Event Driven Microservices**.
+Based on <strong className="orange">Domain Driven Design (DDD)</strong> and <strong className="orange">API-First</strong> principles for <strong className="orange">Event Driven Microservices</strong>.
 
 <Image alt="Speed Feedback Loop" dark={speedFeedbackLoopDark} light={speedFeedbackLoopLight} style={{marginTop: '15px'}}/>
 
 ZenWave SDK can generate code from a mix of different models including:
 
-- [ZDL Domain Language](/docs/event-driven-design/zenwave-domain-language) as **Ubiquitous Language**. You can describe the core of your Bounded Context, as well as how it connects to external systems through different adapters and APIs.
+- [ZDL Domain Language](/docs/event-driven-design/zenwave-domain-language) as <strong className="orange">Ubiquitous Language</strong>. You can describe the core of your Bounded Context, as well as how it connects to external systems through different adapters and APIs.
 - [AsyncAPI](https://www.asyncapi.com/docs/getting-started/coming-from-openapi): Industry de-facto standard to describe Event-Driven Architectures for Message-based APIs.
 - [OpenAPI](https://swagger.io/specification/): Industry standard for Request-Response Architectures with REST APIs.
 
-Using ZenWave Domain Language as **Ubiquitous Language** for modeling and describing Bounded Contexts: aggregates, entities with their relationships, services, value objects, commands and events.
+Using ZenWave Domain Language as <strong className="orange">Ubiquitous Language</strong> for modeling and describing Bounded Contexts: aggregates, entities with their relationships, services, value objects, commands and events.
 
 ZenWave Domain Language started as an *extended subset* of [JHipster Domain Language (JDL)](https://www.jhipster.tech/jdl/intro) that let you describe your entities and relationships.
 
-Using ZDL Domain Language as **Ubiquitous Language** for **Data on the Inside** and **API-First** specs like **AsyncAPI** and **OpenAPI** to describe Inter Process Communications (IPC) for **Data on the Outside**.
+Using ZDL Domain Language as **Ubiquitous Language** for <strong className="orange">Data on the Inside</strong> and <strong className="orange">API-First</strong> specs like **AsyncAPI** and **OpenAPI** to describe Inter Process Communications (IPC) for <strong className="orange">Data on the Outside</strong>.
 
 
-- **ZenWave Domain Language (ZDL) as Ubiquitous Language:** To describe your domain core domain model.
-- **API-First specs like AsyncAPI and OpenAPI:** to describe Inter Process Communications (IPC) between bounded contexts/microservices.
-- **ZenWave SDK:** to generate (_a lot of_) infrastructure, functional and testing code from your models and APIs.
+- <strong className="orange">ZenWave Domain Language (ZDL) as Ubiquitous Language:</strong> To describe your domain core domain model.
+- <strong className="orange">API-First specs like AsyncAPI and OpenAPI:</strong> to describe Inter Process Communications (IPC) between bounded contexts/microservices.
+- <strong className="orange">ZenWave SDK:</strong> to generate (_a lot of_) infrastructure, functional and testing code from your models and APIs.
 
 ZenWave SDK is designed to be easily extensible and adaptable to your project or your organization needs and likes.
 
@@ -168,12 +168,12 @@ You can generate complete Event Driven Microservices using DDD and API-First pri
 
 > 👉 Describe your Domain Model ⤳ Generate OpenAPI ⤳ Generate AsyncAPI → Generate API Implementations → Generate Backend → Generate Tests and Contracts 👍
 
-1. Start by Modeling your Domain using the ZDL Domain Language including: entities, relationships, service commands and domain events.
-2. Generate a draft OpenAPI definition from the ZDL model. Edit collaboratively this OpenAPI document and then generate some more functional code and tests from that definition.
-3. Generate a draft AsyncAPI definition for consuming async request commands and publishing domain events. Now use zenwave maven plugin to generate strongly typed business interfaces implementing some Enterprise Integration Patterns like: transactional outbox, business dead letter queue...
-4. Generate a complete Backend Application from your Domain Definition Model.
+1. Start by <strong className="orange">Modeling your Domain</strong> using the ZDL Domain Language including: entities, relationships, service commands and domain events.
+2. Generate a <strong className="orange">draft OpenAPI definition from the ZDL model</strong>. Edit collaboratively this OpenAPI document and then generate some more functional code and tests from that definition.
+3. Generate a <strong className="orange">draft AsyncAPI definition</strong> for consuming async request commands and publishing domain events. Now use zenwave maven plugin to generate strongly typed business interfaces implementing some Enterprise Integration Patterns like: transactional outbox, business dead letter queue...
+4. Generate a <strong className="orange">complete Backend Application</strong> from your Domain Definition Model.
 5. Connect (by hand) your Backend Application to other systems using the generated OpenAPI and AsyncAPI definitions.
-6. Generate E2E, Integration tests and Consumer Contracts for the public APIs you just produced.
+6. Generate <strong className="orange">E2E, Integration tests and Consumer Contracts</strong> for the public APIs you just produced.
 
 <Image alt="ZenWave SDK Features MindMap" light={sdkMindMapLight} dark={sdkMindMapDark} />
 
@@ -232,9 +232,9 @@ You can generate complete Event Driven Microservices using DDD and API-First pri
 
 ## Generated Code Structure
 
-Generated code follows a flexible onion/hexagonal architecture. Separating core, inbound, implementation and outbound form infrastructure and adapters.
+Generated code follows a <strong className="orange">flexible onion/hexagonal architecture</strong>. Separating core, inbound, implementation and outbound form infrastructure and adapters.
 
-Core domain entities and aggregates are annotated for persistence with JPA or SpringData/MongoDB annotations, avoiding unnecessary translation layers (mappers and dtos).
+Core domain entities and aggregates are annotated for persistence with JPA or SpringData/MongoDB annotations, <strong className="orange">avoiding unnecessary translation layers</strong> (mappers and dtos).
 
 <Image alt="ZenWave SDK Modeling Languages" src={sdkHexagonalDark} />
 

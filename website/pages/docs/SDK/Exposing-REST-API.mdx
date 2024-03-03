@@ -42,14 +42,14 @@ service CustomerService for (Customer) {
     createCustomer(Customer) Customer
     @put("/{customerId}")
     updateCustomer(id, Customer) Customer?
-    @put("/{customerId}/address/{identifier}")
+    @put({ path: "/{customerId}/address/{identifier}", params: {identifier: Long} }) // specify param types
     updateCustomerAddress(id, AddressInput) Customer?
     @delete("/{customerId}")
     deleteCustomer(id)
     @get("/{customerId}")
     getCustomer(id) Customer?
     @paginated
-    @get({path: "/search", params: {search: "string"}})
+    @get({path: "/search", params: {search: String}}) // this creates a query param in the OpenAPI
     listCustomers() Customer[]
 }
 
