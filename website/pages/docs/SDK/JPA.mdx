@@ -9,22 +9,7 @@ import { Image, Quote, QuoteAuthor } from "smooth-doc/components";
 # Backend Application with JPA
 Modeling your JPA entities following DDD Aggregates principles.
 
-ZenWave favors modeling JPA relationships following DDD Aggregate principles where Aggregates are:
-
-1. **Treated as a Single Unit**.
-
-2. **Root Entity**: Each aggregate has a root entity, also known as the aggregate root. All external references to the aggregate should only point to the aggregate root. This ensures the integrity of the aggregate.
-
-3. **Consistency Boundaries**: The aggregate defines the transactional units of consistency boundaries.
-
-4. **Reference by Identity**: Aggregates should be referenced by their identifiers (IDs) rather than direct object references. This promotes loose coupling between aggregates and enhances the system's scalability and maintainability.
-
-5. **Invariants**: The aggregate root is responsible for maintaining all invariants within the aggregate. An invariant is a business rule that must always be consistent.
-
-6. **Persistence**: Persistence of an aggregate should be done as a whole. It's the responsibility of the aggregate root to handle this.
-
-7. **Size**: Ideally, an aggregate should be as small as possible, based on the business rules. A smaller aggregate is easier to maintain and understand.
-
+ZenWave favors modeling JPA relationships following DDD Aggregate principles.
 
 So in this DDD context, preferred relationships are: `OneToMany` and `OneToOne` from the aggregate root to each dependent, but you can still use `ManyToOne` and `ManyToMany` to suit your specific needs.
 
