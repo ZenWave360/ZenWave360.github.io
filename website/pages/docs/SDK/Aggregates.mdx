@@ -7,9 +7,9 @@ order: 2
 import { Image, Quote, QuoteAuthor } from "smooth-doc/components";
 
 # Modeling Aggregates
-Following DDD Aggregates principles.
+Modeling aggregates with entities, command handlers and domain events.
 
-DDD Aggregates principles:
+Aggregates are central to DDD and ZenWave SDK modeling. They represent clusters of entities and values that works as transactional boundary and are treated as a single unit:
 
 1. <strong className="orange">Treated as a Single Unit</strong>.
 
@@ -26,18 +26,20 @@ DDD Aggregates principles:
 7. <strong className="orange">Size</strong>: Ideally, an aggregate should be as small as possible, based on the business rules. A smaller aggregate is easier to maintain and understand.
 
 
-ZenWave SDK supports these three common patterns to model aggregates:
+ZenWave SDK supports these three different patterns to model aggregates:
 
-- [Lightweight/Data Centric:](#lightweight-aggregates) When your application logic is simple, keep your implementation simple.
-- [Rich Domain Aggregates:](#rich-domain-aggregates) When you are dealing with complex business logic and core subdomains.
-- [Event Sourced Aggregates:](#event-sourced-aggregates) When implementing CQRS and Event Sourcing patterns.
+- **[Lightweight/Data Centric:](#lightweight-aggregates)** When your application logic is simple.
+- **[Rich Domain Aggregates:](#rich-domain-aggregates)** When you are dealing with complex business logic and in core subdomains.
+- **[Event Sourced Aggregates:](#event-sourced-aggregates)** When implementing CQRS and Event Sourcing patterns.
 
 ## Lightweight Aggregates
 > 💡 If your application logic is simple, keep your implementation simple.
 
 Lightweight Aggregates are <strong className="orange">simple data containers</strong> that do not contain any business logic. They are used to group related data together. They are treated as a single unit and have a root entity but <strong className="orange">related business logic is implemented in services</strong> or other classes.
 
-Most microservice applications look like: <strong className="orange">"Receive some command/request, validate, process, persist the data and emit an integration event for downstream services."</strong>
+Most microservice applications look like:
+
+<strong className="orange">"Receive some command/request, validate, process, persist the data and emit an integration event for downstream services."</strong>
 
 If your application logic is simple, keep your implementation simple.
 
@@ -47,7 +49,7 @@ Sometimes you will find this referred as the [Anemic Domain Model](https://en.wi
 
 It applies <strong className="orange">Keep-It-Simple (KISS)</strong> principle and <strong className="orange">Separation of Concerns</strong>, clearly separating where data is defined (your entities) and the business process you apply to it (your services). Services are still the only entry point for your aggregates functionality, and it works just fine for most microservice applications.
 
-Use the <strong className="orange">@aggregate</strong> annotation to mark your <strong className="orange">aggregate root entity</strong>, and use **service** for defining command/methods:
+Use the `@aggregate` annotation to mark your <strong className="orange">aggregate root entity</strong>, and use **service** for defining command/methods:
 
 ```zdl
 @aggregate
@@ -104,6 +106,9 @@ public class DeliveryServiceImpl implements DeliveryService {
 And the aggregate itself:
 
 ```java
+/**
+* Rich Domain Aggregate for Delivery.
+*/
 public class DeliveryAggregate {
 
     private final Delivery rootEntity;
@@ -135,6 +140,8 @@ public class DeliveryAggregate {
 * Delivery JPA Entity, used as rootEntity.
 */
 @Entity(name = "delivery")
+@lombok.Getter
+@lombok.Setter(AccessLevel.PACKAGE) // disallow direct access to setters from service layer
 public class Delivery implements Serializable {
     // ...
 }
@@ -191,11 +198,11 @@ service DeliveryService for (DeliveryAggregate) {
 
 > 💡 This is and extension of the Rich Domain Aggregates, where aggregate commands are event handlers that reconstruct the aggregate state.
 
-With ZenWave SDK/ZDL you can model aggregates that are event sourced. This is a powerful pattern that allows you to store the state of an aggregate as a sequence of events and then reconstruct the aggregate state by replaying the events.
+With ZenWave SDK you can model aggregates that are event sourced, whose state is created as a sequence of events. This is common when implementing the CQRS pattern.
 
 This section is not about how to store the state of an aggregate as a sequence of events, but how aggregates state is rebuilt from incoming events.
 
-This approach is just an extension of the Rich Domain Aggregates pattern, where aggregate commands are event handlers that reconstruct the aggregate state, and can be used also for modeling your domain with the CQRS pattern.
+This approach is just an extension of the Rich Domain Aggregates pattern, where aggregate commands are event handlers that reconstruct the aggregate state.
 
 ```zdl
 /**
