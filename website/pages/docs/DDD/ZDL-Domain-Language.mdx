@@ -35,7 +35,7 @@ ZDL files are structured as follows:
 
 Prolog section contains `global javadoc`, `config` and `apis` sections that are used by ZenWave IntelliJ Editor and ZenWave SDK plugins for code generation.
 
-DDD and EDA sections contain `entities`, `enums`, `services`, `inputs`, `outputs` and `events` declarations.
+DDD and EDA sections contain `entities`, `enums`, `aggregates`, `services`, `inputs`, `outputs` and `events` declarations.
 
 `global javadoc`, `config`, `apis` are optional but should be at the top of the file, before any other declaration. After that `entities`, `enums`, `services`, `inputs`, `outputs` and `events` can be declared in any order and any number.
 
@@ -44,7 +44,7 @@ DDD and EDA sections contain `entities`, `enums`, `services`, `inputs`, `outputs
 [<config>]
 [<apis>]
 
-[<entity> | <enum> | <polcies> | <service> | <input> | <output> | <event>]*
+[<entity> | <enum> | <aggregate> | <polcies> | <service> | <input> | <output> | <event>]*
 ```
 
 The following is a <strong class="orange">Complete ZDL Example</strong> describing an application with an aggregate exposing some core functionality, connected through a REST API adapter and publishing some domain events.
@@ -140,7 +140,7 @@ event CustomerUpdated (customerChannelName) {
 
 ## Entities and Aggregates
 
-Entities are used to describe your domain model. The core of your Bounded Context and can be grouped by aggregates, annotating your aggregate root with `@aggregate`.
+Entities are used to describe your domain model. The core of your Bounded Context and can be grouped by aggregates. You can either annotate your aggregate root with `@aggregate` (recommended) or use an `aggregate` object to model rich domain aggregates with command handlers and domain events.
 
 An  entity declaration is done as follows:
 
@@ -198,7 +198,7 @@ entity A {
 
 ZDL is not limited to the following field types, but you can also use any other entity, enum or custom type.
 
-- `String`, `Integer`, `Long`, `int`, `long`, `BigDecimal`, `Float`, `float`, `Double`, `double`, `Enum`, `Boolean`, `boolean`, `LocalDate`, `ZonedDateTime`, `Instant`, `Duration`, `UUID`, `byte`, `byte[]`, `Blob`, `AnyBlob`, `ImageBlob`, `TextBlob`.
+- `String`, `Integer`, `Long`, `int`, `long`, `BigDecimal`, `Float`, `float`, `Double`, `double`, `Enum`, `Boolean`, `boolean`, `LocalDate`, `LocalDateTime`, `ZonedDateTime`, `Instant`, `Duration`, `UUID`, `byte`, `byte[]`, `Blob`, `AnyBlob`, `ImageBlob`, `TextBlob`.
 
 Some validations are dependent on the field types. Currently supported validations are:
 
@@ -315,6 +315,37 @@ Enums are also compatible with to [JDL enums](https://www.jhipster.tech/jdl/enum
 ```
 enum <enum name> {
   <ENUM KEY> [(<enum value>)]
+}
+```
+
+## Aggregate Objects
+
+Aggregate object combines entities, command handlers and domain events for rich domain aggregates.
+
+They look very similar to `services`, and for simple use cases you can use `services` and an entity annotated `@aggregate` as the aggregate root.
+
+```
+[<aggregate javadoc>]
+[<aggregate annotation>*]
+aggregate <aggregate name> (<aggregate root entity>) {
+
+  [<command javadoc>]
+  [<command annotation>*]
+  <command name>([<CommandInput>]) [withEvents <DomainEvent>*]
+}
+```
+
+ZDL Example:
+
+```zdl
+aggregate DeliveryAggregate (Delivery) {
+
+    createDelivery(DeliveryInput) withEvents DeliveryStatusUpdated
+
+    onOrderStatusUpdated(OrderStatusUpdated) withEvents DeliveryStatusUpdated
+
+    updateDeliveryStatus(DeliveryStatusInput) withEvents DeliveryStatusUpdated
+
 }
 ```
 

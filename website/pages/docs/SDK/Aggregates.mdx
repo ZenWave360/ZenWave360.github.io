@@ -1,0 +1,218 @@
+---
+section: ZenWave SDK
+title: Modeling Aggregates
+slug: /docs/zenwave-sdk/modeling-aggregates
+order: 2
+---
+import { Image, Quote, QuoteAuthor } from "smooth-doc/components";
+
+# Modeling Aggregates
+Following DDD Aggregates principles.
+
+DDD Aggregates principles:
+
+1. <strong className="orange">Treated as a Single Unit</strong>.
+
+2. <strong className="orange">Root Entity</strong>: Each aggregate has a root entity, also known as the aggregate root. All external references to the aggregate should only point to the aggregate root. This ensures the integrity of the aggregate.
+
+3. <strong className="orange">Consistency Boundaries</strong>: The aggregate defines the transactional units of consistency boundaries.
+
+4. <strong className="orange">Reference by Identity</strong>: Aggregates should be referenced by their identifiers (IDs) rather than direct object references. This promotes loose coupling between aggregates and enhances the system's scalability and maintainability.
+
+5. <strong className="orange">Invariants</strong>: The aggregate root is responsible for maintaining all invariants within the aggregate. An invariant is a business rule that must always be consistent.
+
+6. <strong className="orange">Persistence</strong>: Persistence of an aggregate should be done as a whole. It's the responsibility of the aggregate root to handle this.
+
+7. <strong className="orange">Size</strong>: Ideally, an aggregate should be as small as possible, based on the business rules. A smaller aggregate is easier to maintain and understand.
+
+
+ZenWave SDK supports these three common patterns to model aggregates:
+
+- [Lightweight/Data Centric:](#lightweight-aggregates) When your application logic is simple, keep your implementation simple.
+- [Rich Domain Aggregates:](#rich-domain-aggregates) When you are dealing with complex business logic and core subdomains.
+- [Event Sourced Aggregates:](#event-sourced-aggregates) When implementing CQRS and Event Sourcing patterns.
+
+## Lightweight Aggregates
+> 💡 If your application logic is simple, keep your implementation simple.
+
+Lightweight Aggregates are <strong className="orange">simple data containers</strong> that do not contain any business logic. They are used to group related data together. They are treated as a single unit and have a root entity but <strong className="orange">related business logic is implemented in services</strong> or other classes.
+
+Most microservice applications look like: <strong className="orange">"Receive some command/request, validate, process, persist the data and emit an integration event for downstream services."</strong>
+
+If your application logic is simple, keep your implementation simple.
+
+This would be our *first*, *go-to* recommended approach. For most microservice applications this pattern is good enough to guarantee maintainability and scalability. And it, does not overcomplicate your codebase with unnecessary complexity. If you are in doubt, start with this pattern.
+
+Sometimes you will find this referred as the [Anemic Domain Model](https://en.wikipedia.org/wiki/Anemic_domain_model) but it's **OK** for most microservice applications.
+
+It applies <strong className="orange">Keep-It-Simple (KISS)</strong> principle and <strong className="orange">Separation of Concerns</strong>, clearly separating where data is defined (your entities) and the business process you apply to it (your services). Services are still the only entry point for your aggregates functionality, and it works just fine for most microservice applications.
+
+Use the <strong className="orange">@aggregate</strong> annotation to mark your <strong className="orange">aggregate root entity</strong>, and use **service** for defining command/methods:
+
+```zdl
+@aggregate
+entity Customer {
+    // fields, nested objects and relationships...
+}
+
+service CustomerService for (Customer) {
+  /* the following service method names and signatures will genereate CRUD operations */
+  createCustomer(Customer) Customer withEvents CustomerEvent
+  updateCustomer(id, Customer) Customer? withEvents CustomerEvent
+  deleteCustomer(id) withEvents CustomerEvent
+  getCustomer(id) Customer?
+  @paginated
+  listCustomers() Customer[]
+  /* this is will generate (almost) empty implementation placeholders for service and tests */
+  updateCustomerAddress(id, Address) Customer? withEvents CustomerEvent
+}
+```
+
+## Rich Domain Aggregates
+> 💡 Start with the Lightweight Aggregates pattern and refactor to Rich Domain Aggregates when you need it.
+
+Sometimes referred to as <strong className="orange">Rich Domain Model</strong> or <strong className="orange">Rich Domain Objects</strong>. These are objects that contain both data and behavior. They are not just data containers but also contain business logic.
+
+We recommend following this approach when:
+
+- <strong className="orange">Business logic is complex</strong> and the aggregate needs to maintain its own consistency and invariants.
+- Your <strong className="orange">service methods spans multiple aggregates</strong>.
+- You are modeling aggregates that need to <strong className="orange">encapsulate state transitions</strong>.
+- You are working on a <strong className="orange">core subdomain</strong>.
+
+With this approach, your service methods will look simpler, in expense of more complex, and bigger code base for your aggregates. And a stepper learning curve for your developing team.
+
+If you don't know if you need it, you probably don't.
+
+### Rich Domain Aggregates in Java
+
+This is how a service for a rich aggregate looks like:
+
+```java
+public class DeliveryServiceImpl implements DeliveryService {
+    @Transactional
+    public Delivery onOrderStatusUpdated(String id, OrderStatusUpdated input) {
+        var deliveryAggregate = deliveryRepository.findDeliveryAggregateById(id).orElseThrow();
+        deliveryAggregate.onOrderStatusUpdated(input); // the aggregate business logic
+        persistAggregate(deliveryAggregate);
+        emitEvents(deliveryAggregate.getEvents());
+        return deliveryAggregate.getRootEntity();
+    }
+}
+```
+
+And the aggregate itself:
+
+```java
+public class DeliveryAggregate {
+
+    private final Delivery rootEntity;
+
+    private final List<Object> events = new ArrayList<>();
+
+    // getters, setters, constructor, etc.
+
+    /**
+    * Performs business logic related to 'onOrderStatusUpdated' and emits 'DeliveryStatusUpdatedEvent' domain event.
+    */
+    public void onOrderStatusUpdated(OrderStatusUpdated input) {
+        // TODO: your business logic would be here
+        mapper.update(rootEntity, input);
+        events.add(mapper.asDeliveryStatusUpdated(rootEntity));
+    }
+
+    @org.mapstruct.Mapper
+    interface Mapper {
+
+        Delivery update(@MappingTarget Delivery entity, OrderStatusUpdated input);
+
+        DeliveryStatusUpdatedEvent asDeliveryStatusUpdated(Delivery entity);
+
+    }
+}
+
+/**
+* Delivery JPA Entity, used as rootEntity.
+*/
+@Entity(name = "delivery")
+public class Delivery implements Serializable {
+    // ...
+}
+
+/**
+* Delivery Updated Domain Event.
+*/
+public class DeliveryStatusUpdatedEvent implements Serializable {
+    // ...
+}
+```
+
+### Modeling Rich Domain Aggregates with ZenWave ZDL
+
+This is how you would model this with ZenWave SDK:
+
+
+```zdl
+/**
+ * Delivery Aggregate
+ */
+aggregate DeliveryAggregate (Delivery) {
+
+    createDelivery(DeliveryInput) withEvents DeliveryStatusUpdated
+
+    onOrderStatusUpdated(OrderStatusUpdated) withEvents DeliveryStatusUpdated
+
+    updateDeliveryStatus(DeliveryStatusInput) withEvents DeliveryStatusUpdated
+
+}
+// @aggregate
+entity Delivery {
+    // fields, nested objects and relationships...
+}
+
+@rest("/delivery")
+service DeliveryService for (DeliveryAggregate) {
+
+    @asyncapi({api: OrdersAsyncAPI, channel: "OrderCreatedChannel"})
+    createDelivery(DeliveryInput) Delivery withEvents DeliveryStatusUpdated
+
+    @asyncapi({api: OrdersAsyncAPI, channel: "OrderUpdatesChannel"})
+    onOrderStatusUpdated(id, OrderStatusUpdated) Delivery withEvents DeliveryStatusUpdated
+
+    @put("/{orderId}/status")
+    updateDeliveryStatus(id, DeliveryStatusInput) Delivery withEvents DeliveryStatusUpdated
+
+    @get @paginated
+    listDeliveries() Delivery[]
+}
+```
+
+## Event Sourced Aggregates
+
+> 💡 This is and extension of the Rich Domain Aggregates, where aggregate commands are event handlers that reconstruct the aggregate state.
+
+With ZenWave SDK/ZDL you can model aggregates that are event sourced. This is a powerful pattern that allows you to store the state of an aggregate as a sequence of events and then reconstruct the aggregate state by replaying the events.
+
+This section is not about how to store the state of an aggregate as a sequence of events, but how aggregates state is rebuilt from incoming events.
+
+This approach is just an extension of the Rich Domain Aggregates pattern, where aggregate commands are event handlers that reconstruct the aggregate state, and can be used also for modeling your domain with the CQRS pattern.
+
+```zdl
+/**
+ * Delivery Aggregate
+ */
+aggregate DeliveryAggregate (Delivery) {
+    onOrderCreatedEvent(OrderCreatedEvent) withEvents DeliveryStatusUpdated
+    onOrderStatusUpdated(OrderStatusUpdatedEvent) withEvents DeliveryStatusUpdated
+    onOrderCancelled(OrderCancelledEvent) withEvents DeliveryStatusUpdated
+}
+
+service DeliveryService for (DeliveryAggregate) {
+    @asyncapi({api: OrdersAsyncAPI, channel: "OrderCreatedChannel"})
+    onOrderCreatedEvent(OrderCreatedEvent) withEvents DeliveryStatusUpdated
+    @asyncapi({api: OrdersAsyncAPI, channel: "OrderUpdatedChannel"})
+    onOrderStatusUpdated(OrderStatusUpdatedEvent) withEvents DeliveryStatusUpdated
+    @asyncapi({api: OrdersAsyncAPI, channel: "OrderDeletedChannel"})
+    onOrderCancelled(OrderCancelledEvent) withEvents DeliveryStatusUpdated
+}
+```
