@@ -86,6 +86,46 @@ With this approach, your service methods will look simpler, in expense of more c
 
 If you don't know if you need it, you probably don't.
 
+### Modeling Rich Domain Aggregates with ZenWave ZDL
+
+This is how you would model this with ZenWave SDK:
+
+
+```zdl
+/**
+ * Delivery Aggregate
+ */
+aggregate DeliveryAggregate (Delivery) {
+
+    createDelivery(DeliveryInput) withEvents DeliveryStatusUpdated
+
+    onOrderStatusUpdated(OrderStatusUpdated) withEvents DeliveryStatusUpdated
+
+    updateDeliveryStatus(DeliveryStatusInput) withEvents DeliveryStatusUpdated
+
+}
+// @aggregate
+entity Delivery {
+    // fields, nested objects and relationships...
+}
+
+@rest("/delivery")
+service DeliveryService for (DeliveryAggregate) {
+
+    @asyncapi({api: OrdersAsyncAPI, channel: "OrderCreatedChannel"})
+    createDelivery(DeliveryInput) Delivery withEvents DeliveryStatusUpdated
+
+    @asyncapi({api: OrdersAsyncAPI, channel: "OrderUpdatesChannel"})
+    onOrderStatusUpdated(id, OrderStatusUpdated) Delivery withEvents DeliveryStatusUpdated
+
+    @put("/{orderId}/status")
+    updateDeliveryStatus(id, DeliveryStatusInput) Delivery withEvents DeliveryStatusUpdated
+
+    @get @paginated
+    listDeliveries() Delivery[]
+}
+```
+
 ### Rich Domain Aggregates in Java
 
 This is how a service for a rich aggregate looks like:
@@ -151,46 +191,6 @@ public class Delivery implements Serializable {
 */
 public class DeliveryStatusUpdatedEvent implements Serializable {
     // ...
-}
-```
-
-### Modeling Rich Domain Aggregates with ZenWave ZDL
-
-This is how you would model this with ZenWave SDK:
-
-
-```zdl
-/**
- * Delivery Aggregate
- */
-aggregate DeliveryAggregate (Delivery) {
-
-    createDelivery(DeliveryInput) withEvents DeliveryStatusUpdated
-
-    onOrderStatusUpdated(OrderStatusUpdated) withEvents DeliveryStatusUpdated
-
-    updateDeliveryStatus(DeliveryStatusInput) withEvents DeliveryStatusUpdated
-
-}
-// @aggregate
-entity Delivery {
-    // fields, nested objects and relationships...
-}
-
-@rest("/delivery")
-service DeliveryService for (DeliveryAggregate) {
-
-    @asyncapi({api: OrdersAsyncAPI, channel: "OrderCreatedChannel"})
-    createDelivery(DeliveryInput) Delivery withEvents DeliveryStatusUpdated
-
-    @asyncapi({api: OrdersAsyncAPI, channel: "OrderUpdatesChannel"})
-    onOrderStatusUpdated(id, OrderStatusUpdated) Delivery withEvents DeliveryStatusUpdated
-
-    @put("/{orderId}/status")
-    updateDeliveryStatus(id, DeliveryStatusInput) Delivery withEvents DeliveryStatusUpdated
-
-    @get @paginated
-    listDeliveries() Delivery[]
 }
 ```
 
