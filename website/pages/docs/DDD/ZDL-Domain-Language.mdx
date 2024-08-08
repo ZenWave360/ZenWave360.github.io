@@ -6,6 +6,9 @@ order: 2
 ---
 import { x } from '@xstyled/styled-components'
 import { Image, Quote, QuoteAuthor } from "smooth-doc/components"
+import zdlBlocks from './images/zdl-blocks.excalidraw.svg'
+import zdlBlocksLight from './images/zdl-blocks.light.png'
+import zdlBlocksDark from './images/zdl-blocks.dark.png'
 import eventStormingZdlMapping from './images/EventStorming-ZDL-Mapping.png'
 
 
@@ -47,6 +50,8 @@ DDD and EDA sections contain `entities`, `enums`, `aggregates`, `services`, `inp
 [<entity> | <enum> | <aggregate> | <polcies> | <service> | <input> | <output> | <event>]*
 ```
 
+<Image alt="ZenWave Domain Model Language - Blocks" src={zdlBlocksLight} />
+
 The following is a <strong class="orange">Complete ZDL Example</strong> describing an application with an aggregate exposing some core functionality, connected through a REST API adapter and publishing some domain events.
 
 ```zdl
@@ -56,23 +61,32 @@ The following is a <strong class="orange">Complete ZDL Example</strong> describi
 config {
   basePackage "com.example.myapp"
   persistence jpa
+  databaseType postgresql
 
   plugins {
-    /** generates backend core */
-    io.zenwave360.sdk.plugins.JDLBackendApplicationDefaultPlugin {
-        --force // overwite all files
-    }
-    /** generates OpenAPI (draft) from Service/Entities */
-    io.zenwave360.sdk.plugins.JDLToOpenAPIPlugin {
-        idType integer
-        idTypeFormat int64
-        targetFile "src/main/resources/model/openapi.yml"
-    }
+
     /** generates AsyncAPI (draft) for outbound events */
-    io.zenwave360.sdk.plugins.ZDLToAsyncAPIPlugin {
+    ZDLToAsyncAPIPlugin {
+        asyncapiVersion v3
         idType integer
         idTypeFormat int64
-        targetFile "src/main/resources/model/asyncapi.yml"
+        targetFile "src/main/resources/apis/asyncapi.yml"
+        // includeKafkaCommonHeaders true
+    }
+
+    /** generates backend core */
+    BackendApplicationDefaultPlugin {
+        useLombok true
+        includeEmitEventsImplementation true
+        // --force // overwite all files
+    }
+    /** Implements SpringMVC rest controllers */
+    OpenAPIControllersPlugin {
+        openapiFile "src/main/resources/apis/openapi.yml"
+    }
+
+    SpringWebTestClientPlugin {
+        openapiFile "src/main/resources/apis/openapi.yml"
     }
   }
 }
