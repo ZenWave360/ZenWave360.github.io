@@ -39,6 +39,7 @@ import boundedContextMapping from '../images/home/bounded-context-mapping.svg'
 
 import pluginScreenshot from './plugin-screenshot.png'
 import pluginRunScreenshot from './plugin-run-screenshot.png'
+import { marginRight } from '@xstyled/styled-components'
 
 <ScreenContainer>
   <HeroSection>
@@ -48,7 +49,7 @@ import pluginRunScreenshot from './plugin-run-screenshot.png'
         <HeroTeaser>DDD and API-First Modeling Tools for Modern Distributed Applications.</HeroTeaser>
         <HeroActionList>
           <HeroAction>
-            <Button variant="neutral" as={Link} to="/docs/zenwave360">
+            <Button variant="neutral" as={Link} to="/docs/zenwave360" style={{ marginRight: '6px' }}>
               Browse Docs
             </Button>
             <Button as={Link} to="/docs/getting-started/">
