@@ -53,11 +53,12 @@ It will add `x-business-entity` and `x-business-entity-paginated` to generated s
 ZenWave SDK will generate CRUD operations for your entities, including paginated lists and search operations.
 
 ```shell
-jbang zw -p io.zenwave360.sdk.plugins.JDLToOpenAPIPlugin \
-    specFile=src/main/resources/model/entities-model.jdl \
+jbang zw -p io.zenwave360.sdk.plugins.ZDLToOpenAPIPlugin \
+    specFile=entities-model.jdl \
     idType=integer \
     idTypeFormat=int64 \
-    targetFile=src/main/resources/model/openapi.yml
+    targetFolder=. \
+    targetFile=openapi.yml
 ```
 
 By using JDL to define your domain model and ZenWave SDK to convert it into an OpenAPI definition file, you can simplify the process of designing and documenting your APIs. This can improve the overall quality and consistency of your APIs, while also reducing errors and inconsistencies.

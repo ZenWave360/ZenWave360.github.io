@@ -1,6 +1,6 @@
 # ZenWave 360º Website
 
-Website for https://zenwave360.github.io/
+Website for https://www.zenwave360.io/
 
 # Development
 

@@ -1,0 +1,201 @@
+---
+title: Generate OpenAPI from ZenWave Domain Language
+slug: /posts/ZenWave_ZDL_As_IDL_for_OpenAPI/
+image: ZDL-2-OpenAPI.svg
+author: Ivan Garcia Sainz-Aja
+date: 2024-09-24T09:00:00+02:00
+excerpt: 'Because writing YAML by hand is now fun... You can use `ZenWave Domain Language` models as IDL to generate OpenAPI v3 with ZenWave SDK.'
+tags:
+  - ZenWave SDK
+  - Code Generator
+  - ZenWave Domain Language
+  - ZDL
+  - DSL
+---
+
+> This article was first published @medium: [Stop writing YAML for OpenAPI, use a compact DSL and save time and typing](https://medium.com/@ivangsa/stop-writing-yaml-for-openapi-use-a-compact-dsl-and-save-time-and-typing-574a138faddc).
+
+# Generating OpenAPI definition files from "ZenWave Domain Language" models with ZenWaveSDK
+
+Because writing YAML by hand is now fun... 
+
+You can use `ZenWave Domain Language` models as IDL to generate OpenAPI v3 with ZenWave SDK.
+
+Imagine being able to quickly define an API in a more concise and readable way, without losing the rigor of an OpenAPI specification. This article explores how you can leverage [ZenWave Domain Language (ZDL)](https://www.zenwave360.io/docs/event-driven-design/zenwave-domain-language), a compact developer-friendly DSL, to generate OpenAPI definitions, simplifying the process of creating API documentation, reducing errors, and improving developer productivity. Whether you're managing an extensive API or just getting started, a DSL might be the key to making your API workflow more efficient.
+
+## ZenWave Domain Language (ZDL)
+
+Inspired by JHipster JDL, ZDL is a language for describing DDD Bounded Contexts, including domain entities and their relationships, services, commands, events and business policies... for Event-Driven Architectures.
+
+It's designed to be compact, readable and expressive. Developer friendly, and machine friendly. It works well as an Ubiquitous Language format.
+
+It can also be used as an IDL for authoring OpenAPI (and AsyncAPI) definition files.
+
+<img src="https://www.zenwave360.io/static/EventStorming-ZDL-Mapping-cb9c987d5d0aff110c5890481034ae20.png" />
+
+## Creating a ZDL for authoring an OpenAPI definition
+
+- As a minimum requirement, you need a `service` and an `aggregate entity` for this service.
+- You can use this `entity` as request and response objects or you can define separate DTOs for this purpose using `input`and `output` entities.
+- You can also define and reference `enums` and `relationships` between entities. Nested entities and arrays also work.
+- Lastly you need to define the service methods and their parameters and annotate them using `@rest`, `@post`, `@get`, `@put`, `@delete`, `@paginated`, `@inline` annotations.
+
+
+```zdl
+@aggregate
+entity PaymentMethod {
+    type PaymentMethodType required
+    cardNumber String required minlength(16) maxlength(16)
+}
+
+enum PaymentMethodType { VISA(1), MASTERCARD(2) }
+
+@rest("/payment-methods")
+service PaymentsService for (PaymentMethod) {
+    @post
+    doSomethingWithANewPayment(PaymentMethod) PaymentMethod
+
+    @put("/{id}")
+    doSomethingWithAnExistingPayment(id, PaymentMethod) PaymentMethod?
+}
+```
+
+NOTE: service method only accept two kind of parameters: `id` and command payload (that will map to the request body), but you can use `@inline` to expand fields as request path parameters (see below).
+
+Checkout the [ZDL documentation](https://www.zenwave360.io/docs/event-driven-design/zenwave-domain-language#services-and-commands) for more details about command methods.
+
+## Install ZenWave SDK Using JBang
+
+Install an evergreen self updating ZenWave SDK CLI using JBang:
+
+```shell
+jbang alias add --fresh --name=zw release@zenwave360/zenwave-sdk
+```
+Following these instructions for complete details about JBang and IntelliJ Editor: https://www.zenwave360.io/docs/getting-started/
+
+Now you can use jbang zw to generate a complete OpenAPI definition file from your ZDL model.
+
+```shell
+jbang zw -p ZDLToOpenAPIPlugin \
+specFile=model.zdl \
+idType=integer \
+idTypeFormat=int64 \
+targetFolder=. \
+targetFile=payments-openapi.yml
+```
+
+Or use ZenWave ZDL Editor for IntelliJ configuring the generator plugin on top of your zdl file:
+
+```zdl
+config {
+    plugins {
+        /** Use ZenWave Editor for IntelliJ IDEA to run this */
+        ZDLToOpenAPIPlugin {
+            idType integer
+            idTypeFormat int64
+            targetFolder "."
+            targetFile "openapi.yml"
+        }
+    }
+}
+```
+
+![Run With ZenWave Editor for IntelliJ](./RunWith-ZenWave-Editor-for-IntelliJ.png)
+
+Then, check the generated OpenAPI definition file payments-openapi.yml, and see for yourself how much typing you saved!
+
+## Expanding fields as request path parameters
+
+You can use `@inline` `ìnputs` to expand fields as request path parameters (and service method parameters).
+
+```zdl
+@inline // expand fields as request parameters
+input PaymentMethodInput {
+    cardNumber String
+    paymentMethod PaymentMethod
+}
+
+@rest("/customers")
+service PaymentsService for (PaymentMethod) {
+
+    @put("/{paymentMethodId}/cardNumber/{cardNumber}") // see example below to specify param types
+    updatePaymentMethodByCardNumber(PaymentMethodInput) PaymentMethod?
+}
+```
+It will pick the first parameter from the entity id and the remaining parameters will be configured as `string`
+
+![Inline Path Parameters OpenAPI Generated](./InlinePathParameters-OpenAPI-Generated.png)
+
+But you can override the path params with configuration, see complete example below.
+
+## Complete ZDL Example
+
+```zdl
+@aggregate
+entity Customer {
+    name String required maxlength(254) /** Customer name */
+    email String required maxlength(254) pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)
+    /** Customer Addresses can be stored in a JSON column in the database. */
+    @json addresses Address[] minlength(1) maxlength(5) {
+        street String required maxlength(254)
+        city String required maxlength(254)
+    }
+}
+
+entity PaymentMethod {
+    type PaymentMethodType required
+    cardNumber String required
+}
+
+enum PaymentMethodType { VISA(1), MASTERCARD(2) }
+
+relationship OneToMany {
+    Customer{paymentMethods required maxlength(3)} to PaymentMethod{customer required}
+}
+
+// you can create 'inputs' as dtos for your service methods, or use entities directly
+input CustomerSearchCriteria {
+    name String
+    email String
+    city String
+    state String
+}
+
+@inline // expand fields as request parameters (and service method parameters)
+input AddressInput {
+    addressId String
+    address Address
+}
+
+@rest("/customers")
+service CustomerService for (Customer) {
+    @post
+    createCustomer(Customer) Customer
+    @get("/{id}")
+    getCustomer(id) Customer?
+    @put("/{id}")
+    updateCustomer(id, Customer) Customer?
+    @put({ path: "/{customerId}/address/{addressId}", params: {addressId: Long} }) // specify param types
+    updateCustomerAddress(id, AddressInput) Customer?
+    @delete("/{id}")
+    deleteCustomer(id)
+    @post("/search")
+    @paginated
+    searchCustomers(CustomerSearchCriteria) Customer[]
+}
+```
+
+Run:
+
+```shell
+jbang zw -p io.zenwave360.sdk.plugins.ZDLToOpenAPIPlugin \
+    specFile=customers-model.zdl \
+    idType=integer \
+    idTypeFormat=int64 \
+    targetFolder=. \
+    targetFile=openapi.yml
+```
+
+And get surprised by the amount of YAML typing you saved!
+
+Happy coding! 🚀
