@@ -17,10 +17,10 @@ const Container = styled.div`
   min-height: 100vh;
 `
 
-export function WebSiteLayout({ children, title }) {
+export function WebSiteLayout({ children, title, canonical }) {
     return (
         <>
-            <Head title={title} />
+            <Head title={title} canonical={canonical}/>
             <Container>
                 <StickyHeader>
                     <AppHeader />

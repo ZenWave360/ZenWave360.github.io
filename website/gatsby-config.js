@@ -26,11 +26,18 @@ module.exports = {
         trackingId: 'G-PWPE0ZF877',
       },
     },
+    // {
+    //   resolve: `gatsby-plugin-canonical-urls`,
+    //   options: {
+    //     siteUrl: `https://www.zenwave360.io/`,
+    //     stripQueryString: true,
+    //   },
+    // },
     {
-      resolve: `gatsby-plugin-canonical-urls`,
+      resolve: `gatsby-plugin-react-helmet-canonical-urls`,
       options: {
-        siteUrl: `https://www.zenwave360.io/`,
-        stripQueryString: true,
+        siteUrl: `https://www.zenwave360.io`,
+        noQueryString: true,
       },
     },
   ],

@@ -11,6 +11,7 @@ tags:
   - ZenWave Domain Language
   - ZDL
   - DSL
+canonical: https://medium.com/@ivangsa/stop-writing-yaml-for-openapi-use-a-compact-dsl-and-save-time-and-typing-574a138faddc
 ---
 
 > This article was first published @medium: [Stop writing YAML for OpenAPI, use a compact DSL and save time and typing](https://medium.com/@ivangsa/stop-writing-yaml-for-openapi-use-a-compact-dsl-and-save-time-and-typing-574a138faddc).

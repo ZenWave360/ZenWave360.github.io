@@ -12,7 +12,7 @@ const HeadQuery = graphql`
   }
 `
 
-export function Head({ title }) {
+export function Head({ title, canonical }) {
   const data = useStaticQuery(HeadQuery)
   return (
     <SEO
@@ -21,6 +21,7 @@ export function Head({ title }) {
           ? `${title} - ${data.site.siteMetadata.title}`
           : data.site.siteMetadata.title
       }
+      canonical={canonical}
     />
   )
 }

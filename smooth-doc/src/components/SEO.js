@@ -33,7 +33,7 @@ const SEOQuery = graphql`
   }
 `
 
-export function SEO({ title }) {
+export function SEO({ title, canonical }) {
   const data = useStaticQuery(SEOQuery)
   const metaDescription = data.site.siteMetadata.description
   const metaTitle = title || data.site.siteMetadata.title
@@ -46,6 +46,11 @@ export function SEO({ title }) {
     <Helmet
       htmlAttributes={{ lang: 'en' }}
       title={metaTitle}
+      link={
+        canonical
+          ? [{ rel: 'canonical', key: canonical, href: canonical }]
+          : []
+      }
       meta={[
         {
           name: 'description',

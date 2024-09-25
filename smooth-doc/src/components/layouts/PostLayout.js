@@ -55,11 +55,11 @@ const TocContainer = styled.div`
 `
 
 export function PostLayout({ children, tableOfContents, ...props }) {
-    console.log(`PostLayout.js`)
     const post = children?.props?.pageContext?.frontmatter || {}
-    console.log(`post ${JSON.stringify(post)}`)
+    const canonical = post.canonical || ''
+    // console.log(`PostLayout.js`, `post ${JSON.stringify(post)}`)
     return (
-        <WebSiteLayout {...props}>
+        <WebSiteLayout {...props} canonical={canonical}>
             <Container>
                 <x.div pb={6} px={3}>
                     <Article>

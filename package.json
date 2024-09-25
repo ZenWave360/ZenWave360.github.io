@@ -17,6 +17,7 @@
     "babel-plugin-styled-components": "2.0.2"
   },
   "dependencies": {
-    "gatsby-plugin-canonical-urls": "^5.13.1"
+    "gatsby-plugin-react-helmet": "^6.13.1",
+    "gatsby-plugin-react-helmet-canonical-urls": "^1.4.0"
   }
 }
