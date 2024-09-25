@@ -63,10 +63,10 @@ export function PostLayout({ children, tableOfContents, ...props }) {
             <Container>
                 <x.div pb={6} px={3}>
                     <Article>
-                        <header>
-                            <p>{post.title}</p>
-                            <p>{post.date}</p>
-                        </header>
+                        {/*<header>*/}
+                        {/*    <p>{post.title}</p>*/}
+                        {/*    <p>{post.date}</p>*/}
+                        {/*</header>*/}
                         {children}
                     </Article>
                 </x.div>
