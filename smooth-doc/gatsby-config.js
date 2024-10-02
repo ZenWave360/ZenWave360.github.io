@@ -34,6 +34,7 @@ function rehypeMetaAsAttributes() {
  * @param {string} [options.githubRepositoryURL]
  * @param {string} [options.githubDocRepositoryURL]
  * @param {string} [options.githubDefaultBranch]
+ * @param {string} [options.discordInvite]
  * @param {string} [options.author]
  * @param {string} [options.carbonAdsURL]
  * @param {{ apiKey: string, indexName: string, appId: string }} [options.docSearch]
@@ -47,6 +48,7 @@ module.exports = function config(options) {
     siteMetadata: {
       title: options.name,
       githubRepositoryURL: options.githubRepositoryURL,
+      discordInvite: options.discordInvite,
       sections: options.sections,
       navItems: options.navItems,
       carbonAdsURL: options.carbonAdsURL,

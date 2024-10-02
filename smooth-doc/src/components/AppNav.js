@@ -1,6 +1,6 @@
 import React from 'react'
 import { graphql, useStaticQuery } from 'gatsby'
-import { RiGithubFill, RiTwitterFill } from 'react-icons/ri'
+import { RiDiscordFill, RiGithubFill, RiTwitterFill } from 'react-icons/ri'
 import { Nav, NavList, NavListItem, NavLink } from './Nav'
 import { ColorModeSwitcher } from './ColorModeSwitcher'
 
@@ -10,6 +10,7 @@ const AppNavQuery = graphql`
       siteMetadata {
         twitterAccount
         githubRepositoryURL
+        discordInvite
         navItems {
           title
           url
@@ -32,6 +33,19 @@ export function AppNav() {
             </NavListItem>
           ),
         )}
+        {data.site.siteMetadata.discordInvite ? (
+          <NavListItem>
+            <NavLink
+              as="a"
+              href={data.site.siteMetadata.discordInvite}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Discord"
+            >
+              <RiDiscordFill style={{ width: 30, height: 30 }} />
+            </NavLink>
+          </NavListItem>
+        ) : null}
         {data.site.siteMetadata.githubRepositoryURL ? (
           <NavListItem>
             <NavLink

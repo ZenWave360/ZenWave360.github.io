@@ -25,6 +25,7 @@ function createSchemaCustomization({ actions, schema }) {
       author: String
       twitterAccount: String
       githubRepositoryURL: String
+      discordInvite: String
       sections: [String!]
       navItems: [NavItem!]
       carbonAdsURL: String
@@ -321,6 +322,7 @@ const pluginOptionsSchema = (/** @type {{ Joi: import('joi') }} */ { Joi }) => {
     githubRepositoryURL: Joi.string(),
     githubDocRepositoryURL: Joi.string(),
     githubDefaultBranch: Joi.string(),
+    discordInvite: Joi.string(),
     author: Joi.string(),
     carbonAdsURL: Joi.string(),
     docSearch: Joi.object({

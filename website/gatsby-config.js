@@ -10,6 +10,7 @@ module.exports = {
         baseDirectory: path.resolve(__dirname, '../'),
         siteUrl: "https://www.zenwave360.io/",
         githubRepositoryURL: "https://github.com/zenwave360",
+        discordInvite: "https://discord.gg/TWyXEeV2Ae",
         sections: ['ZenWave 360º', 'Domain Modeling', 'ZenWave SDK', 'ZenWave & API-First', 'ZenWave & API Testing', 'Examples'],
         navItems: [
           { title: 'Documentation', url: '/docs/zenwave360' },
