@@ -10,6 +10,7 @@ tags:
   - Code Generator
   - JHipster
   - DSL
+canonical: https://medium.com/@ivangsa/jhipster-jdl-to-openapi-generator-420393cbd40a
 ---
 
 # Generating OpenAPI definition files from JDL with ZenWaveSDK
