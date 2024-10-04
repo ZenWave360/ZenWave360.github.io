@@ -1,0 +1,109 @@
+---
+title: From OpenAPI to KarateDSL Tests with ZenWave SDK
+slug: /posts/From-OpenAPI-to-KarateDSL-Tests/
+image: OpenAPI2Karate.excalidraw.svg
+author: Ivan Garcia Sainz-Aja
+date: 2024-10-5T09:00:00+02:00
+excerpt: 'How to save time and typing by generating KarateDSL tests from OpenAPI definitions with ZenWave SDK.'
+tags:
+  - OpenAPI
+  - API-First
+  - Testing
+  - KarateDSL
+  - Code Generator
+canonical: https://medium.com/@ivangsa/from-openapi-to-karatedsl-tests-with-zenwave-sdk-d7f885d15f99
+---
+import { Gist, Image } from "smooth-doc/components";
+
+> This article was first published @medium: [From OpenAPI to KarateDSL Tests with ZenWave SDK](https://medium.com/@ivangsa/from-openapi-to-karatedsl-tests-with-zenwave-sdk-d7f885d15f99).
+
+
+<Image src="OpenAPI2Karate.excalidraw.svg" alt="From OpenAPI to KarateDSL Tests with ZenWave SDK" />
+
+# From OpenAPI to KarateDSL Tests with ZenWave SDK
+How to save time and typing by generating KarateDSL tests from OpenAPI definitions...
+
+Writing tests manually can be time-consuming, especially when you’re dealing with large API payloads and multiple endpoints.
+
+What if you could streamline this process and generate tests from your existing OpenAPI definitions? That’s where ZenWave SDK comes into play, helping you automate KarateDSL tests based on your OpenAPI spec.
+
+In this article, we’ll explore how ZenWave SDK can help you generate comprehensive [KarateDSL](https://karatelabs.github.io/karate/) tests, including business flow tests that connects multiple endpoints on a single test/process, saving you both time and effort.
+
+## KarateDSL
+
+KarateDSL is a popular framework designed for API testing and more, known for its simplicity. It allows testers to write API tests in a scripting language that includes built-in support for making HTTP calls, verifying responses, and handling complex JSON and XML assertions with minimal coding.
+
+In KarateDSL JSON is kind-of native, and it's quite easy to write complex payloads and assertions in a compact way, without much boilerplate code.
+
+Still it takes time and effort to bootstrap a new test from a blank page, especially when you have a large API with many endpoints and complex payloads.
+
+Thanks to ZenWave SDK you can leverage the information about your API you already have in your OpenAPI definition files to generate KarateDSL tests, saving you time and typing.
+
+## Installing ZenWave SDK
+
+ZenWave SDK is composed of a set of tools to help you convert models and APIs (including OpenAPI and AsyncAPI) into different software artifacts. It features a CLI tool and an Model Editor for IntelliJ.
+
+You can install an evergreen self updating ZenWave SDK CLI using JBang:
+
+```shell
+jbang alias add --fresh --name=zw release@zenwave360/zenwave-sdk
+```
+Following these instructions for complete details about JBang and IntelliJ Editor: https://www.zenwave360.io/docs/getting-started/
+
+Now you can use `jbang zw` to generate a complete OpenAPI definition file from your ZDL model.
+
+## Customers OpenAPI
+
+We'll use the following OpenAPI definition file as an example. It contains a simple API for managing customers, including endpoints for creating, reading, updating, and deleting customers.
+
+https://github.com/EDALearn/EDA-Playground-Online-Food-Delivery/blob/main/modules/customers/src/main/resources/apis/openapi.yml
+
+<Image alt="Customers OpenAPI" src="CustomerOpenAPI-UI.png" />
+
+With this API and ZenWave SDK we can generate KarateDSL tests that cover all the endpoints and operations defined in the OpenAPI definition file, as well as business flow tests that span multiple API calls.
+
+## OpenAPI to KarateDSL Generator Plugin
+
+ZenWave SDK is composed of several plugins. One of them is the [OpenAPIKaratePlugin](https://www.zenwave360.io/zenwave-sdk/plugins/openapi-karate/), which generates KarateDSL tests from OpenAPI definitions.
+
+Use the following command to generate a KarateDSL test for each operation defined in the OpenAPI definition file, grouping them by service:
+
+```shell
+jbang zw -p io.zenwave360.sdk.plugins.OpenAPIKaratePlugin \
+    specFile=src/main/resources/public/apis/openapi.yml \
+    targetFolder=src/test/resources \
+    testsPackage=io.zenwave360.example.adapters.web.tests \
+    groupBy=service
+```
+
+This is how the generated KarateDSL test looks like:
+
+<Gist gist="ivangsa/f115feff649567802c62c4e3def9bf0e" file="CustomerApi.feature" />
+
+## Generating Business Flow Tests that spans multiple API calls
+
+Now we are going to use ZenWave SDK to generate a KarateDSL script skeleton that tests the complete CRUD operations for a customer, as an easy to understand example of a business flow test.
+
+Notice how we are using the `groupBy=businessFlow` and `operationIds` parameters to generate a KarateDSL test that covers the complete CRUD operations for a customer.
+
+```shell
+jbang zw -p io.zenwave360.sdk.plugins.OpenAPIKaratePlugin \
+    specFile=src/main/resources/model/openapi.yml \
+    targetFolder=src/test/resources \
+    testsPackage=io.zenwave360.example.adapters.web.tests \
+    groupBy=businessFlow \
+    businessFlowTestName=CustomerCRUDTest \
+    operationIds=createCustomer,getCustomer,updateCustomer,deleteCustomer
+```
+
+This is how the generated KarateDSL test looks like. Now it's your time as a tester/developer to fill in the blanks and connect the data from one operation to the next one.
+
+<Gist gist="ivangsa/f115feff649567802c62c4e3def9bf0e" file="CreateUpdateDeleteCustomerKarateTest.feature" />
+
+## Run and Debug KarateDSL on VSCode (Open Source)
+
+Now that you have your KarateDSL tests generated, you can run them using the KarateDSL CLI or the KarateIDE plugin for Visual Studio Code. [ZenWave Karate IDE](https://marketplace.visualstudio.com/items?itemName=KarateIDE.karate-ide) is, besides KarateLabs PRO subscription, the only free and open-source alternative to Debug KarateDSL scripts in Visual Studio Code.
+
+<Image alt="KarateIDE" src="KarateIDE-MarketPlace.png" href="https://marketplace.visualstudio.com/items?itemName=KarateIDE.karate-ide" />
+
+Read https://medium.com/@ivangsa/debugging-karatedsl-scripts-in-vscode-open-source-d7b8938f9eb4 for more details about debuging KarateDSL scripts in Visual Studio Code.
