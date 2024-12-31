@@ -46,7 +46,7 @@ ZenWave SDK is composed of a set of tools to help you convert models and APIs (i
 You can install an evergreen self updating ZenWave SDK CLI using JBang:
 
 ```shell
-jbang alias add --fresh --name=zw release@zenwave360/zenwave-sdk
+jbang alias add --force --fresh --name=zw release@zenwave360/zenwave-sdk
 ```
 Following these instructions for complete details about JBang and IntelliJ Editor: https://www.zenwave360.io/docs/getting-started/
 
@@ -70,7 +70,7 @@ Use the following command to generate a KarateDSL test for each operation define
 
 ```shell
 jbang zw -p io.zenwave360.sdk.plugins.OpenAPIKaratePlugin \
-    specFile=src/main/resources/public/apis/openapi.yml \
+    apiFile=src/main/resources/public/apis/openapi.yml \
     targetFolder=src/test/resources \
     testsPackage=io.zenwave360.example.adapters.web.tests \
     groupBy=service
@@ -88,7 +88,7 @@ Notice how we are using the `groupBy=businessFlow` and `operationIds` parameters
 
 ```shell
 jbang zw -p io.zenwave360.sdk.plugins.OpenAPIKaratePlugin \
-    specFile=src/main/resources/model/openapi.yml \
+    apiFile=src/main/resources/model/openapi.yml \
     targetFolder=src/test/resources \
     testsPackage=io.zenwave360.example.adapters.web.tests \
     groupBy=businessFlow \

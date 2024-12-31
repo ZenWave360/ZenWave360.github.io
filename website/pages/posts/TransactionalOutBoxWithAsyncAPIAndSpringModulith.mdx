@@ -1,0 +1,267 @@
+---
+title: Transactional OutBox With AsyncAPI SpringCloud Stream And Spring Modulith
+slug: /posts/TransactionalOutBoxWithAsyncAPIAndSpringModulith/
+image: TransactionalOutBoxWithAsyncAPIAndSpringModulith.png
+author: Ivan Garcia Sainz-Aja
+date: 2025-01-03T09:00:00+02:00
+excerpt: 'How to implement Transactional Outbox pattern with AsyncAPI, SpringCloud Stream and Spring Modulith using ZenWaveSDK Code Generator for AsyncAPI.'
+tags:
+  - Transactional Outbox
+  - AsyncAPI
+  - ZenWave SDK
+  - Code Generator
+  - Spring Cloud Stream
+  - Spring Modulith
+---
+import { Image } from "smooth-doc/components";
+
+# Implementing a Transactional OutBox With AsyncAPI And SpringModulith using ZenWaveSDK
+
+## Introduction
+
+When processes span multiple services without shared transaction boundaries, ensuring atomicity and consistency in distributed systems is challenging.
+
+Distributed transactions with Two-Phase Commits (2PC) are complex, introduce significant performance overhead, and may not even be feasible for certain services.
+
+The Outbox Pattern solves this by using a Database Transaction to store events in a dedicated "outbox" table within the same transaction as a database update. These events are then published to external systems, such as an email service or message broker, ensuring eventual consistency without the need for distributed transactions.
+
+In this post, we’ll explore how we can implement a Transactional Outbox Pattern to:
+
+- Persist data to a supported transactional database (e.g., SQL or MongoDB).
+- Send events to an external message broker like Kafka or RabbitMQ using Spring Cloud Stream.
+- Leveraging Spring Modulith Events transactional features
+- Using ZenWaveSDK Code Generator for AsyncAPI so you don't need to write a single line of boilerplate code for the transactional outbox and event publishing.
+
+## Distributed Transactions Problem and The Outbox Pattern
+
+When managing a Customer entity, we face a challenge: persisting Customer details and publishing an event atomically. The database and the external message broker do not share a transaction boundary, leading to potential inconsistencies.
+
+- **Scenario 1:** If the event is sent before the database transaction commits, a rollback of the transaction would leave the system in an inconsistent state because the event cannot be undone.
+- **Scenario 2:** If the event is sent after the database transaction commits, there’s no guarantee the event will be published if the service crashes or the network fails.
+
+```java
+@Service
+public class CustomerService {
+    // ...
+
+    @Transactional
+    public Customer createCustomer(Customer input) {
+        log.debug("Request to save Customer: {}", input);
+        var customer = customerServiceMapper.update(new Customer(), input);
+        customer = customerRepository.save(customer); // Persist to DB
+
+        var customerEvent = eventsMapper.asCustomerEvent(customer);
+        eventsProducer.onCustomerEvent(customerEvent); // Emit Event to external Broker
+        return customer;
+    }
+}
+```
+
+With the transactional outbox pattern, instead of directly sending the event to the external system, eventsProducer.onCustomerEvent(customerEvent) stores the event in a dedicated outbox table within the same transaction as the database update. An external process then reads from the outbox table and publishes the event to the message broker.
+
+However, implementing this external process, managing the outbox table, and ensuring the event is published only once and in order can be complex and error-prone.
+
+Fortunately, with [Spring Modulith’s Event Publication Registry](https://docs.spring.io/spring-modulith/reference/events.html#publication-registry) and [ZenWaveSDK Code Generator for AsyncAPI](https://www.zenwave360.io/zenwave-sdk/plugins/asyncapi-spring-cloud-streams3/), we can simplify this process for you so you can focus on our business logic.
+
+## Playground Project
+
+Because working software is worth more than a thousand words, we’ll use a fully functional playground project that you can test yourself.
+
+We'll use the following project as playground https://github.com/ZenWave360/zenwave-playground/tree/main/zenwave-jpa-example.
+
+It contains a simple API for managing Customer's details, including REST endpoints for CRUD which publish event notifications using Avro as payload format to a Kafka topic.
+
+- OpenAPI definition file: https://github.com/ZenWave360/zenwave-playground/blob/main/zenwave-jpa-example/src/main/resources/public/apis/openapi.yml
+- AsyncAPI definition file: https://github.com/ZenWave360/zenwave-playground/blob/main/zenwave-jpa-example/src/main/resources/public/apis/asyncapi.yml
+- Avro schemas for events: https://github.com/ZenWave360/zenwave-playground/tree/main/zenwave-jpa-example/src/main/resources/public/apis/avro
+
+
+## ZenWaveSDK Code Generation for AsyncAPI and Spring Cloud Streams
+
+ZenWaveSDK can generate all boilerplate code you need to send/receive events using Spring Cloud Stream from an AsyncAPI definition file.
+
+From your AsyncAPI definition file, ZenWaveSDK generates:
+
+- DTO/Models for your events payloads
+- Typed Headers Objects
+- "Intention revealing" Java interfaces with your operations naming.
+- A lightweight implementation using Spring Cloud Streams you can @Autowire in your services.
+
+You can the configure Spring Cloud Stream to send/receive messages using any of the [supported binders](https://docs.spring.io/spring-cloud-stream/reference/index.html) (Kafka, RabbitMQ, etc), don't need to write any boilerplate code so you can focus on entirely on your business logic.
+
+<details>
+  <summary>ZenWave SDK Maven Plugin Configuration</summary>
+
+```xml
+  <plugin>
+    <groupId>io.github.zenwave360.zenwave-sdk</groupId>
+    <artifactId>zenwave-sdk-maven-plugin</artifactId>
+    <version>${zenwave.version}</version>
+    <configuration>
+      <inputSpec>${project.basedir}/src/main/resources/public/apis/asyncapi.yml</inputSpec>
+      <addCompileSourceRoot>true</addCompileSourceRoot>
+      <addTestCompileSourceRoot>true</addTestCompileSourceRoot>
+    </configuration>
+    <executions>
+      <!-- DTOs -->
+      <!-- we skip DTOs generation in this case b/c we are using Avro for that -->
+
+      <!-- Generate PROVIDER -->
+      <execution>
+        <id>generate-asyncapi</id>
+        <phase>generate-sources</phase>
+        <goals>
+          <goal>generate</goal>
+        </goals>
+        <configuration>
+          <generatorName>spring-cloud-streams3</generatorName>
+          <configOptions>
+            <role>provider</role>
+            <style>imperative</style>
+            <transactionalOutbox>modulith</transactionalOutbox><!-- using Spring Modulith implementation -->
+            <modelPackage>${asyncApiModelPackage}</modelPackage>
+            <producerApiPackage>${asyncApiProducerApiPackage}</producerApiPackage>
+            <consumerApiPackage>${asyncApiConsumerApiPackage}</consumerApiPackage>
+          </configOptions>
+        </configuration>
+      </execution>
+    </executions>
+    <dependencies>
+      // ...
+    </dependencies>
+  </plugin>
+```
+</details>
+
+<details>
+  <summary>Avro Maven Plugin Configuration</summary>
+```xml
+<plugin>
+  <groupId>org.apache.avro</groupId>
+  <artifactId>avro-maven-plugin</artifactId>
+  <version>1.11.1</version>
+  <executions>
+    <execution>
+      <goals>
+        <goal>schema</goal>
+      </goals>
+      <phase>generate-sources</phase>
+    </execution>
+  </executions>
+  <configuration>
+    <sourceDirectory>${project.basedir}/src/main/resources/public/apis/avro</sourceDirectory>
+    <outputDirectory>${project.basedir}/target/generated-sources/avro</outputDirectory>
+    <imports>
+      <import>${project.basedir}/src/main/resources/public/apis/avro/PaymentMethodType.avsc</import>
+      <import>${project.basedir}/src/main/resources/public/apis/avro/PaymentMethod.avsc</import>
+      <import>${project.basedir}/src/main/resources/public/apis/avro/Address.avsc</import>
+    </imports>
+  </configuration>
+</plugin>
+```
+</details>
+
+For this we need to configure `zenwave-sdk-maven-plugin` and in this case also `avro-maven-plugin` in our `pom.xml` file. This configuration will run as part of your build and generate all necessary code in the `target/generated-sources` folder.
+
+Because it will run as part of your build every time you change your AsyncAPI definition file, you can be sure your code is always in sync with your API definition.
+
+<Image src="ZenWaveSDK-Target-Generated-Sources-With-Arrow.png" />
+
+And because we configured the `transactionalOutbox` option to `modulith`, ZenWaveSDK will generate the code to use Spring Modulith Events Publication Registry to manage the transactional outbox for you.
+
+<Image src="ZenWaveSDK-TransactionalOutBox-Modulith-With-Arrows.png" />
+
+## Spring Modulith Events Publication Registry
+
+Because we have enabled Event Externalization and configured `Message<?>` objects to be externalized (as shown below), these events are also stored transactionally in the Modulith Event Publication Registry.
+
+```yaml
+spring:
+  modulith.events.externalization.enabled: true
+  modulith.events.jdbc.schema-initialization.enabled: true
+  modulith.events.republish-outstanding-events-on-restart: true
+```
+
+<Image src="Modulith-Event-Publication-Registry.png" />
+
+## Using Spring Cloud Streams to Externalize Modulith Events
+
+So now that Spring Modulith Event is taking charge of our Messages we need to configure one of the multiple supported [event externalizers](https://docs.spring.io/spring-modulith/reference/events.html#externalization).
+
+If we were publishing POJOs in JSON format we could use `spring-modulith-events-kafka` to externalize our events to a Kafka topic. But because we want to externalize `Message<?>` objects with Avro payloads we will use `io.zenwave360.sdk:spring-modulith-events-scs` that supports serializing/deserializing `Message<?>` objects with or without Avro payloads.
+
+See https://github.com/ZenWave360/spring-modulith-events-spring-cloud-stream for more details.
+
+For this we will need to add the following dependencies to our `pom.xml` file:
+
+```xml
+<dependency>
+    <groupId>io.zenwave360.sdk</groupId>
+    <artifactId>spring-modulith-events-scs</artifactId>
+    <version>${spring-modulith-events-scs.version}</version>
+</dependency>
+<dependency><!-- Needed for serializing Avro payloads to db storage as json -->
+    <groupId>com.fasterxml.jackson.dataformat</groupId>
+    <artifactId>jackson-dataformat-avro</artifactId>
+</dependency>
+```
+
+And `@EnableSpringCloudStreamEventExternalization` to our Spring Boot Configuration:
+
+```java
+import io.zenwave360.modulith.events.scs.config.EnableSpringCloudStreamEventExternalization;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@EnableSpringCloudStreamEventExternalization
+class ExternalizationConfiguration {
+}
+```
+This will route programmatically route our `Message<?>` objects to the correct Spring Cloud Stream binding, but you don't need to worry about any of this as it is handled automatically behind the scenes.
+
+```java
+@AutoConfiguration
+@AutoConfigureAfter(EventExternalizationAutoConfiguration.class)
+@ConditionalOnProperty(name = "spring.modulith.events.externalization.enabled", havingValue = "true",
+        matchIfMissing = true)
+public class MessageExternalizationConfiguration {
+
+    @Bean
+    EventExternalizationConfiguration eventExternalizationConfiguration() {
+        return EventExternalizationConfiguration.externalizing()
+            .select(event -> annotatedAsExternalized().test(event)
+                    || event instanceof Message<?> && getTarget(event) != null)
+            .route(Message.class, event -> RoutingTarget.forTarget(getTarget(event)).withoutKey())
+            .build();
+    }
+
+    private String getTarget(Object event) {
+        if (event instanceof Message<?> message) {
+            return message.getHeaders()
+                .get(SpringCloudStreamEventExternalizer.SPRING_CLOUD_STREAM_SENDTO_DESTINATION_HEADER, String.class);
+        }
+        return null;
+    }
+}
+```
+## Automagic Transactional OutBox Implementation
+
+So now our original code is _automagically_ implementing the Transactional OutBox pattern using Spring Modulith Events Publication Registry and Spring Cloud Stream thanks to ZenWaveSDK AsyncAPI Code Generator.
+
+```java
+@Service
+public class CustomerService {
+    // ...
+
+    @Transactional
+    public Customer createCustomer(Customer input) {
+        log.debug("Request to save Customer: {}", input);
+        var customer = customerServiceMapper.update(new Customer(), input);
+        customer = customerRepository.save(customer); // Persist to DB
+
+        var customerEvent = eventsMapper.asCustomerEvent(customer);
+        eventsProducer.onCustomerEvent(customerEvent); // Emit Event to external Broker
+        return customer;
+    }
+}
+```

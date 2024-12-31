@@ -57,7 +57,7 @@ Because JDL can only describe static aspects of your models and doesn't cover dy
 ```shell
 jbang zw -p io.zenwave360.sdk.plugins.JDLToAsyncAPIPlugin \
     includeCommands=false \
-    specFile=src/main/resources/model/entities-model.jdl \
+    zdlFile=src/main/resources/model/entities-model.jdl \
     idType=integer \
     idTypeFormat=int64 \
     annotations=aggregate \

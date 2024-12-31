@@ -75,7 +75,7 @@ Checkout the [ZDL documentation](https://www.zenwave360.io/docs/event-driven-des
 Install an evergreen self updating ZenWave SDK CLI using JBang:
 
 ```shell
-jbang alias add --fresh --name=zw release@zenwave360/zenwave-sdk
+jbang alias add --force --fresh --name=zw release@zenwave360/zenwave-sdk
 ```
 Following these instructions for complete details about JBang and IntelliJ Editor: https://www.zenwave360.io/docs/getting-started/
 
@@ -83,7 +83,7 @@ Now you can use jbang zw to generate a complete OpenAPI definition file from you
 
 ```shell
 jbang zw -p ZDLToOpenAPIPlugin \
-specFile=model.zdl \
+zdlFile=model.zdl \
 idType=integer \
 idTypeFormat=int64 \
 targetFolder=. \
@@ -195,7 +195,7 @@ Run:
 
 ```shell
 jbang zw -p io.zenwave360.sdk.plugins.ZDLToOpenAPIPlugin \
-    specFile=customers-model.zdl \
+    zdlFile=customers-model.zdl \
     idType=integer \
     idTypeFormat=int64 \
     targetFolder=. \

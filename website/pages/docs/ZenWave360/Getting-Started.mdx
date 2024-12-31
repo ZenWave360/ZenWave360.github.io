@@ -35,9 +35,9 @@ NOTE: Temurin (Eclipse) is a good option for Java JDK as it is high performance,
 Use JBang to install an _evergreen_ self updating CLI for the ZenWave SDK.
 
 ```bash
-jbang alias add --fresh --name=zw release@zenwave360/zenwave-sdk
+jbang alias add --force --fresh --name=zw release@zenwave360/zenwave-sdk
 ```
-**NOTE:** You can install ZenWave versions from different channel: `release` for latest stable version, `snapshots` for development versions compatible with current releases or `next` for experimental versions. They can be installed side by side (using different `--name=<alias>`) or independently.
+**NOTE:** You can install ZenWave versions from different channel: `release` for latest stable version, `snapshots` for development versions. They can be installed side by side (using different `--name=<alias>`) or independently.
 
 ## Install ZenWave Editor IntelliJ Plugin
 
@@ -58,7 +58,7 @@ We expect most companies and teams to have their own starter base project. If yo
 - ZenWave [Starter Project for JPA](https://github.com/ZenWave360/zenwave-playground/tree/main/zenwave-jpa-baseline)
 - ZenWave [Starter Project for MongoDB](https://github.com/ZenWave360/zenwave-playground/tree/main/zenwave-mongodb-baseline)
 
-ZenWave SDK generated code was tested with Spring-Boot 3.1.4, Hibernate 6.x, MongoDB 5 and Spring-Cloud xxx.
+ZenWave SDK generated code was tested with Spring-Boot up to 3.4.0, Hibernate 6.x, MongoDB 5 and Spring-Cloud 2024.0.0.
 
 ## ZDL Modeling and Code Generation
 

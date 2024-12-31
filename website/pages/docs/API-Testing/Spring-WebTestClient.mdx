@@ -27,7 +27,7 @@ config {
     plugins {
 ▶️      SpringWebTestClientPlugin {
             groupBy service
-            specFile "modules/customers/src/main/resources/apis/openapi.yml"
+            apiFile "modules/customers/src/main/resources/apis/openapi.yml"
             // these should match the values of openapi-generator-maven-plugin
             openApiApiPackage "{{basePackage}}.adapters.web"
             openApiModelPackage "{{basePackage}}.adapters.web.model"
@@ -42,7 +42,7 @@ Or JBang CLI:
 
 ```shell
 jbang zw -p io.zenwave360.sdk.plugins.SpringWebTestClientPlugin \
-    specFile=src/main/resources/model/openapi.yml \
+    apiFile=src/main/resources/model/openapi.yml \
     targetFolder=src/test/java \
     testsPackage=io.zenwave360.example.adapters.web.tests \
     openApiApiPackage=io.zenwave360.example.adapters.web \
@@ -116,7 +116,7 @@ config {
             businessFlowTestName CustomerCRUDTest
             operationIds createCustomer,getCustomer,updateCustomer,deleteCustomer
 
-            specFile "modules/customers/src/main/resources/apis/openapi.yml"
+            apiFile "modules/customers/src/main/resources/apis/openapi.yml"
             // these should match the values of openapi-generator-maven-plugin
             openApiApiPackage "{{basePackage}}.adapters.web"
             openApiModelPackage "{{basePackage}}.adapters.web.model"
@@ -131,7 +131,7 @@ Or JBang CLI:
 
 ```shell
 jbang zw -p io.zenwave360.sdk.plugins.SpringWebTestClientPlugin \
-    specFile=src/main/resources/model/openapi.yml \
+    apiFile=src/main/resources/model/openapi.yml \
     targetFolder=src/test/java \
     testsPackage=io.zenwave360.example.adapters.web.tests \
     openApiApiPackage=io.zenwave360.example.adapters.web \

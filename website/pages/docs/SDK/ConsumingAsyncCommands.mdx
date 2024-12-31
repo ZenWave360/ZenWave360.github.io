@@ -37,7 +37,7 @@ You can use [ZDL To AsyncAPI Generator](https://zenwave360.github.io/zenwave-sdk
 
 ```bash
 jbang zw -p io.zenwave360.sdk.plugins.ZDLToAsyncAPIPlugin \
-    specFile=orders-model.zdl \
+    zdlFile=orders-model.zdl \
     idType=integer \
     idTypeFormat=int64 \
     targetFile=src/main/resources/apis/asyncapi.yml
@@ -160,7 +160,7 @@ jbang zw -p io.zenwave360.sdk.plugins.SpringCloudStreams3AdaptersPlugin --help
 
 ```bash
 jbang zw -p io.zenwave360.sdk.plugins.SpringCloudStreams3AdaptersPlugin \
-    specFile=src/main/resources/apis/asyncapi.yml \
+    apiFile=src/main/resources/apis/asyncapi.yml \
     zdlFile=src/main/resources/model/orders-model.jdl \
     role=provider \
     style=imperative \

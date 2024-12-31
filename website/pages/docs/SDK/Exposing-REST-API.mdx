@@ -245,7 +245,7 @@ config {
         }
 
         OpenAPIControllersPlugin {
-            specFile "modules/customers/src/main/resources/apis/openapi.yml" // relative to project root
+            apiFile "modules/customers/src/main/resources/apis/openapi.yml" // relative to project root
             zdlFile "models/customers.zdl" // this file: relative project root
 
             // these should match the values of openapi-generator-maven-plugin
@@ -261,7 +261,7 @@ Or JBang CLI:
 
 ```bash
 jbang zw -p io.zenwave360.sdk.plugins.OpenAPIControllersPlugin
-    specFile=src/main/resources/model/openapi.yml \
+    apiFile=src/main/resources/model/openapi.yml \
     zdlFile=src/main/resources/model/orders-model.jdl \
     basePackage=io.zenwave360.example \
     controllersPackage={{basePackage}}.adapters.web \

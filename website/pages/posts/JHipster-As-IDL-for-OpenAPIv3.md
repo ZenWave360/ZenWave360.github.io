@@ -55,7 +55,7 @@ ZenWave SDK will generate CRUD operations for your entities, including paginated
 
 ```shell
 jbang zw -p io.zenwave360.sdk.plugins.ZDLToOpenAPIPlugin \
-    specFile=entities-model.jdl \
+    zdlFile=entities-model.jdl \
     idType=integer \
     idTypeFormat=int64 \
     targetFolder=. \

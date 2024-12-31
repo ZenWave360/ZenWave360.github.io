@@ -114,13 +114,11 @@ The following annotations are special and will be interpreted by ZenWave SDK Bac
 
 | **Annotation** | **Entity** | **Id/Version** | **createdDate/By** | **lastModifiedDate/By** | **Persistence** | **Repository** |
 |:---------------|------------|:---------------|:-------------------|:------------------------|:----------------|:---------------|
-| **entity**     | yes        | yes            |                    |                         | yes             |                |
+| **_&lt;entity&gt;_**     | yes        | yes            |                    |                         | yes             |                |
 | **@aggregate** | yes        | yes            |                    |                         | yes             | yes            |
 | **@embedded**  | yes        |                |                    |                         | yes             |                |
 | **@auditing**  | yes        |                | yes                | yes                     |                 |                |
-| **@vo**        | yes        |                |                    |                         |                 |                |
 | **@skip**      | no         |                |                    |                         |                 |                |
-| **@input**     | no         |                |                    |                         |                 |                |
 | **@abstract**  | yes        | no             |                    |                         |                 |                |
 
 The most important ones are `@aggregate`, `@embedded`, `@copy`, `@extends` and `@abstract`.
@@ -402,7 +400,7 @@ From the command line using JBang:
 
 ```bash
 jbang zw -p BackendApplicationDefaultPlugin \
-    specFile=orders.zdl \
+    zdlFile=orders.zdl \
     basePackage="io.zenwave360.example.orders" \
     persistence=mongodb \
     useLombok=true \
