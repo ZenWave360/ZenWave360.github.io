@@ -1,10 +1,10 @@
 ---
 title: Transactional OutBox With AsyncAPI SpringCloud Stream And Spring Modulith
 slug: /posts/TransactionalOutBoxWithAsyncAPIAndSpringModulith/
-image: TransactionalOutBoxWithAsyncAPIAndSpringModulith.png
+image: TransactionalOutBoxWithAsyncAPIAndSpringModulith-light-250.png
 author: Ivan Garcia Sainz-Aja
 date: 2025-01-03T09:00:00+02:00
-excerpt: 'How to implement Transactional Outbox pattern with AsyncAPI, SpringCloud Stream and Spring Modulith using ZenWaveSDK Code Generator for AsyncAPI.'
+excerpt: 'How to implement Transactional Outbox pattern with AsyncAPI, SpringCloud Stream, Spring Modulith and ZenWaveSDK Code Generator for AsyncAPI.'
 tags:
   - Transactional Outbox
   - AsyncAPI
@@ -15,7 +15,7 @@ tags:
 ---
 import { Image } from "smooth-doc/components";
 
-# Implementing a Transactional OutBox With AsyncAPI And SpringModulith using ZenWaveSDK
+# Implementing a Transactional OutBox With AsyncAPI, SpringModulith and ZenWaveSDK
 
 ## Introduction
 
@@ -31,6 +31,23 @@ In this post, we’ll explore how we can implement a Transactional Outbox Patter
 - Send events to an external message broker like Kafka or RabbitMQ using Spring Cloud Stream.
 - Leveraging Spring Modulith Events transactional features
 - Using ZenWaveSDK Code Generator for AsyncAPI so you don't need to write a single line of boilerplate code for the transactional outbox and event publishing.
+
+
+<Image dark="TransactionalOutBoxWithAsyncAPIAndSpringModulith-dark.png" light="TransactionalOutBoxWithAsyncAPIAndSpringModulith-light.png" alt="Transactional OutBox With AsyncAPI SpringCloud Stream And Spring Modulith" />
+
+
+## Playground Project
+
+Because working software is worth more than a thousand words, we’ll use a fully functional playground project that you can test yourself.
+
+We'll use the following project as playground https://github.com/ZenWave360/zenwave-playground/tree/main/zenwave-jpa-example.
+
+It contains a simple API for managing Customer's details, including REST endpoints for CRUD which publish event notifications using Avro as payload format to a Kafka topic.
+
+- OpenAPI definition file: https://github.com/ZenWave360/zenwave-playground/blob/main/zenwave-jpa-example/src/main/resources/public/apis/openapi.yml
+- AsyncAPI definition file: https://github.com/ZenWave360/zenwave-playground/blob/main/zenwave-jpa-example/src/main/resources/public/apis/asyncapi.yml
+- Avro schemas for events: https://github.com/ZenWave360/zenwave-playground/tree/main/zenwave-jpa-example/src/main/resources/public/apis/avro
+
 
 ## Distributed Transactions Problem and The Outbox Pattern
 
@@ -57,28 +74,17 @@ public class CustomerService {
 }
 ```
 
-With the transactional outbox pattern, instead of directly sending the event to the external system, eventsProducer.onCustomerEvent(customerEvent) stores the event in a dedicated outbox table within the same transaction as the database update. An external process then reads from the outbox table and publishes the event to the message broker.
+With the transactional outbox pattern, instead of directly sending the event to the external system, `eventsProducer.onCustomerEvent(customerEvent)` stores the event in a dedicated outbox table within the same transaction as the database update. An external process then reads from the outbox table and publishes the event to the message broker.
 
 However, implementing this external process, managing the outbox table, and ensuring the event is published only once and in order can be complex and error-prone.
 
-Fortunately, with [Spring Modulith’s Event Publication Registry](https://docs.spring.io/spring-modulith/reference/events.html#publication-registry) and [ZenWaveSDK Code Generator for AsyncAPI](https://www.zenwave360.io/zenwave-sdk/plugins/asyncapi-spring-cloud-streams3/), we can simplify this process for you so you can focus on our business logic.
-
-## Playground Project
-
-Because working software is worth more than a thousand words, we’ll use a fully functional playground project that you can test yourself.
-
-We'll use the following project as playground https://github.com/ZenWave360/zenwave-playground/tree/main/zenwave-jpa-example.
-
-It contains a simple API for managing Customer's details, including REST endpoints for CRUD which publish event notifications using Avro as payload format to a Kafka topic.
-
-- OpenAPI definition file: https://github.com/ZenWave360/zenwave-playground/blob/main/zenwave-jpa-example/src/main/resources/public/apis/openapi.yml
-- AsyncAPI definition file: https://github.com/ZenWave360/zenwave-playground/blob/main/zenwave-jpa-example/src/main/resources/public/apis/asyncapi.yml
-- Avro schemas for events: https://github.com/ZenWave360/zenwave-playground/tree/main/zenwave-jpa-example/src/main/resources/public/apis/avro
-
+Fortunately, with [Spring Modulith’s Event Publication Registry](https://docs.spring.io/spring-modulith/reference/events.html#publication-registry) and [ZenWaveSDK Code Generator for AsyncAPI](https://www.zenwave360.io/zenwave-sdk/plugins/asyncapi-spring-cloud-streams3/), we can simplify this process for you so you can focus only on your business logic.
 
 ## ZenWaveSDK Code Generation for AsyncAPI and Spring Cloud Streams
 
 ZenWaveSDK can generate all boilerplate code you need to send/receive events using Spring Cloud Stream from an AsyncAPI definition file.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/d5xddNWYR5I?si=G9MQO9afhNIw6ym2" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 From your AsyncAPI definition file, ZenWaveSDK generates:
 
@@ -165,11 +171,11 @@ For this we need to configure `zenwave-sdk-maven-plugin` and in this case also `
 
 Because it will run as part of your build every time you change your AsyncAPI definition file, you can be sure your code is always in sync with your API definition.
 
-<Image src="ZenWaveSDK-Target-Generated-Sources-With-Arrow.png" />
+<Image dark="ZenWaveSDK-Target-Generated-Sources-With-Arrow.png" light="ZenWaveSDK-Target-Generated-Sources-With-Arrow-light.png" />
 
 And because we configured the `transactionalOutbox` option to `modulith`, ZenWaveSDK will generate the code to use Spring Modulith Events Publication Registry to manage the transactional outbox for you.
 
-<Image src="ZenWaveSDK-TransactionalOutBox-Modulith-With-Arrows.png" />
+<Image dark="ZenWaveSDK-TransactionalOutBox-Modulith-With-Arrows.png" light="ZenWaveSDK-TransactionalOutBox-Modulith-With-Arrows-light.png" />
 
 ## Spring Modulith Events Publication Registry
 
@@ -182,7 +188,7 @@ spring:
   modulith.events.republish-outstanding-events-on-restart: true
 ```
 
-<Image src="Modulith-Event-Publication-Registry.png" />
+<Image dark="Modulith-Event-Publication-Registry.png" light="Modulith-Event-Publication-Registry-light.png" />
 
 ## Using Spring Cloud Streams to Externalize Modulith Events
 
