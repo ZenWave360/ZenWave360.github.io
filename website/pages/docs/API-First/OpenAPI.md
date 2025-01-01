@@ -1,7 +1,7 @@
 ---
 section: ZenWave & API-First
 title: OpenAPI
-slug: /API-First/OpenAPI
+slug: /API-First/OpenAPI/
 parent: API-First
 order: 1
 ---

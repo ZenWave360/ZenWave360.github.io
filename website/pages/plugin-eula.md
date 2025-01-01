@@ -1,6 +1,6 @@
 ---
 title: ZenWave Editor EULA
-slug: /plugin-eula
+slug: /plugin-eula/
 ---
 
 **End-User License Agreement (EULA) for **ZenWave Model Editor for ZDL****

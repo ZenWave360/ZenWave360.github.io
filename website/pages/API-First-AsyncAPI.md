@@ -1,6 +1,6 @@
 ---
 title: POST API-First with AsyncAPI
-slug: /page/API-First-with-AsyncAPI
+slug: /page/API-First-with-AsyncAPI/
 order: 2
 ---
 

@@ -1,7 +1,7 @@
 ---
 section: ZenWave & API-First
 title: AsyncAPI
-slug: /API-First/AsyncAPI
+slug: /API-First/AsyncAPI/
 parent: API-First
 order: 2
 ---
