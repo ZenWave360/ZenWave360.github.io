@@ -67,25 +67,25 @@ Also, while there can be only one provider that produces a given event, but comm
 
 ## Understanding AsyncAPI Specification
 
-> See [AsyncAPI Reference](https://www.asyncapi.com/docs/reference) and [Understanding AsyncAPI Specification](/posts/API-First-with-AsyncAPI-And-ZenWave-SDK/#understanding-asyncapi-definition) blog post for more details about AsyncAPI documents.
+> See [AsyncAPI Reference](https://www.asyncapi.com/docs/reference) and [Understanding AsyncAPI Specification](/posts/API-First-with-AsyncAPI-And-ZenWave-SDK/#understanding-asyncapi-definition/) blog post for more details about AsyncAPI documents.
 
 ### Different Styles of Event Messages
 
-> See [Different Styles of Event Messages](/posts/API-First-with-AsyncAPI-And-ZenWave-SDK/#different-styles-of-event-messages) to learn about `Notification Messages`, `State Transfer Messages` and `Domain Event Messages`.
+> See [Different Styles of Event Messages](/posts/API-First-with-AsyncAPI-And-ZenWave-SDK/#different-styles-of-event-messages/) to learn about `Notification Messages`, `State Transfer Messages` and `Domain Event Messages`.
 
 ## API-First Code Generator from AsyncAPI
 
 You can use [API-First AsyncAPI Maven Plugin](https://www.zenwave360.io/zenwave-sdk/plugins/asyncapi-spring-cloud-streams3/#maven-plugin-configuration-api-first) to generate models (DTOs) and a producer implementation.
 
-> See [Producing Domain Events](/docs/zenwave-sdk/producing-domain-events) and [Consuming Async Commands](/docs/zenwave-sdk/consuming-async-commands) for more details on how to configure the plugin, and how to use generated code.
+> See [Producing Domain Events](/docs/zenwave-sdk/producing-domain-events) and [Consuming Async Commands](/docs/zenwave-sdk/consuming-async-commands/) for more details on how to configure the plugin, and how to use generated code.
 
 ## Some Patterns supported by ZenWave AsyncAPI Code Generator
 
-### [Exception Handling with Business Dead Letter Queue](/posts/ZenWave-AsyncAPI-Code-Generator/#exception-handling-with-business-dead-letter-queue)
+### [Exception Handling with Business Dead Letter Queue](/posts/ZenWave-AsyncAPI-Code-Generator/#exception-handling-with-business-dead-letter-queue/)
 
-### [Populating Headers at Runtime Automatically](/posts/ZenWave-AsyncAPI-Code-Generator/#populating-headers-at-runtime-automatically)
+### [Populating Headers at Runtime Automatically](/posts/ZenWave-AsyncAPI-Code-Generator/#populating-headers-at-runtime-automatically/)
 
-### [Transactional Outbox with MongoDB ChangeStreams](https://www.zenwave360.io/zenwave-sdk/plugins/asyncapi-spring-cloud-streams3/#provider-imperative-style-with-mongodb-transactional-outbox)
+### [Transactional Outbox with MongoDB ChangeStreams](https://www.zenwave360.io/zenwave-sdk/plugins/asyncapi-spring-cloud-streams3/#provider-imperative-style-with-mongodb-transactional-outbox/)
 
 
 ## AsyncAPI Conference On Tour Madrid 2023
