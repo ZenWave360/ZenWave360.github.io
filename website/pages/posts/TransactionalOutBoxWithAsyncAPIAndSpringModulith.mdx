@@ -98,7 +98,7 @@ From your AsyncAPI definition file, ZenWaveSDK generates:
 
 - **DTO/Models** for your event payloads.
 - **Typed Header Objects** to ensure consistency.
-- **"Intention-revealing" Java interfaces** with operations named explicitly for clarity and maintainability.
+- **"Intention-revealing" Java interfaces** with methods named explicitly after your operationIds.
 - A lightweight implementation using Spring Cloud Streams that can be `@Autowire`d directly into your services.
 
 You can then configure Spring Cloud Stream to send and receive messages using any of the [supported binders](https://docs.spring.io/spring-cloud-stream/reference/index.html), such as Kafka or RabbitMQ. With ZenWaveSDK, you don’t need to write any boilerplate code, allowing you to focus entirely on your business logic.
