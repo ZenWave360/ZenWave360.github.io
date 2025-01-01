@@ -331,11 +331,3 @@ public class CustomerUseCasesTest {
 }
 ```
 
-## Enterprise Integration Patterns
-
-Because access to the underlying implementation is encapsulated behind the generated interfaces, it's possible to implement many Enterprise Integration Patterns (EIP) on top of them.
-
-- [Transactional Outbox:](Enterprise-Integration-Patterns/Transactional-Outbox) for MongoDB, plain JDBC and Debezium SQL
-- [Business DeadLetterQueue](Enterprise-Integration-Patterns/Business-Dead-Letter-Queue)
-- [Enterprise Envelop](Enterprise-Integration-Patterns/Enterprise-Envelop)
-- [Async Request/Response](Enterprise-Integration-Patterns/Async-Request-Response) (coming soon with AsyncAPI v3)
