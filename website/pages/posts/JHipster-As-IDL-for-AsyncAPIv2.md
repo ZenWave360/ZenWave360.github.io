@@ -47,7 +47,7 @@ relationship OneToOne {
 
 ## Generating AsyncAPI definition files from JDL with ZenWaveSDK
 
-> See [JDL To AsyncAPI Generator](https://zenwave360.github.io/zenwave-sdk/plugins/jdl-to-asyncapi/) for a complete list of options and [GitHub repository](https://github.com/zenwave360/zenwave-sdk) for install instructions.
+> See [JDL To AsyncAPI Generator](https://www.zenwave360.io/zenwave-sdk/plugins/jdl-to-asyncapi/) for a complete list of options and [GitHub repository](https://github.com/zenwave360/zenwave-sdk) for install instructions.
 
 Because JDL can only describe static aspects of your models and doesn't cover dynamic behaviour, ZenWave SDK can only infer CRUD operations from your entities, generating:
 
@@ -74,7 +74,7 @@ You can also filter which entities you want to include Messages for in your Asyn
 You can generate AsyncAPI definition files with the following options:
 
 - Supported Schema Formats: AVRO and AsyncAPI schema
-- Supported [Payload Styles](https://zenwave360.github.io/Event-Driven-Architectures/API-First-with-AsyncAPI#different-styles-of-message-payloads): "Entity State Transfer" and "Domain Event" (for Create/Update/Delete events):
+- Supported [Payload Styles](https://www.zenwave360.io/Event-Driven-Architectures/API-First-with-AsyncAPI#different-styles-of-message-payloads): "Entity State Transfer" and "Domain Event" (for Create/Update/Delete events):
   - State Transfer message contains the entire state of the aggregate so consumer does not need to make additional calls.
   - Domain Event Messages contains information about the event and interesting portions of the underlying aggregate, but not the entire state of the aggregate.
 

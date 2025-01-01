@@ -31,7 +31,7 @@ And because everything is hidden behind interfaces we can encapsulate many Enter
 - Enterprise Envelope: when your organization uses a common Envelope for messages, you can still express your AsyncAPI definition in terms of your business payload.
 
 
-See [AsyncAPI and Spring Cloud Streams 3 Configuration Options](https://zenwave360.github.io/zenwave-sdk/plugins/asyncapi-spring-cloud-streams3/#options) and [ZenWave Maven Plugin](/ZenWave-Code-Generator/Maven-Plugin) for more details.
+See [AsyncAPI and Spring Cloud Streams 3 Configuration Options](https://www.zenwave360.io/zenwave-sdk/plugins/asyncapi-spring-cloud-streams3/#options) and [ZenWave Maven Plugin](/ZenWave-Code-Generator/Maven-Plugin) for more details.
 
 ```xml
 <plugin>

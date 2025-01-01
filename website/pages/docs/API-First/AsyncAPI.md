@@ -75,7 +75,7 @@ Also, while there can be only one provider that produces a given event, but comm
 
 ## API-First Code Generator from AsyncAPI
 
-You can use [API-First AsyncAPI Maven Plugin](https://zenwave360.github.io/zenwave-sdk/plugins/asyncapi-spring-cloud-streams3/#maven-plugin-configuration-api-first) to generate models (DTOs) and a producer implementation.
+You can use [API-First AsyncAPI Maven Plugin](https://www.zenwave360.io/zenwave-sdk/plugins/asyncapi-spring-cloud-streams3/#maven-plugin-configuration-api-first) to generate models (DTOs) and a producer implementation.
 
 > See [Producing Domain Events](/docs/zenwave-sdk/producing-domain-events) and [Consuming Async Commands](/docs/zenwave-sdk/consuming-async-commands) for more details on how to configure the plugin, and how to use generated code.
 
@@ -85,7 +85,7 @@ You can use [API-First AsyncAPI Maven Plugin](https://zenwave360.github.io/zenwa
 
 ### [Populating Headers at Runtime Automatically](/posts/ZenWave-AsyncAPI-Code-Generator/#populating-headers-at-runtime-automatically)
 
-### [Transactional Outbox with MongoDB ChangeStreams](https://zenwave360.github.io/zenwave-sdk/plugins/asyncapi-spring-cloud-streams3/#provider-imperative-style-with-mongodb-transactional-outbox)
+### [Transactional Outbox with MongoDB ChangeStreams](https://www.zenwave360.io/zenwave-sdk/plugins/asyncapi-spring-cloud-streams3/#provider-imperative-style-with-mongodb-transactional-outbox)
 
 
 ## AsyncAPI Conference On Tour Madrid 2023

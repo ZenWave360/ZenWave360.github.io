@@ -33,7 +33,7 @@ Or create two different AsyncAPI definitions, one for the provider and one for t
 
 ## Using ZenWave ZDL as Definition Language for AsyncAPI
 
-You can use [ZDL To AsyncAPI Generator](https://zenwave360.github.io/zenwave-sdk/plugins/zdl-to-asyncapi/) to generate AsyncAPI definitions from ZDL Models with a command like this:
+You can use [ZDL To AsyncAPI Generator](https://www.zenwave360.io/zenwave-sdk/plugins/zdl-to-asyncapi/) to generate AsyncAPI definitions from ZDL Models with a command like this:
 
 ```bash
 jbang zw -p io.zenwave360.sdk.plugins.ZDLToAsyncAPIPlugin \
@@ -102,9 +102,9 @@ It will not generate operations for those messages `OrdersService` is acting as 
 
 ## API-First Code Generator from AsyncAPI
 
-You can use [API-First AsyncAPI Maven Plugin](https://zenwave360.github.io/zenwave-sdk/plugins/asyncapi-spring-cloud-streams3/#maven-plugin-configuration-api-first) to generate models (DTOs) and a Listener implementation with error handling and other features.
+You can use [API-First AsyncAPI Maven Plugin](https://www.zenwave360.io/zenwave-sdk/plugins/asyncapi-spring-cloud-streams3/#maven-plugin-configuration-api-first) to generate models (DTOs) and a Listener implementation with error handling and other features.
 
-<Image src="https://zenwave360.github.io/zenwave-sdk/docs/ZenWave360-AsyncAPI-SpringCloudStreams.excalidraw.svg" alt="ZenWave360 AsyncAPI Spring Cloud Streams" />
+<Image src="https://www.zenwave360.io/zenwave-sdk/docs/ZenWave360-AsyncAPI-SpringCloudStreams.excalidraw.svg" alt="ZenWave360 AsyncAPI Spring Cloud Streams" />
 
 By default, ZenWave generates Spring Cloud Streams implementation that counts with different binders for virtually any message broker.
 
@@ -145,14 +145,14 @@ spring:
           group: orders.consumer
 ```
 
-You can consult how to configure [API-First AsyncAPI Maven Plugin](https://zenwave360.github.io/zenwave-sdk/plugins/asyncapi-spring-cloud-streams3/#maven-plugin-configuration-api-first) in [Producing Domain Events](/docs/zenwave-sdk/producing-domain-events#api-first-code-generator-from-asyncapi) section.
+You can consult how to configure [API-First AsyncAPI Maven Plugin](https://www.zenwave360.io/zenwave-sdk/plugins/asyncapi-spring-cloud-streams3/#maven-plugin-configuration-api-first) in [Producing Domain Events](/docs/zenwave-sdk/producing-domain-events#api-first-code-generator-from-asyncapi) section.
 
 Just note, in regards the distinction from commands and events, provider and clients. You can configure as many plugin `<execution/>` as you need, either in `role` `provider` or `client`.
 
 
 ## Generating Async Listeners and Tests
 
-You can use [AsyncAPI Spring Cloud Streams 3 Adapter Generator](https://zenwave360.github.io/zenwave-sdk/plugins/asyncapi-spring-cloud-streams3/#generating-consumer-adapters-skeletons) to generate Async Adapters (stubs) and Tests from AsyncAPI definitions with a command like this:
+You can use [AsyncAPI Spring Cloud Streams 3 Adapter Generator](https://www.zenwave360.io/zenwave-sdk/plugins/asyncapi-spring-cloud-streams3/#generating-consumer-adapters-skeletons) to generate Async Adapters (stubs) and Tests from AsyncAPI definitions with a command like this:
 
 ```bash
 jbang zw -p io.zenwave360.sdk.plugins.SpringCloudStreams3AdaptersPlugin --help

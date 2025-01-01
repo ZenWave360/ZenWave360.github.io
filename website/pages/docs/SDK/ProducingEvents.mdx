@@ -15,7 +15,7 @@ We will be using AsyncAPI specification to define our message structure, and use
 
 ## Using ZenWave ZDL as Definition Language for AsyncAPI
 
-While AsyncAPI is the source of truth for Event-Driven communication, with [ZDLToAsyncAPIPlugin](https://zenwave360.github.io/zenwave-sdk/plugins/zdl-to-asyncapi/) plugins you can create complete draft version of AsyncAPI specification from your annotated Services and Events.
+While AsyncAPI is the source of truth for Event-Driven communication, with [ZDLToAsyncAPIPlugin](https://www.zenwave360.io/zenwave-sdk/plugins/zdl-to-asyncapi/) plugins you can create complete draft version of AsyncAPI specification from your annotated Services and Events.
 
 ```shell
 jbang zw -p io.zenwave360.sdk.plugins.ZDLToAsyncAPIPlugin \
@@ -53,7 +53,7 @@ Will generate the following sections in an AsyncAPI definition:
 
 ## API-First Code Generator from AsyncAPI
 
-You can use [API-First AsyncAPI Maven Plugin](https://zenwave360.github.io/zenwave-sdk/plugins/asyncapi-spring-cloud-streams3/#maven-plugin-configuration-api-first) to generate models (DTOs) and a producer implementation.
+You can use [API-First AsyncAPI Maven Plugin](https://www.zenwave360.io/zenwave-sdk/plugins/asyncapi-spring-cloud-streams3/#maven-plugin-configuration-api-first) to generate models (DTOs) and a producer implementation.
 
 Configure `zenwave-sdk-maven-plugin` as follows:
 - Set `inputSpec` to point to your AsyncAPI specification. You can use `classpath`, `file`, `http(s)` or `https` as inputSpec.
@@ -128,7 +128,7 @@ Configure `zenwave-sdk-maven-plugin` as follows:
 
 By default, ZenWave generates Spring Cloud Streams implementation that counts with different binders for virtually any message broker:
 
-<Image src="https://zenwave360.github.io/zenwave-sdk/docs/ZenWave360-AsyncAPI-SpringCloudStreams.excalidraw.svg" alt="ZenWave360 AsyncAPI Spring Cloud Streams" />
+<Image src="https://www.zenwave360.io/zenwave-sdk/docs/ZenWave360-AsyncAPI-SpringCloudStreams.excalidraw.svg" alt="ZenWave360 AsyncAPI Spring Cloud Streams" />
 
 ```
 📦 target/generated-sources/zenwave

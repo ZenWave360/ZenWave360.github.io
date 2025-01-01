@@ -49,7 +49,7 @@ It will add `x-business-entity` and `x-business-entity-paginated` to generated s
 
 ## Generating OpenAPI definition files from JDL with ZenWaveSDK
 
-> See [JDL To OpenAPI Generator](https://zenwave360.github.io/zenwave-sdk/plugins/jdl-to-openapi/) for a complete list of options and [GitHub repository](https://github.com/zenwave360/zenwave-sdk) for install instructions.
+> See [JDL To OpenAPI Generator](https://www.zenwave360.io/zenwave-sdk/plugins/jdl-to-openapi/) for a complete list of options and [GitHub repository](https://github.com/zenwave360/zenwave-sdk) for install instructions.
 
 ZenWave SDK will generate CRUD operations for your entities, including paginated lists and search operations.
 
