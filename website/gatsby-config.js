@@ -41,5 +41,11 @@ module.exports = {
         noQueryString: true,
       },
     },
+    {
+      resolve: `gatsby-plugin-sitemap`,
+      options: {
+        output: `/sitemap.xml`,
+      },
+    },
   ],
 };
