@@ -53,6 +53,8 @@ Key components of the project include:
 
 ## Distributed Transactions Problem and The Outbox Pattern
 
+<Image src="CustomerEvents.plantuml.png" />
+
 When managing a `Customer` entity, we encounter a significant challenge: ensuring the atomicity of persisting customer details in the database and publishing a related event to an external message broker. Since the database and the message broker do not share a transaction boundary, this can lead to potential inconsistencies.
 
 ### Key Scenarios Highlighting the Problem:
