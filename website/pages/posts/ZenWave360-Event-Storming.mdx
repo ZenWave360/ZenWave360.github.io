@@ -1,35 +1,44 @@
 ---
-section: Domain Modeling
-title: Event Storming
-slug: /docs/event-driven-design/event-storming/
-order: 1
+title: ZenWave 360º Event Storming
+slug: /posts/ZenWave-360-Event-Storming/
+image: EventStorming-ZDL-Mapping.png
+author: Ivan Garcia Sainz-Aja
+date: 2023-09-30T07:00:00+01:00
+excerpt: 'Event Storming is a collaborative workshop technique used to explore complex business domains. Its primary goal is to create a shared understanding among stakeholders, including business experts and technical teams.'
+tags:
+  - DDD
+  - Event Storming
+  - Domain Modeling
+  - API-First
 ---
+
 import { x } from '@xstyled/styled-components'
 import { Image, Quote, QuoteAuthor } from "smooth-doc/components";
-import eventStorming from './images/DLES-Brandolini-transparent.png'
-import eventStormingFromVisionToDetail from './images/event-storming-from-vision-to-detail.png'
-import eventStormingTimelineNarratives from './images/event-storming-timeline-narratives.png'
-import eventStormingDesignCanvas from './images/event-storming-design-canvas.png'
-import eventStormingZdlMapping from './images/EventStorming-ZDL-Mapping.png'
-import eventStormingTimeline from './images/event-storming-timeline.png'
-import eventStormingWithCommandsAndPolicies from './images/event-storming-with-commands-and-policies.png'
-import eventStormingWithAggregates from './images/event-storming-with-aggregates.png'
-import eventStormingBoundedContexts from './images/event-storming-bounded-contexts.png'
-import eventDark from './images/event-storming/event.dark.png'
-import eventLight from './images/event-storming/event.light.png'
-import commandDark from './images/event-storming/command.dark.png'
-import commandLight from './images/event-storming/command.light.png'
-import userCommandDark from './images/event-storming/user-command-event.dark.png'
-import userCommandLight from './images/event-storming/user-command-event.light.png'
-import policyCommandDark from './images/event-storming/policies.dark.png'
-import policyCommandLight from './images/event-storming/policies.light.png'
-import commandSystemEventDark from './images/event-storming/command-system-event.dark.png'
-import commandSystemEventLight from './images/event-storming/command-system-event.light.png'
-import commandAggregateEventDark from './images/event-storming/command-aggregate-event.dark.png'
-import commandAggregateEventLight from './images/event-storming/command-aggregate-event.light.png'
-import readModelCommandAggregateEventDark from './images/event-storming/read-model-command-aggregate-event.dark.png'
-import readModelCommandAggregateEventLight from './images/event-storming/read-model-command-aggregate-event.light.png'
-import boundedContextMapping from '../../../images/home/bounded-context-mapping.svg'
+
+import eventStorming from '../../static/posts/ZenWave-360-Event-Storming/DLES-Brandolini-transparent.png'
+import eventStormingFromVisionToDetail from '../../static/posts/ZenWave-360-Event-Storming/event-storming-from-vision-to-detail.png'
+import eventStormingTimelineNarratives from '../../static/posts/ZenWave-360-Event-Storming/event-storming-timeline-narratives.png'
+import eventStormingDesignCanvas from '../../static/posts/ZenWave-360-Event-Storming/event-storming-design-canvas.png'
+import eventStormingZdlMapping from '../../static/posts/ZenWave-360-Event-Storming/EventStorming-ZDL-Mapping.png'
+import eventStormingTimeline from '../../static/posts/ZenWave-360-Event-Storming/event-storming-timeline.png'
+import eventStormingWithCommandsAndPolicies from '../../static/posts/ZenWave-360-Event-Storming/event-storming-with-commands-and-policies.png'
+import eventStormingWithAggregates from '../../static/posts/ZenWave-360-Event-Storming/event-storming-with-aggregates.png'
+import eventStormingBoundedContexts from '../../static/posts/ZenWave-360-Event-Storming/event-storming-bounded-contexts.png'
+import eventDark from '../../static/posts/ZenWave-360-Event-Storming/event-storming/event.dark.png'
+import eventLight from '../../static/posts/ZenWave-360-Event-Storming/event-storming/event.light.png'
+import commandDark from '../../static/posts/ZenWave-360-Event-Storming/event-storming/command.dark.png'
+import commandLight from '../../static/posts/ZenWave-360-Event-Storming/event-storming/command.light.png'
+import userCommandDark from '../../static/posts/ZenWave-360-Event-Storming/event-storming/user-command-event.dark.png'
+import userCommandLight from '../../static/posts/ZenWave-360-Event-Storming/event-storming/user-command-event.light.png'
+import policyCommandDark from '../../static/posts/ZenWave-360-Event-Storming/event-storming/policies.dark.png'
+import policyCommandLight from '../../static/posts/ZenWave-360-Event-Storming/event-storming/policies.light.png'
+import commandSystemEventDark from '../../static/posts/ZenWave-360-Event-Storming/event-storming/command-system-event.dark.png'
+import commandSystemEventLight from '../../static/posts/ZenWave-360-Event-Storming/event-storming/command-system-event.light.png'
+import commandAggregateEventDark from '../../static/posts/ZenWave-360-Event-Storming/event-storming/command-aggregate-event.dark.png'
+import commandAggregateEventLight from '../../static/posts/ZenWave-360-Event-Storming/event-storming/command-aggregate-event.light.png'
+import readModelCommandAggregateEventDark from '../../static/posts/ZenWave-360-Event-Storming/event-storming/read-model-command-aggregate-event.dark.png'
+import readModelCommandAggregateEventLight from '../../static/posts/ZenWave-360-Event-Storming/event-storming/read-model-command-aggregate-event.light.png'
+import boundedContextMapping from '../../images/home/bounded-context-mapping.svg'
 
 # Event Storming
 

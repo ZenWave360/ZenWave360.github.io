@@ -64,7 +64,7 @@ Configure `zenwave-sdk-maven-plugin` as follows:
 
 ```xml
 <plugin>
-    <groupId>io.github.zenwave360.zenwave-sdk</groupId>
+    <groupId>io.zenwave360.sdk</groupId>
     <artifactId>zenwave-sdk-maven-plugin</artifactId>
     <version>${zenwave.version}</version>
     <configuration>
@@ -111,12 +111,12 @@ Configure `zenwave-sdk-maven-plugin` as follows:
     <!-- add any sdk plugin (custom or standard) as dependency here -->
     <dependencies>
         <dependency>
-            <groupId>io.github.zenwave360.zenwave-sdk.plugins</groupId>
+            <groupId>io.zenwave360.sdk.plugins</groupId>
             <artifactId>asyncapi-spring-cloud-streams3</artifactId>
             <version>${zenwave.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.github.zenwave360.zenwave-sdk.plugins</groupId>
+            <groupId>io.zenwave360.sdk.plugins</groupId>
             <artifactId>asyncapi-jsonschema2pojo</artifactId>
             <version>${zenwave.version}</version>
         </dependency>

@@ -35,7 +35,7 @@ See [AsyncAPI and Spring Cloud Streams 3 Configuration Options](https://www.zenw
 
 ```xml
 <plugin>
-    <groupId>io.github.zenwave360.zenwave-sdk</groupId>
+    <groupId>io.zenwave360.sdk</groupId>
     <artifactId>zenwave-sdk-maven-plugin</artifactId>
     <version>${zenwave.version}</version>
     <configuration>
@@ -83,12 +83,12 @@ See [AsyncAPI and Spring Cloud Streams 3 Configuration Options](https://www.zenw
 
     <dependencies>
         <dependency>
-            <groupId>io.github.zenwave360.zenwave-sdk.plugins</groupId>
+            <groupId>io.zenwave360.sdk.plugins</groupId>
             <artifactId>asyncapi-spring-cloud-streams3</artifactId>
             <version>${zenwave.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.github.zenwave360.zenwave-sdk.plugins</groupId>
+            <groupId>io.zenwave360.sdk.plugins</groupId>
             <artifactId>asyncapi-jsonschema2pojo</artifactId>
             <version>${zenwave.version}</version>
         </dependency>
