@@ -16,7 +16,6 @@ import speedFeedbackLoopLight from './images/ZenWave-SDK-Design-Code-Loop.light.
 import speedFeedbackLoopDark from './images/ZenWave-SDK-Design-Code-Loop.dark.png'
 import sdkGeneratedCode from './images/SDK-Generated-Code.png'
 
-
 # ZenWave SDK
 ZenWave SDK Helps you Create Software Easy to Understand
 
@@ -28,6 +27,8 @@ ZenWave SDK Helps you Create Software Easy to Understand
 [![branches coverage](https://raw.githubusercontent.com/ZenWave360/zenwave-sdk/badges/branches.svg)](https://github.com/ZenWave360/zenwave-sdk/actions/workflows/publish-maven-central.yml)
 [![GitHub](https://img.shields.io/github/license/ZenWave360/zenwave-sdk)](https://github.com/ZenWave360/zenwave-sdk/blob/main/LICENSE)
 </div>
+
+> **Note**: Starting with version 2.0.0, the Maven `groupId` has changed to `io.zenwave360`. The code remains fully compatible.
 
 <Quote>
     The heart of software is its ability to solve domain-related problems for its users. The best software supports elegant solutions to real-world problems
@@ -77,23 +78,34 @@ jbang zw --help list
 ```
 Will output a list of all available plugins:
 
-```log
-ZW> SDK (1.7.0)
+```shell
+$ jbang zw -h list
+
+Usage: <main class> [-f] [-h[=<helpFormat>]] [-p[=<pluginClass>]]
+                    [<String=Object>...]
+      [<String=Object>...]
+  -f, --force                Force overwrite
+  -h, --help[=<helpFormat>]  Help with output format
+  -p, --plugin[=<pluginClass>]
+                             Plugin Class or short-code
+INFO Reflections - Reflections took 566 ms to scan 59 urls, producing 2513 keys and 13329 values
+ZW> SDK (2.0.0)
 
 Available plugins:
 
-backend-application-default    io.zenwave360.sdk.plugins.BackendApplicationDefaultPlugin: Generates a full backend application using a flexible hexagonal architecture (1.7.0)
-jdl-to-asyncapi                io.zenwave360.sdk.plugins.JDLToAsyncAPIPlugin: Generates a full AsyncAPI definitions for CRUD operations from JDL models (1.7.0)
-zdl-to-json                    io.zenwave360.sdk.plugins.ZdlToJsonPlugin: Prints to StdOut ZDL Model as JSON (1.7.0)
-spring-webtestclient           io.zenwave360.sdk.plugins.SpringWebTestClientPlugin: Generates test for SpringMVC or Spring WebFlux using WebTestClient based on OpenAPI specification. (1.7.0)
-jsonschema2pojo                io.zenwave360.sdk.plugins.AsyncApiJsonSchema2PojoPlugin: Generate Plain Old Java Objects from OpenAPI/AsyncAPI schemas or full JSON-Schema files (1.7.0)
-openapi-controllers            io.zenwave360.sdk.plugins.OpenAPIControllersPlugin: Generates implementations based on ZDL models and OpenAPI definitions SpringMVC generated OpenAPI interfaces. (1.7.0)
-openapi-to-jdl                 io.zenwave360.sdk.plugins.OpenAPIToJDLPlugin: Generates JDL model from OpenAPI schemas (1.7.0)
-openapi-karate                 io.zenwave360.sdk.plugins.OpenAPIKaratePlugin: Generates test for SpringMVC or Spring WebFlux using WebTestClient based on OpenAPI specification. (1.7.0)
-spring-cloud-streams3          io.zenwave360.sdk.plugins.SpringCloudStreams3Plugin: Generates strongly typed SpringCloudStreams3 producer/consumer classes for AsyncAPI (1.7.0)
-zdl-to-openapi                 io.zenwave360.sdk.plugins.ZDLToOpenAPIPlugin: Generates a draft OpenAPI definitions from your ZDL entities and services. (1.7.0)
-zdl-to-markdown                io.zenwave360.sdk.plugins.ZdlToMarkdownPlugin: Generates Markdown glossary from Zdl Models (1.7.0)
-zdl-to-asyncapi                io.zenwave360.sdk.plugins.ZDLToAsyncAPIPlugin: Generates a draft AsyncAPI file with events from your ZDL services. (1.7.0)
+BackendApplicationDefaultPlugin:    Generates a full backend application using the provided 'layout' property (2.0.0)
+ZDLToOpenAPIPlugin:                 Generates a draft OpenAPI definitions from your ZDL entities and services. (2.0.0)
+ZDLToAsyncAPIPlugin:                Generates a draft AsyncAPI file with events from your ZDL services. (2.0.0)
+OpenAPIControllersPlugin:           Generates implementations based on ZDL models and OpenAPI definitions SpringMVC generated OpenAPI interfaces. (2.0.0)
+AsyncApiJsonSchema2PojoPlugin:      Generate Plain Old Java Objects from OpenAPI/AsyncAPI schemas or full JSON-Schema files. (2.0.0)
+SpringCloudStreams3Plugin:          Generates strongly typed SpringCloudStreams3 producer/consumer classes for AsyncAPI (2.0.0)
+SpringCloudStreams3AdaptersPlugin:  Generates Spring Cloud Streams Consumers from AsyncAPI definitions. (2.0.0)
+SpringWebTestClientPlugin:          Generates test for SpringMVC or Spring WebFlux using WebTestClient based on OpenAPI specification. (2.0.0)
+OpenAPIKaratePlugin:                Generates test for KarateDSL based on OpenAPI specification. (2.0.0)
+JDLToAsyncAPIPlugin:                Generates a full AsyncAPI definitions for CRUD operations from JDL models (2.0.0)
+ZdlToJsonPlugin:                    Prints to StdOut ZDL Model as JSON (2.0.0)
+OpenAPIToJDLPlugin:                 Generates JDL model from OpenAPI schemas (2.0.0)
+ZdlToMarkdownPlugin:                Generates Markdown glossary from Zdl Models (2.0.0)
 
 
 Use: "jbang zw -p <plugin | short-code> -h" to get help on a specific plugin
