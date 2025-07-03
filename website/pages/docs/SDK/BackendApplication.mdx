@@ -4,12 +4,12 @@ title: Backend Application
 slug: /docs/zenwave-sdk/backend-application/
 order: 1
 ---
-import { Image, Quote, QuoteAuthor } from "smooth-doc/components";
+import { Image, Quote, QuoteAuthor, Orange } from "smooth-doc/components";
 import backendIntelliJPluginsImage from './images/SDK-Backend-IntelliJ-Plugins.png'
 import sdkHexagonalDark from './images/SDK-ServiceImplementation-Hexagonal.dark.png'
 import sdkHexagonalLight from './images/SDK-ServiceImplementation-Hexagonal.light.png'
 
-# Backend Application with ZenWave SDK
+# Developing a Backend Application with ZenWave SDK
 Converting your ZDL models into a Spring Boot/Spring Cloud backend application with ZenWave SDK.
 
 <Quote>
@@ -17,16 +17,23 @@ Converting your ZDL models into a Spring Boot/Spring Cloud backend application w
     <QuoteAuthor>- Eric Evans in Domain Driven Design</QuoteAuthor>
 </Quote>
 
-With ZenWave SDK you can quickly convert your ZDL models, the results of your analysis and design, into a working Spring Boot/Spring Cloud backend application.
+ZenWave Domain Model Language (ZDL) is a lightweight, developer-friendly DSL grounded in DDD and API-First principles. This DSL serves as an ubiquitous language, enabling teams to think, discuss, and collaborate effectively on software design... And then use a fully customizable set of plugins to generate all the boring staff that is already present in the model.
+
+ZenWave SDK plugins allows you to convert your ZDL models into a complete backend application through a series of customizable plugins.
 
 In this section we will guide you into the process of modeling your application into ZDL models and using ZenWave SDK plugins to generate the building blocks you can assemble to create your backend application.
 
 ## Project structure
 
-ZenWave SDK Backend Application Plugin will generate a Spring Boot/Spring Cloud backend application with the following a flexible hexagonal/onion/clean architecture:
+By default, ZenWaveSDK generates a complete SpringBoot backend application following industry best practices, with a minimal dependency set: Spring-Data JPA and MongoDB, SpringMVC, SpringCloudStreams, MapStruct and optional Lombok integration.
+
+It follows a pragmatic hexagonal/clean architecture with:
+- A central `core` package containing domain entities and aggregates
+- `inbound` (primary ports) and `outbound` (secondary ports) interfaces
+- and the internal `implementation` of `inbound` interfaces, which uses the `outbound` interfaces to interact with external services.
 
 ```
-📦 <basePackage>
+📦 {{basePackage}}
    📦 adapters
        └─ web
        |  └─ RestControllers (spring mvc)
@@ -53,15 +60,15 @@ ZenWave SDK Backend Application Plugin will generate a Spring Boot/Spring Cloud 
         └─ CustomRepositoryImpl (spring-data custom implementation)
 ```
 
-This structure can be **parameterized** to some extent using configuration parameters, or **customized fully programmatically** as explained below.
+This is just the default project structure. You can choose from `CleanHexagonal`, `Layered`, `SimpleDomain`, `HexagonalArchitecture`, `CleanArchitecture` or create your own. See [Customizing Generated Code](/docs/zenwave-sdk/customizing-code/) for more details.
 
 ## Start Modeling with ZDL
 
 Depending on your particular use case you have different approaches to start modeling with ZDL:
 
-- <strong className="orange">Entities and Aggregates:</strong> Traditionally you would start your application modeling your data.
-- <strong className="orange">Services and Commands:</strong> You can also start modeling the external behaviour of your application, describing which endpoints it exposes and which commands it listens to.
-- <strong className="orange">Events:</strong> If you came from a big-picture exploratory Event-Storming you can start describing the events and the commands that trigger them.
+- <Orange>Entities and Aggregates:</Orange> Traditionally you would start your application modeling your data.
+- <Orange>Services and Commands:</Orange> You can also start modeling the external behaviour of your application, describing which endpoints it exposes and which commands it listens to.
+- <Orange>Events:</Orange> If you came from a big-picture exploratory Event-Storming you can start describing the events and the commands that trigger them.
 
 We will start with the first approach: describing the data model, then the behaviour and last the domain events emitted to outside world, but you can use any of the other two options to start modeling your application.
 
@@ -412,27 +419,3 @@ Or using ZenWave Model Editor in IntelliJ IDEA:
 
 <Image alt="ZenWave SDK Backend Generation with IntelliJ Plugins"  src={backendIntelliJPluginsImage} />
 
-## Notes about Generated Hexagonal Architecture
-
-<Image alt="ZenWave SDK Modeling Languages" src={sdkHexagonalDark} />
-
-ZenWave SDK Backend Application Plugin will generate a Spring Boot/Spring Cloud backend application with the following a flexible hexagonal/onion/clean architecture.
-
-For the sake of simplicity, it makes the following two concessions:
-
-- Domain entities are annotated with JPA or SpringData Mongodb annotations.
-- Spring Data Repository interfaces are used as outbound adapters or secondary ports interfaces. While the implementation is outside the core domain layer.
-
-These two concessions will simplify the number of abstractions and layers of Mappers and DTOs that you need to create (and maintain), while preserving the benefits of a hexagonal/onion/clean architecture (inside vs outside).
-
-In fact, ZenWave SDK Backend Plugin provides *in-memory* implementations of Spring Data Repository interfaces, so you can test your application without the need of a database (or Mockito). Proving that you are not tied to any particular persistence implementation.
-
-If you feel that the very unlikely case that you need to change your persistence implementation is worth the extra complexity of adding layers of mappers and DTOs and persistence delegates, you can always create a [custom generator plugin](https://github.com/ZenWave360/zenwave-sdk/tree/main?tab=readme-ov-file#forking-an-standard-or-custom-plugin) like the [BackendMultiModuleApplicationGenerator.java](https://github.com/ZenWave360/zenwave-sdk/blob/main/plugins/backend-application-default/src/main/java/io/zenwave360/sdk/plugins/BackendMultiModuleApplicationGenerator.java) to generate them.
-
-#### Project Structure Customization
-
-Generated project package names can be (to some extent) customized via 'undocumented' plugin properties. If you need them you can dig into the [source code](https://github.com/ZenWave360/zenwave-sdk/blob/main/plugins/backend-application-default/src/main/java/io/zenwave360/sdk/plugins/BackendDefaultApplicationGenerator.java#L49) to find them.
-
-We believe that microservices do not need multi-module maven projects, but if you believe otherwise you can customize this by creating a [custom generator plugin](https://github.com/ZenWave360/zenwave-sdk/tree/main?tab=readme-ov-file#forking-an-standard-or-custom-plugin) using [BackendMultiModuleApplicationGenerator.java](https://github.com/ZenWave360/zenwave-sdk/blob/main/plugins/backend-application-default/src/main/java/io/zenwave360/sdk/plugins/BackendMultiModuleApplicationGenerator.java), which can generate multi-module projects, as a starting point.
-
-ZenWave SDK Backend Application Plugin will generate an ArchitectureTest using [ArchUnit](https://www.archunit.org/) to validate that your application follows hexagonal/onion/clean architecture and follow strict package import rules.

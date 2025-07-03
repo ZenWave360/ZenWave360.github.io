@@ -2,28 +2,28 @@
 section: ZenWave SDK
 title: Modeling Aggregates
 slug: /docs/zenwave-sdk/modeling-aggregates/
-order: 2
+order: 5
 ---
-import { Image, Quote, QuoteAuthor } from "smooth-doc/components";
+import { Image, Quote, QuoteAuthor, Orange } from "smooth-doc/components";
 
 # Modeling Aggregates
 Modeling aggregates with entities, command handlers and domain events.
 
 Aggregates are central to DDD and ZenWave SDK modeling. They represent clusters of entities and values that works as transactional boundary and are treated as a single unit:
 
-1. <strong className="orange">Treated as a Single Unit</strong>.
+1. <Orange>Treated as a Single Unit</Orange>.
 
-2. <strong className="orange">Root Entity</strong>: Each aggregate has a root entity, also known as the aggregate root. All external references to the aggregate should only point to the aggregate root. This ensures the integrity of the aggregate.
+2. <Orange>Root Entity</Orange>: Each aggregate has a root entity, also known as the aggregate root. All external references to the aggregate should only point to the aggregate root. This ensures the integrity of the aggregate.
 
-3. <strong className="orange">Consistency Boundaries</strong>: The aggregate defines the transactional units of consistency boundaries.
+3. <Orange>Consistency Boundaries</Orange>: The aggregate defines the transactional units of consistency boundaries.
 
-4. <strong className="orange">Reference by Identity</strong>: Aggregates should be referenced by their identifiers (IDs) rather than direct object references. This promotes loose coupling between aggregates and enhances the system's scalability and maintainability.
+4. <Orange>Reference by Identity</Orange>: Aggregates should be referenced by their identifiers (IDs) rather than direct object references. This promotes loose coupling between aggregates and enhances the system's scalability and maintainability.
 
-5. <strong className="orange">Invariants</strong>: The aggregate root is responsible for maintaining all invariants within the aggregate. An invariant is a business rule that must always be consistent.
+5. <Orange>Invariants</Orange>: The aggregate root is responsible for maintaining all invariants within the aggregate. An invariant is a business rule that must always be consistent.
 
-6. <strong className="orange">Persistence</strong>: Persistence of an aggregate should be done as a whole. It's the responsibility of the aggregate root to handle this.
+6. <Orange>Persistence</Orange>: Persistence of an aggregate should be done as a whole. It's the responsibility of the aggregate root to handle this.
 
-7. <strong className="orange">Size</strong>: Ideally, an aggregate should be as small as possible, based on the business rules. A smaller aggregate is easier to maintain and understand.
+7. <Orange>Size</Orange>: Ideally, an aggregate should be as small as possible, based on the business rules. A smaller aggregate is easier to maintain and understand.
 
 
 ZenWave SDK supports these three different patterns to model aggregates:
@@ -35,11 +35,11 @@ ZenWave SDK supports these three different patterns to model aggregates:
 ## Lightweight Aggregates
 > 💡 If your application logic is simple, keep your implementation simple.
 
-Lightweight Aggregates are <strong className="orange">simple data containers</strong> that do not contain any business logic. They are used to group related data together. They are treated as a single unit and have a root entity but <strong className="orange">related business logic is implemented in services</strong> or other classes.
+Lightweight Aggregates are <Orange>simple data containers</Orange> that do not contain any business logic. They are used to group related data together. They are treated as a single unit and have a root entity but <Orange>related business logic is implemented in services</Orange> or other classes.
 
 Most microservice applications look like:
 
-<strong className="orange">"Receive some command/request, validate, process, persist the data and emit an integration event for downstream services."</strong>
+<Orange>"Receive some command/request, validate, process, persist the data and emit an integration event for downstream services."</Orange>
 
 If your application logic is simple, keep your implementation simple.
 
@@ -47,9 +47,9 @@ This would be our *first*, *go-to* recommended approach. For most microservice a
 
 Sometimes you will find this referred as the [Anemic Domain Model](https://en.wikipedia.org/wiki/Anemic_domain_model) but it's **OK** for most microservice applications.
 
-It applies <strong className="orange">Keep-It-Simple (KISS)</strong> principle and <strong className="orange">Separation of Concerns</strong>, clearly separating where data is defined (your entities) and the business process you apply to it (your services). Services are still the only entry point for your aggregates functionality, and it works just fine for most microservice applications.
+It applies <Orange>Keep-It-Simple (KISS)</Orange> principle and <Orange>Separation of Concerns</Orange>, clearly separating where data is defined (your entities) and the business process you apply to it (your services). Services are still the only entry point for your aggregates functionality, and it works just fine for most microservice applications.
 
-Use the `@aggregate` annotation to mark your <strong className="orange">aggregate root entity</strong>, and use **service** for defining command/methods:
+Use the `@aggregate` annotation to mark your <Orange>aggregate root entity</Orange>, and use **service** for defining command/methods:
 
 ```zdl
 @aggregate
@@ -73,14 +73,14 @@ service CustomerService for (Customer) {
 ## Rich Domain Aggregates
 > 💡 Start with the Lightweight Aggregates pattern and refactor to Rich Domain Aggregates when you need it.
 
-Sometimes referred to as <strong className="orange">Rich Domain Model</strong> or <strong className="orange">Rich Domain Objects</strong>. These are objects that contain both data and behavior. They are not just data containers but also contain business logic.
+Sometimes referred to as <Orange>Rich Domain Model</Orange> or <Orange>Rich Domain Objects</Orange>. These are objects that contain both data and behavior. They are not just data containers but also contain business logic.
 
 We recommend following this approach when:
 
-- <strong className="orange">Business logic is complex</strong> and the aggregate needs to maintain its own consistency and invariants.
-- Your <strong className="orange">service methods spans multiple aggregates</strong>.
-- You are modeling aggregates that need to <strong className="orange">encapsulate state transitions</strong>.
-- You are working on a <strong className="orange">core subdomain</strong>.
+- <Orange>Business logic is complex</Orange> and the aggregate needs to maintain its own consistency and invariants.
+- Your <Orange>service methods spans multiple aggregates</Orange>.
+- You are modeling aggregates that need to <Orange>encapsulate state transitions</Orange>.
+- You are working on a <Orange>core subdomain</Orange>.
 
 With this approach, your service methods will look simpler, in expense of more complex, and bigger code base for your aggregates. And a stepper learning curve for your developing team.
 

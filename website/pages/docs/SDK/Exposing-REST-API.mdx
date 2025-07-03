@@ -2,7 +2,7 @@
 section: ZenWave SDK
 title: Exposing a REST API
 slug: /docs/zenwave-sdk/exposing-a-rest-api/
-order: 7
+order: 8
 ---
 import { Image, Quote, QuoteAuthor } from "smooth-doc/components";
 import openapiCustomerServiceOutline from './images/openapi-customer-service-outline.png'
@@ -172,41 +172,40 @@ Use the following configuration to generate SpringMVC Controller Interfaces from
 
 ```xml
 <plugin>
-    <groupId>org.openapitools</groupId>
-    <artifactId>openapi-generator-maven-plugin</artifactId>
-    <version>6.6.0</version>
-    <executions>
-        <execution>
-            <id>openapi-generator-server</id>
-            <goals>
-                <goal>generate</goal>
-            </goals>
-            <phase>generate-sources</phase>
-            <configuration>
-                <inputSpec>${project.basedir}/src/main/resources/apis/openapi.yml</inputSpec>
-                <generatorName>spring</generatorName>
-                <apiPackage>${basePackage}.adapters.web</apiPackage>
-                <modelPackage>${basePackage}.adapters.web.model</modelPackage>
-                <modelNameSuffix>DTO</modelNameSuffix>
-                <addCompileSourceRoot>true</addCompileSourceRoot>
-                <supportingFilesToGenerate>
-                    ApiUtil.java
-                </supportingFilesToGenerate>
-                <typeMappings>
-                    <typeMapping>Double=java.math.BigDecimal</typeMapping>
-                </typeMappings>
-                <configOptions>
-                    <useSpringBoot3>true</useSpringBoot3>
-                    <documentationProvider>none</documentationProvider>
-                    <openApiNullable>false</openApiNullable>
-                    <useOptional>true</useOptional>
-                    <useTags>true</useTags>
-                    <interfaceOnly>true</interfaceOnly>
-                    <delegatePattern>false</delegatePattern>
-                </configOptions>
-            </configuration>
-        </execution>
-    </executions>
+  <groupId>org.openapitools</groupId>
+  <artifactId>openapi-generator-maven-plugin</artifactId>
+  <version>7.8.0</version>
+  <executions>
+    <execution>
+      <goals>
+        <goal>generate</goal>
+      </goals>
+      <phase>generate-sources</phase>
+      <configuration>
+        <inputSpec>${project.basedir}/src/main/resources/public/apis/openapi.yml</inputSpec>
+        <skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
+        <generatorName>spring</generatorName>
+        <apiPackage>${openApiApiPackage}</apiPackage>
+        <modelPackage>${openApiModelPackage}</modelPackage>
+        <modelNameSuffix>DTO</modelNameSuffix>
+        <addCompileSourceRoot>true</addCompileSourceRoot>
+        <generateSupportingFiles>false</generateSupportingFiles>
+        <typeMappings>
+          <typeMapping>Double=java.math.BigDecimal</typeMapping>
+        </typeMappings>
+        <configOptions>
+          <useSpringBoot3>true</useSpringBoot3>
+          <documentationProvider>none</documentationProvider>
+          <openApiNullable>false</openApiNullable>
+          <useOptional>false</useOptional>
+          <useTags>true</useTags>
+          <interfaceOnly>true</interfaceOnly>
+          <skipDefaultInterface>true</skipDefaultInterface>
+          <delegatePattern>false</delegatePattern>
+        </configOptions>
+      </configuration>
+    </execution>
+  </executions>
 </plugin>
 ```
 
@@ -215,7 +214,7 @@ These settings are compatible with [OpenAPI: REST Controllers Generator](https:/
 - `<typeMapping>Double=java.math.BigDecimal</typeMapping>`
 - `<useSpringBoot3>true</useSpringBoot3>` (use SpringBoot 3 and jakarta annotations)
 - `<openApiNullable>false</openApiNullable>` (we use java.util.Optional instead)
-- `<useOptional>true</useOptional>` (we use java.util.Optional)
+- `<useOptional>false</useOptional>` (do not use java.util.Optional for parameters)
 - `<useTags>true</useTags>` (required for grouping the operations in services by tag)
 - `<interfaceOnly>true</interfaceOnly>`
 - `<delegatePattern>false</delegatePattern>`
