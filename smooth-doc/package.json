@@ -58,6 +58,7 @@
     "gatsby-source-filesystem": "^4.6.0",
     "gatsby-transformer-sharp": "^4.6.0",
     "github-slugger": "^1.4.0",
+    "node-fetch": "^2.7.0",
     "polished": "^4.1.4",
     "prism-react-renderer": "^1.2.1",
     "prismjs": "^1.26.0",

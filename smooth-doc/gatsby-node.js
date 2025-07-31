@@ -3,6 +3,108 @@ const path = require('path')
 const { createFilePath } = require('gatsby-source-filesystem')
 const { getSiteUrl } = require('./src/theme-options')
 const { createContentDigest, slash } = require(`gatsby-core-utils`)
+const fetch = require('node-fetch')
+
+// Cache for remote content to avoid duplicate fetches
+const remoteContentCache = new Map()
+
+// Function to transform GitHub blob URLs to raw URLs
+function transformGitHubUrl(url) {
+  // Transform GitHub blob URLs to raw URLs
+  // From: https://github.com/user/repo/blob/branch/path/file.ext
+  // To: https://raw.githubusercontent.com/user/repo/refs/heads/branch/path/file.ext
+  const githubBlobRegex = /^https:\/\/github\.com\/([^\/]+)\/([^\/]+)\/blob\/([^\/]+)\/(.+)$/
+  const match = url.match(githubBlobRegex)
+
+  if (match) {
+    const [, user, repo, branch, filePath] = match
+    return `https://raw.githubusercontent.com/${user}/${repo}/refs/heads/${branch}/${filePath}`
+  }
+
+  return url // Return original URL if not a GitHub blob URL
+}
+
+// Function to create GitHub source URL with line range
+function createGitHubSourceUrl(originalUrl, visibleRange) {
+  // Only create source URL if original was a GitHub blob URL
+  const githubBlobRegex = /^https:\/\/github\.com\/([^\/]+)\/([^\/]+)\/blob\/([^\/]+)\/(.+)$/
+  if (!githubBlobRegex.test(originalUrl)) {
+    return originalUrl
+  }
+
+  if (visibleRange) {
+    const [start, end] = visibleRange.split(',').map(num => parseInt(num.trim(), 10))
+    return `${originalUrl}#L${start}-L${end}`
+  }
+
+  return originalUrl
+}
+
+// Function to fetch and process remote content
+async function fetchRemoteContent(url, visibleRange, originalUrl = null) {
+  const fetchUrl = transformGitHubUrl(url)
+  const cacheKey = `${fetchUrl}:${visibleRange || 'full'}`
+
+  if (remoteContentCache.has(cacheKey)) {
+    return remoteContentCache.get(cacheKey)
+  }
+
+  try {
+    console.log(`Fetching remote content from: ${fetchUrl}`)
+    const response = await fetch(fetchUrl)
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    let content = await response.text()
+
+    // Apply visibleRange if provided (format: "start,end" with 1-based indexing)
+    if (visibleRange) {
+      const lines = content.split('\n')
+      const [start, end] = visibleRange.split(',').map(num => parseInt(num.trim(), 10))
+      // Convert from 1-based to 0-based indexing for array slicing
+      const startIndex = Math.max(0, start - 1)
+      const endIndex = Math.min(lines.length, end)
+      content = lines.slice(startIndex, endIndex).join('\n')
+    }
+
+    remoteContentCache.set(cacheKey, content)
+    return content
+  } catch (error) {
+    console.error(`Failed to fetch content from ${fetchUrl}:`, error.message)
+    const errorContent = `// Error fetching content from ${fetchUrl}\n// ${error.message}`
+    remoteContentCache.set(cacheKey, errorContent)
+    return errorContent
+  }
+}
+
+// Function to extract RemoteCode components from MDX content
+function extractRemoteCodeComponents(mdxContent) {
+  const remoteCodeRegex = /<RemoteCode[^>]*>/g
+  const components = []
+  let match
+
+  while ((match = remoteCodeRegex.exec(mdxContent)) !== null) {
+    const componentStr = match[0]
+
+    // Extract props using regex
+    const urlMatch = componentStr.match(/url=["']([^"']+)["']/)
+    const languageMatch = componentStr.match(/language=["']([^"']+)["']/)
+    const visibleRangeMatch = componentStr.match(/visibleRange=["']([^"']+)["']/)
+
+    if (urlMatch) {
+      components.push({
+        url: urlMatch[1],
+        language: languageMatch ? languageMatch[1] : 'text',
+        visibleRange: visibleRangeMatch ? visibleRangeMatch[1] : null,
+        originalComponent: componentStr
+      })
+    }
+  }
+
+  return components
+}
 
 function createSchemaCustomization({ actions, schema }) {
   const { createTypes } = actions
@@ -39,6 +141,17 @@ function createSchemaCustomization({ actions, schema }) {
       section: String
       order: Int
       redirect: String
+    }
+
+    type RemoteCodeContent implements Node {
+      id: ID!
+      url: String!
+      originalUrl: String!
+      sourceUrl: String!
+      language: String!
+      visibleRange: String
+      content: String!
+      cacheKey: String!
     }
 
     type BlogPost implements Node {
@@ -120,6 +233,46 @@ function getPageType(contentFilePath) {
 
 async function onCreateMdxNode({ node, getNode, actions, createNodeId }, options) {
   const { createNodeField, createNode, createParentChildLink } = actions
+
+  // Process RemoteCode components in MDX content
+  if (node.internal.type === 'Mdx' && node.body) {
+    const remoteCodeComponents = extractRemoteCodeComponents(node.body)
+
+    for (const component of remoteCodeComponents) {
+      const originalUrl = component.url
+      const fetchUrl = transformGitHubUrl(originalUrl)
+      const sourceUrl = createGitHubSourceUrl(originalUrl, component.visibleRange)
+      const cacheKey = `${fetchUrl}:${component.visibleRange || 'full'}`
+      const content = await fetchRemoteContent(originalUrl, component.visibleRange, originalUrl)
+
+      const remoteCodeNodeId = createNodeId(`${node.id} >>> RemoteCodeContent >>> ${cacheKey}`)
+
+      const remoteCodeData = {
+        url: fetchUrl,
+        originalUrl: originalUrl,
+        sourceUrl: sourceUrl,
+        language: component.language,
+        visibleRange: component.visibleRange,
+        content: content,
+        cacheKey: cacheKey
+      }
+
+      await createNode({
+        ...remoteCodeData,
+        id: remoteCodeNodeId,
+        parent: node.id,
+        children: [],
+        internal: {
+          type: 'RemoteCodeContent',
+          contentDigest: createContentDigest(remoteCodeData),
+          content: JSON.stringify(remoteCodeData),
+          description: 'Remote code content fetched at build time'
+        }
+      })
+
+      createParentChildLink({ parent: node, child: getNode(remoteCodeNodeId) })
+    }
+  }
   const slug = node.frontmatter.slug || createFilePath({ node, getNode })
   const pageType = getPageType(node.internal.contentFilePath);
 

@@ -3,6 +3,7 @@ import { MDXProvider as BaseMDXProvider } from '@mdx-js/react'
 import { Code } from './Code'
 import { CarbonAd } from './CarbonAd'
 import { Table, TableContainer } from './Table'
+import { RemoteCode } from './RemoteCode'
 
 function transformCode({ children, className, ...props }) {
   const lang = className && className.split('-')[1]
@@ -23,6 +24,7 @@ function getCodeChild(children) {
 
 export const mdxComponents = {
   'carbon-ad': () => <CarbonAd />,
+  RemoteCode,
   pre: ({ children }) => {
     const codeChild = getCodeChild(children)
     return codeChild ? transformCode(codeChild.props) : <pre>{children}</pre>
