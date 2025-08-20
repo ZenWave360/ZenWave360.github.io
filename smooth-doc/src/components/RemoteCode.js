@@ -3,7 +3,7 @@ import { useStaticQuery, graphql } from 'gatsby';
 import { Code } from './Code';
 
 // RemoteCode component to display pre-fetched content or fetch dynamically in dev mode
-export const RemoteCode = ({ url, language = 'text', content = '', visibleRange, showLegend = true }) => {
+export const RemoteCode = ({ url, language = 'text', content = '', visibleRange, showLegend = true, summary, collapsed = false }) => {
   const [dynamicContent, setDynamicContent] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -104,18 +104,21 @@ export const RemoteCode = ({ url, language = 'text', content = '', visibleRange,
   const sourceUrl = createSourceUrl();
 
   return (
-    <div>
-      <Code lang={language}>
-        {typeof displayContent === 'object' ? JSON.stringify(displayContent, null, 2) : displayContent}
-      </Code>
-      {showLegend && (
-      <div style={{ fontSize: '0.8em', color: '#666', marginTop: '8px', textAlign: 'right' }}>
-        <a href={sourceUrl} target="_blank" rel="noopener noreferrer">
-          📄 View source
-        </a>
+    <details open={!collapsed}>
+      {summary && <summary>{summary}</summary>}
+      <div>
+        <Code lang={language}>
+          {typeof displayContent === 'object' ? JSON.stringify(displayContent, null, 2) : displayContent}
+        </Code>
+        {showLegend && (
+          <div style={{ fontSize: '0.8em', color: '#666', marginTop: '8px', textAlign: 'right' }}>
+            <a href={sourceUrl} target="_blank" rel="noopener noreferrer">
+              📄 View source
+            </a>
+          </div>
+        )}
       </div>
-      )}
-    </div>
+    </details>
   );
 };
 

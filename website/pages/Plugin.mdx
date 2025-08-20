@@ -18,17 +18,98 @@ ZenWave Editor: Seamless ZDL Editing & SDK Plugin Integration inside IntelliJ Pl
 
 <iframe width="384px" height="319px" src="https://plugins.jetbrains.com/embeddable/card/22858"></iframe>
 
-Editing support for the ZDL Domain Model Language:
+## Features
 
-- Running ZenWave SDK plugins right from the editor (requires _cli_ installed)
-- Markdown preview with PlantUML diagrams (requires PlantUML plugin installed)
-- Syntax highlighting
-- Linting and errors
+### ZDL Language Support
+- **Syntax highlighting** for ZDL Domain Model Language
+- **Linting and error detection** with real-time feedback
+- **Code completion** for ZDL syntax (work in progress)
+- **Code navigation** (Ctrl+Click) from ZDL model to source code and API definitions (work in progress)
 
-Work in progress:
-- Code Completion and Formatting for ZDL syntax
-- Code Completion for available SDK plugins and options, including your custom plugins
-- Code Navigation (Ctrl+Click) from ZDL model to source code and API definitions
+### SDK Plugin Integration
+- **Execute ZenWave SDK plugins** directly from the editor with the Play button
+- **Copy generated command lines** by hovering over the Play button
+- **Plugin configuration** through ZenWave Scripts Files (`.zw`)
+- **Real-time code generation** from your ZDL models
+
+### Documentation & Visualization
+- **Markdown preview** with PlantUML diagrams (requires PlantUML plugin)
+- **Interactive documentation** generation from your domain models
+
+## ZenWave Scripts Files (.zw)
+
+The plugin supports ZenWave Scripts Files that define SDK plugins and their configurations:
+
+```zdl
+config {
+    // Global configuration
+    zdlFile "zenwave-model.zdl"
+
+    plugins {
+        /** Generates OpenAPI 3.0 from ZDL model */
+        ZDLToOpenAPIPlugin {
+            idType integer
+            targetFile "src/main/resources/public/apis/openapi.yml"
+        }
+
+        /** Generates AsyncAPI 3.0 from ZDL model */
+        ZDLToAsyncAPIPlugin {
+            asyncapiVersion v3
+            targetFile "src/main/resources/public/apis/asyncapi.yml"
+        }
+
+        /** Generates Backend Application (Headless Core) */
+        BackendApplicationDefaultPlugin {
+            useLombok true
+            includeEmitEventsImplementation true
+        }
+
+        /** Generates Spring MVC controllers (Web Adapters) */
+        OpenAPIControllersPlugin {
+            openapiFile "src/main/resources/public/apis/openapi.yml"
+        }
+
+        /** Generates Spring WebTestClient tests */
+        SpringWebTestClientPlugin {
+            openapiFile "src/main/resources/public/apis/openapi.yml"
+            groupBy businessFlow
+            businessFlowTestName CreateUpdateDeleteCustomerIntegrationTest
+            operationIds createCustomer,updateCustomer,deleteCustomer,getCustomer
+        }
+
+        /** Generates KarateDSL tests */
+        OpenAPIKaratePlugin {
+            openapiFile "src/main/resources/public/apis/openapi.yml"
+            groupBy businessFlow
+            businessFlowTestName CreateUpdateDeleteCustomerKarateTest
+            operationIds createCustomer,updateCustomer,deleteCustomer,getCustomer
+        }
+    }
+}
+```
+
+## Configuration Precedence
+
+The plugin follows a clear configuration hierarchy:
+
+1. **Command line arguments** (highest precedence)
+2. **Plugin-specific properties** (defined in `.zw` files)
+3. **Global properties** (defined in `.zw` files)
+4. **Properties from referenced `.zdl` files** (lowest precedence)
+
+## Getting Started
+
+1. **Install the plugin** from the JetBrains Marketplace
+2. **Install ZenWave CLI** for plugin execution: `jbang alias add --force --fresh --name=zw release@zenwave360/zenwave-sdk`
+3. **Create a ZDL model** file with `.zdl` extension
+4. **Create a ZenWave Scripts** file with `.zw` extension
+5. **Configure your plugins** in the scripts file
+6. **Execute plugins** using the Play button in the editor
+
+## Requirements
+
+- **ZenWave CLI** installed via JBang for plugin execution
+- **PlantUML plugin** (optional) for diagram preview in Markdown
 
 # ZenWave Editor for VSCode
 

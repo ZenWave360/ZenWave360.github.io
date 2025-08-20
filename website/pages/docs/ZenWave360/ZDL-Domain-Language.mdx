@@ -4,7 +4,7 @@ slug: /docs/event-driven-design/zenwave-domain-language/
 order: 1
 ---
 import { x } from '@xstyled/styled-components'
-import { Image, Quote, QuoteAuthor } from "smooth-doc/components"
+import { Image, Quote, QuoteAuthor, RemoteCode } from "smooth-doc/components"
 import zdlBlocks from './images/zdl-blocks.excalidraw.svg'
 import zdlBlocksLight from './images/zdl-blocks.light.png'
 import eventStormingZdlMapping from './../../../images/EventStorming-ZDL-Mapping.png'
@@ -29,132 +29,60 @@ ZDL works well as an Ubiquitous Language format.
 
 ## File Structure
 
-ZDL files are structured as follows:
+ZDL files follow a structured format with two main sections:
 
-- A prolog section.
-- A DDD and EDA sections.
+### File Types and Extensions
 
-Prolog section contains `global javadoc`, `config` and `apis` sections that are used by ZenWave IntelliJ Editor and ZenWave SDK plugins for code generation.
+ZenWave supports two file types for different purposes:
 
-DDD and EDA sections contain `entities`, `enums`, `aggregates`, `services`, `inputs`, `outputs` and `events` declarations.
+- **`.zw` files** - Plugin configuration files that can be executed directly from IntelliJ using the play button in the gutter
+- **`.zdl` files** - Domain model files that can include both model-related configuration and domain definitions
 
-`global javadoc`, `config`, `apis` are optional but should be at the top of the file, before any other declaration. After that `entities`, `enums`, `services`, `inputs`, `outputs` and `events` can be declared in any order and any number.
+### 1. Prolog Section (Optional)
+Contains metadata and configuration used by ZenWave tooling:
+- **`global javadoc`** - File-level documentation
+- **`config`** - Plugin configuration and generation settings (for `.zw` files) or model-related configuration (for `.zdl` files)
+- **`apis`** - API definitions (OpenAPI, AsyncAPI references)
 
+### 2. Domain Definition Section
+Contains the actual domain model declarations:
+- **`entities`** - Domain entities and aggregates
+- **`enums`** - Enumeration types
+- **`services`** - Business operations and commands
+- **`inputs/outputs`** - Data transfer objects
+- **`events`** - Domain events
+- **`policies`** - Business rules and policies
+
+### Structure Rules
+- Files can be split into plugin configuration (`.zw`) and model configuration (`.zdl`)
+- Prolog elements (`global javadoc`, `config`, `apis`) must appear at the top if present
+- Domain elements can be declared in any order and quantity
+- All prolog elements are optional
+
+### Syntax Pattern
 ```
 [<global javadoc>]
 [<config>]
 [<apis>]
 
-[<entity> | <enum> | <aggregate> | <polcies> | <service> | <input> | <output> | <event>]*
+[<entity> | <enum> | <aggregate> | <policies> | <service> | <input> | <output> | <event>]*
 ```
 
 <Image alt="ZenWave Domain Model Language - Blocks" src={zdlBlocksLight} />
 
-The following is a <strong class="orange">Complete ZDL Example</strong> describing an application with an aggregate exposing some core functionality, connected through a REST API adapter and publishing some domain events.
+The following <strong class="orange">Complete ZDL Examples</strong> demonstrate a full application with aggregates, REST API adapters, and domain event publishing:
 
-```zdl
-/**
- * This is the global javadoc comment.
- */
-config {
-  basePackage "com.example.myapp"
-  persistence jpa
-  databaseType postgresql
+<RemoteCode summary="ZenWave Scripts (.zw)" collapsed={true} language="zdl"
+            url="https://github.com/ZenWave360/zenwave-playground/blob/main/zenwave-jpa-baseline/zenwave-scripts.zw" />
 
-  plugins {
-
-    /** generates AsyncAPI (draft) for outbound events */
-    ZDLToAsyncAPIPlugin {
-        asyncapiVersion v3
-        idType integer
-        idTypeFormat int64
-        targetFile "src/main/resources/apis/asyncapi.yml"
-        // includeKafkaCommonHeaders true
-    }
-
-    /** generates backend core */
-    BackendApplicationDefaultPlugin {
-        useLombok true
-        includeEmitEventsImplementation true
-        // --force // overwite all files
-    }
-    /** Implements SpringMVC rest controllers */
-    OpenAPIControllersPlugin {
-        openapiFile "src/main/resources/apis/openapi.yml"
-    }
-
-    SpringWebTestClientPlugin {
-        openapiFile "src/main/resources/apis/openapi.yml"
-    }
-  }
-}
-
-apis {
-    openapi(provider) default {
-        uri "src/main/resources/model/openapi.yml"
-    }
-    asyncapi(provider) default {
-        uri "src/main/resources/model/asyncapi.yml"
-    }
-}
-
-// ===============================
-// core domain entities/aggregates
-// ===============================
-
-@aggregate
-@auditing
-entity Customer {
-  name String required /** the name field */
-}
-
-@auditing
-entity Address {
-    street String required
-    city String required
-    /** country iso code */
-    country String required minlength(2) maxlength(3)
-}
-
-relationship OneToMany {
-  Customer{addresses} to Address{customer}
-}
-
-// ===============================
-// aggregate services
-// ===============================
-
-policies (Customer) {
-  policy001 "Describe here the content of this business rule"
-}
-
-@rest("/customers")
-service CustomerService for (Customer) {
-    @policy(policy001)
-    createCustomer(Customer) Customer withEvents CustomerUpdated
-    updateCustomer(id, Customer) Customer?  withEvents CustomerUpdated
-    getCustomer(id) Customer?
-    listCustomers() Customer[]
-    deleteCustomer(id)  withEvents CustomerUpdated
-}
-
-// ===============================
-// outbound domain events
-// ===============================
-
-event CustomerUpdated (customerChannelName) {
-    customerId Integer required
-    customer Customer
-}
-```
-
-
+<RemoteCode summary="ZenWave Models (.zdl)" collapsed={true} language="zdl"
+            url="https://github.com/ZenWave360/zenwave-playground/blob/main/zenwave-jpa-baseline/zenwave-model.zdl" />
 
 ## Entities and Aggregates
 
-Entities are used to describe your domain model. The core of your Bounded Context and can be grouped by aggregates. You can either annotate your aggregate root with `@aggregate` (recommended) or use an `aggregate` object to model rich domain aggregates with command handlers and domain events.
+Entities describe your domain model and form the core of your Bounded Context. They can be grouped into aggregates using either the `@aggregate` annotation on the aggregate root (recommended) or by defining rich domain aggregates with command handlers and domain events using `aggregate` objects.
 
-An  entity declaration is done as follows:
+Entity declaration syntax:
 
 ```
 [<entity javadoc>]
@@ -166,13 +94,17 @@ entity <entity name> [(<table name>)] {
 }
 ```
 
-They are compatible with [JHipster JDL entities](https://www.jhipster.tech/jdl/entities-fields) with some extensions like annotation values, nested entities directly on fields and field types that can be also other entities or custom types.
+ZDL entities are compatible with [JHipster JDL entities](https://www.jhipster.tech/jdl/entities-fields) with additional extensions:
+- Annotations with values: single/double-quoted strings, numbers, booleans, and JSON objects
+- Nested entities directly on fields
+- Field types that can reference other entities or custom types
+- Arrays as field types
 
 ### Annotations
 
-Similar to Java, or Typescript, annotations are “decorators”, options to entities. They are optional, and can be used to add additional information to the entities, enums, fields, relationships, services, commands, events...
+Annotations are decorators that add metadata to entities, similar to Java or TypeScript. They are optional and can be applied to entities, enums, fields, relationships, services, commands, and events.
 
-They accept as parameter: keywords, single and double-quoted strings, numbers, booleans and json objects.
+Supported parameter types: keywords, strings (single/double quoted), numbers, booleans, and JSON objects.
 
 ```zdl
 @aggregate
@@ -182,7 +114,9 @@ entity ParkingLot {
 }
 ```
 
-SDK plugins can treat some annotations as special, and use them to generate code, configuration, documentation...: for instance `@extends` or `@copy` are describe "java extension" and "copy fields but not extend" respectively.
+SDK plugins interpret certain annotations for code generation:
+- `@extends` - Java class extension
+- `@copy` - Copy fields without inheritance
 
 ### Fields
 
@@ -208,30 +142,39 @@ entity A {
 
 #### Field Types and Validations
 
-ZDL is not limited to the following field types, but you can also use any other entity, enum or custom type.
+**Supported field types:**
+- Primitives: `String`, `Integer`, `Long`, `int`, `long`, `BigDecimal`, `Float`, `float`, `Double`, `double`, `Boolean`, `boolean`
+- Date/Time: `LocalDate`, `LocalDateTime`, `ZonedDateTime`, `Instant`, `Duration`
+- Binary: `byte`, `byte[]`, `Blob`, `AnyBlob`, `ImageBlob`, `TextBlob`
+- Other: `UUID`, `Enum`
+- Custom: Any other entity, enum, or custom type
 
-- `String`, `Integer`, `Long`, `int`, `long`, `BigDecimal`, `Float`, `float`, `Double`, `double`, `Enum`, `Boolean`, `boolean`, `LocalDate`, `LocalDateTime`, `ZonedDateTime`, `Instant`, `Duration`, `UUID`, `byte`, `byte[]`, `Blob`, `AnyBlob`, `ImageBlob`, `TextBlob`.
-
-Some validations are dependent on the field types. Currently supported validations are:
-
-- `required`, `unique`, `min(value)`, `max(value)`, `minlength(value)`, `maxlength(value)`, `pattern(/expression/)`
+**Available validations:**
+- `required`, `unique`
+- `min(value)`, `max(value)`
+- `minlength(value)`, `maxlength(value)`
+- `pattern(/expression/)`
 
 ### Documentation Comments
 
-As with Java, Javascript... ZDL supports line and block and javadoc style comments. Fields also support single line suffix javadoc style comments.
+ZDL supports standard comment styles:
 
-- `// an ignored line comment`
-- `/* an ignored block */`
-- `/** not an ignored documentation comment */`
+- `// line comment (ignored)`
+- `/* block comment (ignored) */`
+- `/** documentation comment (preserved) */`
+
+Fields support inline suffix documentation: `fieldName Type /** inline docs */`
 
 ### Relationships
 
-Relationships remain mostly compatible with [JDL Relationships](https://www.jhipster.tech/jdl/relationships).
+Relationships are mostly compatible with [JDL Relationships](https://www.jhipster.tech/jdl/relationships) with some differences:
 
-ZDL does not support `display field` or `with builtInEntity` and options are any valid annotation name/value pair.
+- ZDL does not support `display field` or `with builtInEntity`
+- Options are more flexible and can be any valid annotation name/value pair
 
-There are four relationship types: `OneToOne`, `OneToMany`, `ManyToOne` and `ManyToMany`:
+**Supported relationship types:** `OneToOne`, `OneToMany`, `ManyToOne`, and `ManyToMany`
 
+**Syntax:**
 ```
 relationship (OneToMany | ManyToOne | OneToOne | ManyToMany) {
   [<from relationship javadoc>]
@@ -241,21 +184,29 @@ relationship (OneToMany | ManyToOne | OneToOne | ManyToMany) {
   [<to relationship annotation>*] <to entity>[{<relationship field name> [required]}]
 }
 ```
-Relationships can be grouped under the same `relationship` keyword or under separate keywords.
+
+Relationships can be grouped under the same `relationship` keyword or declared separately:
 
 ```zdl
 relationship ManyToMany {
   EntityA{fieldPointingB} to EntityB{fieldPointingToA}
-  EntityC{fieldPointingD required} to @Id EntityD{fieldPointingToC}
+  EntityC{fieldPointingD required maxlength(10)} to EntityD{fieldPointingToC}
+}
+
+relationship OneToOne {
+  EntityParent{fieldPointingChild} to @MapsId EntityChild{fieldPointingToParent}
 }
 ```
-ZenWave SDK tries to follow DDD rules for aggregates, cascading persistence from aggregate root to dependent entities. Generating unit tests, as executable documentation, to validate that those cascades work as expected.
 
-#### Relationships between aggregates
+ZenWave SDK follows DDD rules for aggregates, cascading persistence from aggregate root to dependent entities and generating unit tests to validate these cascades work as expected.
 
-From a DDD perspective, aggregates are self-contained units of consistency that are not supposed to hold 'rich' relationships with other aggregates and relationships between aggregates should be modeled by reference/id.
+#### Relationships Between Aggregates
 
-However, modeling relationships by id looses information about the relationship being modeled. ZenWave SDK supports modeling 'rich' relationships between aggregates, and generated code will still use reference/id to model the relationship, but will also provide a read-only 'rich' relationship object that can be used to access the related aggregate.
+From a DDD perspective, aggregates should be self-contained units of consistency. Relationships between aggregates should typically be modeled by reference/id rather than rich object relationships.
+
+However, modeling relationships by id alone loses information about the relationship being modeled. ZenWave SDK supports modeling rich relationships between aggregates while still generating code that uses reference/id for the actual relationship, plus a read-only rich relationship object for accessing the related aggregate.
+
+This option should be explicitly activated by using `addRelationshipsById` when using `BackendApplicationDefaultPlugin`.
 
 ```zdl
 @aggregate
@@ -266,22 +217,21 @@ entity Customer {
 @aggregate
 entity CustomerOrder {
     orderDate ZonedDateTime required
-    /* customerId Integer */ // with this type of mapping some information about the relationship being modeled is lost
+    /* customerId Integer */ // modeling by id loses relationship information
 }
 
 relationship ManyToOne {
-  // From a DDD perspective a relationship between aggregates should be modeled by reference/id
-  // This mapping will result in a CustomerOrder.[get/set]CustomerId() field
-  // and a read-only CustomerOrder.getCustomer() field
+  // This generates both CustomerOrder.[get/set]CustomerId() methods
+  // and a read-only CustomerOrder.getCustomer() method
   CustomerOrder{customer} to Customer
 }
 ```
 
 ### Nested Entities
 
-When working with large object graphs, sometimes is more expressive to nest entities directly on fields, instead of defining them separately.
+When working with large object graphs, it's often more expressive to nest entities directly on fields rather than defining them separately.
 
-Nested entities are supported for entities, inputs, outputs and events.
+Nested entities are supported for entities, inputs, outputs, and events.
 
 The following two mappings are equivalent:
 
@@ -318,11 +268,15 @@ entity Address {
 </tr>
 </table>
 
-NOTE: For entities, the code generated by ZenWave SDK plugins will depend on the persistence technology used. For MongoDB will generate a nested object and for JPA an embedded entity with all columns on the same table (nested arrays are not supported in JPA).
+NOTE: For entities, the generated code depends on the persistence technology used:
+- MongoDB generates nested objects, while
+- JPA generates embedded entities with all columns in the same table. Nested arrays are not supported in JPA.
 
 ## Enums
 
-Enums are also compatible with to [JDL enums](https://www.jhipster.tech/jdl/enums), but enum keys are not required to be uppercase.
+Enums are compatible with [JDL enums](https://www.jhipster.tech/jdl/enums) with some differences:
+- Enum keys are not required to be uppercase
+- Enum values can only be numbers
 
 ```
 enum <enum name> {
@@ -379,20 +333,24 @@ service <service name> for (<aggregate>[,<aggregate>]*)] {
 
 ### Service Commands
 
-Service commands are transactional units of work to perform operations on aggregate entities.
+Service commands are transactional units of work that perform operations on aggregate entities.
 
-They represent functionality of your inner ring/hexagon. They should be connected to the outside world via APIs, Adapters & Mappers. They can be documented with annotations pointing to the adapters that will be used to expose them, like @rest or @async. It's up to the SDK how these annotations are interpreted, but they should not be confused with public APIs.
+They represent the functionality of your inner hexagon and should connect to the outside world through APIs, Adapters, and Mappers. Commands can be documented with annotations (like `@rest` or `@asyncapi`) that indicate which adapters will expose them. The SDK interprets these annotations for code generation, but they should not be confused with actual public APIs.
 
-Some SDK plugins can also generate draft OpenAPI and AsyncAPI definition files from these annotations, but are those APIs (OpenAPI, AsyncAPI) to be considered as the source of truth.
+Some SDK plugins can generate draft OpenAPI and AsyncAPI definitions from these annotations, but the final API specifications (OpenAPI, AsyncAPI) should be considered the source of truth.
 
-Service commands resemble but should not be confused wit java methods. They support only two types of parameters:
+Service commands resemble Java methods but have important differences. They support only two parameter types:
 
-- **id**: the presence of this parameter specifies that this command operates on an aggregate entity instance with the given id.
-- **CommandInput**: it can point to an `entity` or `input` type, and it's used to pass data to the command.
+- **`id`** - Indicates the command operates on a specific aggregate entity instance
+- **`CommandInput`** - Points to an `entity` or `input` type containing the command data
 
-`CommandOutput` can be any valid `entity` or `output` type, or be unspecified. If CommandOutput is an entity, it expresses that entity will be created or updated with the command input data. CommandOutput can be marked as `optional` with a `?` to express that the command may not return any output.
+**Command Output:**
+- Can be any `entity` or `output` type, or omitted entirely
+- If an entity type, indicates the entity will be created or updated
+- Can be marked optional with `?` if the command may not return output
 
-`withEvents` is used to specify the domain events that will be published after the command is executed.
+**Events:**
+- Use `withEvents` to specify domain events published after command execution
 
 ```zdl
 /**
@@ -517,28 +475,11 @@ In addition to their own configuration, they will inherit the following options:
 - `targetFolder` to the project folder (not the file folder)
 - and all configuration from `config` section.
 
-```zdl
-config {
-    basePackage "com.example.myapp"
-    persistence mongodb
+&nbsp;
 
-    plugins {
-        /** generates backend core */
-        io.zenwave360.sdk.plugins.JDLBackendApplicationDefaultPlugin {
-            inputDTOSuffix "" // do not create separate Input DTOs for entities
-            --force // overwite all files
-        }
-        /**
-        * Convenience plugin to generate OpenAPI from Service/Entities.
-        * Warning: This will overwrite existing customizations. */
-        disabled io.zenwave360.sdk.plugins.JDLToOpenAPIPlugin {
-            idType integer
-            idTypeFormat int64
-            targetFile "src/main/resources/model/openapi.yml"
-        }
-    }
-}
-```
+<RemoteCode summary="ZenWave Scripts (.zw)" collapsed={true} language="zdl"
+            url="https://github.com/ZenWave360/zenwave-playground/blob/main/zenwave-jpa-baseline/zenwave-scripts.zw" />
+
 
 ## APIs Section
 

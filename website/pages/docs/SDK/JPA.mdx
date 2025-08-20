@@ -129,7 +129,7 @@ entity Customer { }
 entity Address { }
 
 relationship OneToOne {
-    Customer{address required} to @Id Address{customer}
+    Customer{address required} to @MapsId Address{customer}
 }
 ```
 
