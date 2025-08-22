@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 import { Code } from './Code';
+import styled from '@xstyled/styled-components';
+
+const StyledDetails = styled.details`
+  display: inline-block;
+  margin-right: 20px;
+  transition: width 0.3s ease;
+  
+  &[open] {
+    width: 100%;
+    display: block;
+  }
+`;
 
 // RemoteCode component to display pre-fetched content or fetch dynamically in dev mode
 export const RemoteCode = ({ url, language = 'text', content = '', visibleRange, showLegend = true, summary, collapsed = false }) => {
@@ -10,6 +22,8 @@ export const RemoteCode = ({ url, language = 'text', content = '', visibleRange,
 
   // Transform GitHub URL for fetching if needed
   const transformGitHubUrl = (inputUrl) => {
+    if (!inputUrl) return inputUrl; // Handle undefined/null URLs
+    
     const githubBlobRegex = /^https:\/\/github\.com\/([^\/]+)\/([^\/]+)\/blob\/([^\/]+)\/(.+)$/
     const match = inputUrl.match(githubBlobRegex)
 
@@ -40,7 +54,7 @@ export const RemoteCode = ({ url, language = 'text', content = '', visibleRange,
 
   // Find pre-fetched content that matches current props
   const fetchUrl = transformGitHubUrl(url)
-  const cacheKey = `${fetchUrl}:${visibleRange || 'full'}`;
+  const cacheKey = `${fetchUrl || ''}:${visibleRange || 'full'}`;
   const preFetchedContent = data.allRemoteCodeContent.nodes.find(
     node => node.cacheKey === cacheKey
   );
@@ -104,21 +118,23 @@ export const RemoteCode = ({ url, language = 'text', content = '', visibleRange,
   const sourceUrl = createSourceUrl();
 
   return (
-    <details open={!collapsed}>
-      {summary && <summary>{summary}</summary>}
-      <div>
-        <Code lang={language}>
-          {typeof displayContent === 'object' ? JSON.stringify(displayContent, null, 2) : displayContent}
-        </Code>
-        {showLegend && (
-          <div style={{ fontSize: '0.8em', color: '#666', marginTop: '8px', textAlign: 'right' }}>
-            <a href={sourceUrl} target="_blank" rel="noopener noreferrer">
-              📄 View source
-            </a>
-          </div>
-        )}
-      </div>
-    </details>
+    <div className="remote-code">
+      <StyledDetails open={!collapsed}>
+        {summary && <summary style={{ cursor: 'pointer' }}>{summary} <span className="summary_expand_handler">(👇 view source)</span></summary>}
+        <div>
+          <Code lang={language}>
+            {typeof displayContent === 'object' ? JSON.stringify(displayContent, null, 2) : displayContent}
+          </Code>
+        </div>
+      </StyledDetails>
+      {showLegend && (
+        <span style={{ fontSize: '0.8em' }}>
+          🔗<a href={sourceUrl} target="_blank">
+            Navigate to source
+          </a>
+        </span>
+      )}
+    </div>
   );
 };
 

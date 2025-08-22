@@ -1,6 +1,7 @@
 export * from './Article'
 export * from './Button'
 export * from './Code'
+export * from './CodeGeneration'
 export * from './ColorModeSwitcher'
 export * from './Feature'
 export * from './Hero'

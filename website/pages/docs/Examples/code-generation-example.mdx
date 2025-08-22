@@ -1,0 +1,140 @@
+---
+section: Examples
+title: Code Generation Examples
+slug: /docs/examples/code-generation-examples/
+order: 10
+---
+import { CodeGeneration } from "smooth-doc/components";
+
+# Code Generation Examples
+
+This page demonstrates how to use the `CodeGeneration` component to showcase code generation workflows.
+
+## Basic Example with Remote URLs
+
+<CodeGeneration
+  command="When using the ZDLToAsyncAPIPlugin, the following ZDL model generates an AsyncAPI specification:"
+  sourceSummary="ZDL Model"
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl"
+  sourceLanguage="zdl"
+  outputSummary="AsyncAPI Definition"
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/asyncapi.yml"
+  outputLanguage="yaml"
+  collapsed={true}
+  showLegend={true}
+/>
+
+## Example with Inline Content
+
+<CodeGeneration
+  command="Transform a simple entity definition into a Java class:"
+  sourceSummary="Entity Definition"
+  sourceContent={`entity Customer {
+  id Long required
+  firstName String required
+  lastName String required
+  email String required unique
+  phone String
+}`}
+  sourceLanguage="zdl"
+  outputSummary="Generated Java Class"
+  outputContent={`@Entity
+@Table(name = "customer")
+public class Customer {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @Column(nullable = false)
+    private String firstName;
+    
+    @Column(nullable = false)
+    private String lastName;
+    
+    @Column(nullable = false, unique = true)
+    private String email;
+    
+    private String phone;
+    
+    // Getters and setters...
+}`}
+  outputLanguage="java"
+/>
+
+## Example with Only Source
+
+<CodeGeneration
+  command="Here's an example configuration file:"
+  sourceSummary="Configuration"
+  sourceContent={`config:
+  title: "Customer Management API"
+  basePackage: "io.zenwave360.example"
+  persistence: JPA
+  style: IMPERATIVE`}
+  sourceLanguage="yaml"
+/>
+
+## Example with Only Output
+
+<CodeGeneration
+  command="This command generates the following output:"
+  outputSummary="Generated Files"
+  outputContent={`src/
+├── main/
+│   ├── java/
+│   │   └── io/
+│   │       └── zenwave360/
+│   │           └── example/
+│   │               ├── domain/
+│   │               │   └── Customer.java
+│   │               ├── infrastructure/
+│   │               │   └── CustomerRepository.java
+│   │               └── web/
+│   │                   └── CustomerController.java
+│   └── resources/
+│       └── application.yml
+└── test/
+    └── java/
+        └── io/
+            └── zenwave360/
+                └── example/
+                    └── CustomerControllerTest.java`}
+  outputLanguage="text"
+/>
+
+## Component Props
+
+The `CodeGeneration` component accepts the following props:
+
+- **command** (string): Description of the command or process
+- **sourceSummary** (string, optional): Summary for the source code section
+- **sourceUrl** (string, optional): URL to fetch source code from
+- **sourceContent** (string, optional): Direct source code content
+- **sourceLanguage** (string, default: 'text'): Language for source code syntax highlighting
+- **sourceVisibleRange** (string, optional): Range of lines to show from source (e.g., "1,20")
+- **outputSummary** (string, optional): Summary for the output code section
+- **outputUrl** (string, optional): URL to fetch output code from
+- **outputContent** (string, optional): Direct output code content
+- **outputLanguage** (string, default: 'text'): Language for output code syntax highlighting
+- **outputVisibleRange** (string, optional): Range of lines to show from output (e.g., "1,20")
+- **collapsed** (boolean, default: false): Whether code sections should be collapsed by default
+- **showLegend** (boolean, default: true): Whether to show source links
+- **afterText** (string, optional): Additional descriptive text to show after the generation example
+
+## Usage
+
+```jsx
+import { CodeGeneration } from "smooth-doc/components";
+
+<CodeGeneration
+  command="Description of what this generation does"
+  sourceSummary="Input Description"
+  sourceUrl="https://github.com/user/repo/blob/main/input.zdl"
+  sourceLanguage="zdl"
+  outputSummary="Output Description"
+  outputUrl="https://github.com/user/repo/blob/main/output.java"
+  outputLanguage="java"
+  collapsed={false}
+  showLegend={true}
+/>
+```

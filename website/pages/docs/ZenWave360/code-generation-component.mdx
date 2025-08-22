@@ -1,0 +1,270 @@
+---
+section: ZenWave 360º
+title: Code Generation Component
+slug: /docs/zenwave360/code-generation-component/
+order: 15
+---
+import { CodeGeneration } from "smooth-doc/components";
+
+# Code Generation Component
+
+The `CodeGeneration` component is designed to showcase code generation workflows in documentation. It provides a clean, structured way to display the relationship between input source code and generated output code.
+
+## Features
+
+- **Flexible Content Sources**: Support for both remote URLs and inline content
+- **Syntax Highlighting**: Full Prism.js language support for both source and output
+- **Collapsible Sections**: Optional collapsible code blocks for better readability
+- **Source Links**: Automatic generation of "View Source" links for remote content
+- **Responsive Design**: Adapts to different screen sizes
+- **Dark Mode Support**: Automatic theme switching
+- **GitHub Integration**: Automatic URL transformation and line linking for GitHub URLs
+
+## Basic Usage
+
+### Remote Content Example
+
+<CodeGeneration
+  command="Generate Spring Boot entities from ZDL model definitions"
+  sourceSummary="ZDL Entity Model"
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl"
+  sourceLanguage="zdl"
+  sourceVisibleRange="1,20"
+  outputSummary="Generated Java Entity"
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/java/io/zenwave360/example/domain/Customer.java"
+  outputLanguage="java"
+  sourceVisibleRange="1,30"
+  collapsed={true}
+  showLegend={true}
+/>
+
+### Inline Content Example
+
+<CodeGeneration
+  command="Transform a simple configuration into a complete Spring Boot application structure"
+  sourceSummary="ZenWave Configuration"
+  sourceContent={`config:
+  title: "Customer Management API"
+  basePackage: "io.zenwave360.example"
+  persistence: JPA
+  style: IMPERATIVE
+
+apis:
+  - name: "customer-api"
+    type: "openapi"
+    file: "customer-openapi.yml"`}
+  sourceLanguage="yaml"
+  outputSummary="Generated Project Structure"
+  outputContent={`src/
+├── main/
+│   ├── java/
+│   │   └── io/
+│   │       └── zenwave360/
+│   │           └── example/
+│   │               ├── Application.java
+│   │               ├── config/
+│   │               │   └── DatabaseConfig.java
+│   │               ├── domain/
+│   │               │   ├── Customer.java
+│   │               │   └── Address.java
+│   │               ├── infrastructure/
+│   │               │   ├── CustomerRepository.java
+│   │               │   └── AddressRepository.java
+│   │               └── web/
+│   │                   ├── CustomerController.java
+│   │                   └── AddressController.java
+│   └── resources/
+│       ├── application.yml
+│       └── schema.sql
+└── test/
+    └── java/
+        └── io/
+            └── zenwave360/
+                └── example/
+                    ├── CustomerControllerTest.java
+                    └── CustomerRepositoryTest.java`}
+  outputLanguage="text"
+  afterText="with all event schemas and corresponding channel configurations."
+/>
+
+### AsyncAPI Generation Example
+
+<CodeGeneration
+  command="Generate AsyncAPI specification from ZDL events and services"
+  sourceSummary="ZDL Events Definition"
+  sourceContent={`event CustomerCreated {
+  customerId Long required
+  firstName String required
+  lastName String required
+  email String required
+  timestamp Instant required
+}
+
+event CustomerUpdated {
+  customerId Long required
+  firstName String
+  lastName String
+  email String
+  timestamp Instant required
+}
+
+service CustomerEventsService for (CustomerCreated, CustomerUpdated) {
+  publishCustomerCreated(CustomerCreated) CustomerCreated
+  publishCustomerUpdated(CustomerUpdated) CustomerUpdated
+}`}
+  sourceLanguage="zdl"
+  outputSummary="Generated AsyncAPI Specification"
+  outputContent={`asyncapi: 3.0.0
+info:
+  title: Customer Management API
+  version: 1.0.0
+channels:
+  customer.created:
+    messages:
+      CustomerCreated:
+        $ref: '#/components/messages/CustomerCreated'
+  customer.updated:
+    messages:
+      CustomerUpdated:
+        $ref: '#/components/messages/CustomerUpdated'
+components:
+  messages:
+    CustomerCreated:
+      payload:
+        $ref: '#/components/schemas/CustomerCreated'
+    CustomerUpdated:
+      payload:
+        $ref: '#/components/schemas/CustomerUpdated'
+  schemas:
+    CustomerCreated:
+      type: object
+      properties:
+        customerId:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+      required: [customerId, firstName, lastName, email, timestamp]`}
+  outputLanguage="yaml"
+  afterText="with all event schemas and corresponding channel configurations."
+/>
+
+## Component Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `command` | string | - | Description of the command or generation process |
+| `sourceSummary` | string | - | Summary/title for the source code section |
+| `sourceUrl` | string | - | URL to fetch source code from (GitHub URLs supported) |
+| `sourceContent` | string | - | Direct source code content |
+| `sourceLanguage` | string | `'text'` | Language for source code syntax highlighting |
+| `sourceVisibleRange` | string | - | Range of lines to show (e.g., "1,20") |
+| `outputSummary` | string | - | Summary/title for the output code section |
+| `outputUrl` | string | - | URL to fetch output code from |
+| `outputContent` | string | - | Direct output code content |
+| `outputLanguage` | string | `'text'` | Language for output code syntax highlighting |
+| `outputVisibleRange` | string | - | Range of lines to show from output |
+| `collapsed` | boolean | `false` | Whether code sections should be collapsed by default |
+| `showLegend` | boolean | `true` | Whether to show "View Source" links |
+| `afterText` | string | - | Additional descriptive text to show after the generation example |
+
+## Supported Languages
+
+The component supports all languages available in Prism.js, including:
+
+- `javascript`, `typescript`, `jsx`, `tsx`
+- `java`, `kotlin`, `scala`
+- `python`, `ruby`, `php`
+- `yaml`, `json`, `xml`
+- `zdl` (ZenWave Domain Language)
+- `sql`, `bash`, `dockerfile`
+- `markdown`, `text`
+
+## Advanced Examples
+
+### Source Only
+
+<CodeGeneration
+  command="Here's the configuration file for the Customer Management service:"
+  sourceSummary="Service Configuration"
+  sourceContent={`# Customer Management Service Configuration
+server:
+  port: 8080
+  
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true`}
+  sourceLanguage="yaml"
+/>
+
+### Output Only
+
+<CodeGeneration
+  command="Running the ZenWave SDK generates the following files:"
+  outputSummary="Generated Files"
+  outputContent={`✅ Generated: src/main/java/io/zenwave360/example/domain/Customer.java
+✅ Generated: src/main/java/io/zenwave360/example/domain/Address.java
+✅ Generated: src/main/java/io/zenwave360/example/infrastructure/CustomerRepository.java
+✅ Generated: src/main/java/io/zenwave360/example/infrastructure/AddressRepository.java
+✅ Generated: src/main/java/io/zenwave360/example/web/CustomerController.java
+✅ Generated: src/main/java/io/zenwave360/example/web/AddressController.java
+✅ Generated: src/test/java/io/zenwave360/example/CustomerControllerTest.java
+✅ Generated: src/test/java/io/zenwave360/example/AddressControllerTest.java
+
+📊 Summary: 8 files generated successfully`}
+  outputLanguage="text"
+/>
+
+## Legacy Support
+
+For backward compatibility, the component also supports the legacy `codegeneration` class approach:
+
+```html
+<div className="codegeneration">
+  <div className="codegeneration__command">Command description</div>
+  <div className="codegeneration__source">
+    <RemoteCode url="..." language="..." />
+  </div>
+  <div className="codegeneration__output">
+    <RemoteCode url="..." language="..." />
+  </div>
+</div>
+```
+
+## Best Practices
+
+1. **Use descriptive summaries**: Help users understand what each code section represents
+2. **Choose appropriate languages**: Use specific language identifiers for better syntax highlighting
+3. **Consider collapsing long code**: Use `collapsed={true}` for lengthy code examples
+4. **Provide context**: Use the `command` prop to explain the generation process
+5. **Use visible ranges**: For large files, show only relevant sections using `visibleRange`
+6. **Enable source links**: Keep `showLegend={true}` to help users explore the full source
+
+## GitHub Integration
+
+The component automatically handles GitHub URLs:
+
+- Transforms blob URLs to raw URLs for fetching
+- Generates proper source links with line numbers
+- Supports line ranges in fragment links (e.g., `#L10-L20`)
+
+Example:
+```jsx
+<CodeGeneration
+  sourceUrl="https://github.com/user/repo/blob/main/file.java"
+  sourceVisibleRange="10,30"
+  // Automatically creates link: https://github.com/user/repo/blob/main/file.java#L10-L30
+/>
+```

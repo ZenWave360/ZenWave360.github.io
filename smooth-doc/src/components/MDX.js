@@ -4,6 +4,7 @@ import { Code } from './Code'
 import { CarbonAd } from './CarbonAd'
 import { Table, TableContainer } from './Table'
 import { RemoteCode } from './RemoteCode'
+import { CodeGeneration } from './CodeGeneration'
 
 function transformCode({ children, className, ...props }) {
   const lang = className && className.split('-')[1]
@@ -25,6 +26,7 @@ function getCodeChild(children) {
 export const mdxComponents = {
   'carbon-ad': () => <CarbonAd />,
   RemoteCode,
+  CodeGeneration,
   pre: ({ children }) => {
     const codeChild = getCodeChild(children)
     return codeChild ? transformCode(codeChild.props) : <pre>{children}</pre>

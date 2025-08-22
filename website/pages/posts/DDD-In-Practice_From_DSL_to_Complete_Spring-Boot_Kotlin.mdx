@@ -13,7 +13,7 @@ tags:
   - SpringBoot
   - Kotlin
 ---
-import { Image } from "smooth-doc/components";
+import { CodeGeneration, Image, RemoteCode } from 'smooth-doc/components'
 import eventStormingZdlMapping from '../../static/posts/ZenWave-360-Event-Storming/EventStorming-ZDL-Mapping.png'
 import eventStorming from '../../static/posts/ZenWave-360-Event-Storming/DLES-Brandolini-transparent.png'
 import dddFeedbackLoopDark from '../../static/posts/ZenWave-360-Business-Domain-Modeling/ZenWave-360-DDD-Feedback-Loop-with-ZW-Products.dark.png'
@@ -21,191 +21,198 @@ import dddFeedbackLoopLight from '../../static/posts/ZenWave-360-Business-Domain
 import dddTriangleLightImage from '../../static/posts/ZenWave-360-Business-Domain-Modeling/business-developers-software-triangle.light.png'
 import speedFeedbackLoopLight from '../docs/SDK/images/ZenWave-SDK-Design-Code-Loop.light.png'
 import speedFeedbackLoopDark from '../docs/SDK/images/ZenWave-SDK-Design-Code-Loop.dark.png'
+import pluginScreenShot from '../plugin-screenshot.png'
 
 <Image src="automobile.png" alt="" />
 https://x.com/ghohpe/status/1513362076990803969
 
-# DDD en la Práctica: De Lenguaje Ubícuo en DSL a Proyecto Completo de Spring Boot con Kotlin
+# DDD In Practice: From an Ubiquitous Language DSL to a Complete Spring Boot Kotlin Project
 
-- [DDD en la Práctica: De Lenguaje Ubícuo en DSL a Proyecto Completo de Spring Boot con Kotlin](#ddd-en-la-práctica-de-lenguaje-ubícuo-en-dsl-a-proyecto-completo-de-spring-boot-con-kotlin)
-  - [Importancia del Lenguaje Ubícuo en Domain Driven Design](#importancia-del-lenguaje-ubícuo-en-domain-driven-design)
-  - [ZenWave Domain Model Language: Un Lenguaje de Modelado que funciona como Lenguaje Ubícuo](#zenwave-domain-model-language-un-lenguaje-de-modelado-que-funciona-como-lenguaje-ubícuo)
-  - [Modelado de Dominio de Negocio con ZenWave 360º](#modelado-de-dominio-de-negocio-con-zenwave-360º)
-    - [Comprender el Modelo Mental de los expertos de negocio](#comprender-el-modelo-mental-de-los-expertos-de-negocio)
-    - [Convertir el Lenguaje Ubícuo en diferentes Artefactos de Software con ZenWave SDK](#convertir-el-lenguaje-ubícuo-en-diferentes-artefactos-de-software-con-zenwave-sdk)
-  - [ZenWave 360: Inicio Rápido para los más Impacientes](#zenwave-360-inicio-rápido-para-los-más-impacientes)
-  - [Caso Práctico: Customers Service - Del Modelo ZDL al Proyecto Spring-Boot](#caso-práctico-customers-service---del-modelo-zdl-al-proyecto-spring-boot)
-    - [Creando un ZDL para nuestro Customers Service](#creando-un-zdl-para-nuestro-customers-service)
-    - [Modelando Comandos y Eventos de Dominio](#modelando-comandos-y-eventos-de-dominio)
-    - [Conectando el Servicio con el Exterior vía APIs](#conectando-el-servicio-con-el-exterior-vía-apis)
-      - [Convertir ZDL a OpenAPI](#convertir-zdl-a-openapi)
-      - [Convertir ZDL a AsyncAPI](#convertir-zdl-a-asyncapi)
-    - [Modelando el Agregado de Clientes](#modelando-el-agregado-de-clientes)
-      - [Sobre Modelos Relacionales y/o Documentales](#sobre-modelos-relacionales-yo-documentales)
-    - [Fichero de Scripts ZenWave SDK](#fichero-de-scripts-zenwave-sdk)
-  - [Customización del Código Generado](#customización-del-código-generado)
-    - [Utilizando JBang para añadir Plugins al Classpath de ZenWave SDK](#utilizando-jbang-para-añadir-plugins-al-classpath-de-zenwave-sdk)
-    - [Arquitectura por capas, clean/hexagonal o simple packaging](#arquitectura-por-capas-cleanhexagonal-o-simple-packaging)
-    - [Monolitos Modulares](#monolitos-modulares)
-    - [Customizando Plantillas](#customizando-plantillas)
-    - [Customización Total: Sustituyendo Java por Kotlin](#customización-total-sustituyendo-java-por-kotlin)
-    - [Creación de nuevos Plugins](#creación-de-nuevos-plugins)
+- [DDD In Practice: From an Ubiquitous Language DSL to a Complete Spring Boot Kotlin Project](#ddd-in-practice-from-an-ubiquitous-language-dsl-to-a-complete-spring-boot-kotlin-project)
+  - [The Importance of Ubiquitous Language in Domain Driven Design](#the-importance-of-ubiquitous-language-in-domain-driven-design)
+  - [ZenWave Domain Model Language: A Modeling Language that Works as Ubiquitous Language](#zenwave-domain-model-language-a-modeling-language-that-works-as-ubiquitous-language)
+  - [Business Domain Modeling with ZenWave 360º](#business-domain-modeling-with-zenwave-360º)
+    - [Understanding the Mental Model of Business Experts](#understanding-the-mental-model-of-business-experts)
+    - [Converting Ubiquitous Language into Different Software Artifacts with ZenWave SDK](#converting-ubiquitous-language-into-different-software-artifacts-with-zenwave-sdk)
+  - [ZenWave 360: Quick Start for the Impatient](#zenwave-360-quick-start-for-the-impatient)
+  - [Practical Case: Customers Service - From ZDL Model to Spring-Boot Project](#practical-case-customers-service---from-zdl-model-to-spring-boot-project)
+    - [Creating a ZDL for our Customers Service](#creating-a-zdl-for-our-customers-service)
+    - [Modeling Domain Commands and Events](#modeling-domain-commands-and-events)
+    - [Connecting the Service with the Outside via APIs](#connecting-the-service-with-the-outside-via-apis)
+      - [Converting ZDL to OpenAPI](#converting-zdl-to-openapi)
+      - [Converting ZDL to AsyncAPI](#converting-zdl-to-asyncapi)
+    - [Modeling the Customer Aggregate](#modeling-the-customer-aggregate)
+      - [About Relational and/or Document Models](#about-relational-andor-document-models)
+    - [ZenWave SDK Scripts File](#zenwave-sdk-scripts-file)
+  - [Generated Code Customization](#generated-code-customization)
+    - [Available Customization Types](#available-customization-types)
+    - [Basic Customization](#basic-customization)
+      - [Architecture Layouts](#architecture-layouts)
+      - [Package Configuration](#package-configuration)
+      - [Modular Monoliths](#modular-monoliths)
+    - [Intermediate Customization](#intermediate-customization)
+      - [Custom Templates](#custom-templates)
+    - [Advanced Customization](#advanced-customization)
+      - [Classpath Extension with JBang](#classpath-extension-with-jbang)
+      - [Total customization: Example of complete substitution replacing Java with Kotlin](#total-customization-example-of-complete-substitution-replacing-java-with-kotlin)
+      - [Creating Custom Plugins](#creating-custom-plugins)
+  - [Complete Spring-Boot Project with Kotlin](#complete-spring-boot-project-with-kotlin)
+    - [Technology Stack](#technology-stack)
+    - [Functionality and Domain Model](#functionality-and-domain-model)
+      - [Entities and Value Objects](#entities-and-value-objects)
+      - [Available Operations](#available-operations)
+    - [ZenWave SDK Models](#zenwave-sdk-models)
+    - [Running the Project](#running-the-project)
 
-## Importancia del Lenguaje Ubícuo en Domain Driven Design
+## The Importance of Ubiquitous Language in Domain Driven Design
 
-Domain Driven Design tiene ya 20 años y sigue estando más vigente que nunca. Sin embargo, debido a la gran amplitud de su propuesta, DDD no es una técnica sencilla.
+Domain Driven Design is now 20 years old and remains more relevant than ever. However, due to the broad scope of its proposal, DDD is not a simple technique.
 
-DDD no es una sola técnica, ni una receta cerrada. Es un enfoque completo de diseño que abarca distintos niveles de abstracción y decisión:
+DDD is not a single technique, nor a closed recipe. It's a comprehensive design approach that spans different levels of abstraction and decision-making:
 
-- **DDD Estratégico**: donde identificamos *dominios* y sus *subdominios* y los clasificamos según su impacto en la estrategia de negocio: *core*, *generic* o *supporting*... y definimos distintos *bounded contexts* para dichos dominios y cómo se relacionarán entre ellos mediante *context maps*.
-- **DDD Táctico**: donde bajamos al nivel del modelo y hablamos de *entidades*, *agregados*, *value objects*, *eventos de dominio*, *servicios* y *repositorios*.
+- **Strategic DDD**: where we identify *domains* and their *subdomains* and classify them according to their impact on business strategy: *core*, *generic* or *supporting*... and define different *bounded contexts* for these domains and how they will relate to each other through *context maps*.
+- **Tactical DDD**: where we go down to the model level and talk about *entities*, *aggregates*, *value objects*, *domain events*, *services* and *repositories*.
 
-Aunque el **DDD Estratégico** y **DDD Táctico** tienen niveles de abstracción diferentes, y generalmente interesan a perfiles distintos, ambos **están interconectados**.
+Although **Strategic DDD** and **Tactical DDD** have different levels of abstraction, and generally interest different profiles, both **are interconnected**.
 
-Es importante tener en cuenta el contexto estratégico para poder tomar buenas decisiones a nivel táctico. Por ejemplo:
+It's important to consider the strategic context to make good decisions at the tactical level. For example:
 
-- Puede tener sentido definir una **arquitectura clean/hexagonal para un dominio _core_**, utilizando agregados, entidades ricas, eventos de dominio y un modelo de persistencia separado, ya que estaríamos modelando y descubriendo reglas de negocio más complejas y con un fuerte impacto en la estrategia de negocio.
-- Pero tiene mucho menos sentido para un **subdominio _genérico_ o _supporting_ donde la simplicidad y la facilidad de mantenimiento** son más importantes, y la complejidad de un modelo de dominio rico no solo no aporta valor sino que perjudicaría la mantenibilidad.
+- It may make sense to define a **clean/hexagonal architecture for a _core_ domain**, using aggregates, rich entities, domain events and a separate persistence model, since we would be modeling and discovering more complex business rules with a strong impact on business strategy.
+- But it makes much less sense for a **_generic_ or _supporting_ subdomain where simplicity and ease of maintenance** are more important, and the complexity of a rich domain model not only adds no value but would harm maintainability.
 
-Sin embargo, estas decisiones de diseño táctico frecuentemente se toman sin tener en cuenta el contexto estratégico.
+However, these tactical design decisions are frequently made without considering the strategic context.
 
-Además, **la principal propuesta de DDD es crear un Lenguaje Común / Lenguaje Ubícuo** y profundizar en el conocimiento del dominio a través de descubrir, identificar y visibilizar el lenguaje que utilizan los expertos de negocio para describir sus procesos, y que dicho lenguaje permee todo el proceso de desarrollo del software. Que se hable en las reuniones, en los diagramas, en el código, en las pruebas, en la documentación... y que sea el lenguaje que utilizan los expertos de negocio. 
+Furthermore, **DDD's main proposal is to create a Common Language / Ubiquitous Language** and deepen domain knowledge by discovering, identifying and making visible the language that business experts use to describe their processes, and ensuring that this language permeates the entire software development process. That it's spoken in meetings, in diagrams, in code, in tests, in documentation... and that it's the language used by business experts.
 
-Un Lenguaje Común que una a expertos técnicos y a expertos de negocio.
+A Common Language that unites technical experts and business experts.
 
 <Image alt="Domain Driven Design Triangle" src={dddTriangleLightImage} width="80%" />
 
-Y aunque es común ver proyectos que utilizan DDD a nivel táctico o incluso estratégico, es muy raro ver un Lenguaje Ubícuo utilizado eficazmente por todos los involucrados a lo largo de todo el proceso de desarrollo... Principalmente porque es difícil. Incluso si invertimos en descubrir y visibilizar el Lenguaje Ubícuo del dominio, esto aún requiere una propagación manual a lo largo de todo el proceso de desarrollo. Y hay demasiados puntos de traducción (expertos de negocio, analistas, arquitectos, desarrolladores, testers...) donde ese lenguaje común, y la comprensión, se pierde.
+And although it's common to see projects that use DDD at the tactical or even strategic level, it's very rare to see a Ubiquitous Language effectively used by everyone involved throughout the entire development process... Mainly because it's difficult. Even if we invest in discovering and making visible the domain's Ubiquitous Language, this still requires manual propagation throughout the entire development process. And there are too many translation points (business experts, analysts, architects, developers, testers...) where that common language, and understanding, is lost.
 
-Por lo tanto, no solo necesitamos un Lenguaje Común, sino también una forma automática de propagar ese Lenguaje Común a través del código, las pruebas y la documentación.
+> Therefore, we not only need a Common Language, but also an automatic way to propagate that Common Language through code, tests and documentation.
 
-Y así es como surge **ZenWave Domain Model Language (ZDL)**: Para poder pensar en software, hablar de software, diseñar software... 
+And this is how **ZenWave Domain Model Language (ZDL)** emerges: To be able to think about software, talk about software, design software...
 
-Una manera compacta y expresiva, capaz de capturar de forma concentrada los conceptos técnicos y de negocio, para describir nuestro dominio y que además funciona como formato de Lenguaje Ubícuo, que puede transformarse automáticamente en código ejecutable, definiciones de APIs, tests automatizados, documentación técnica y glosarios de términos de negocio.
+A compact and expressive way, capable of capturing technical and business concepts in a concentrated form, to describe our domain and that also works as a Ubiquitous Language format, which can be automatically transformed into executable code, API definitions, automated tests, technical documentation and business term glossaries.
 
-De esta manera, el conocimiento del dominio se propaga de forma consistente a través de todo el ciclo de desarrollo, manteniendo la coherencia entre lo que piensan los expertos de negocio y lo que implementan los desarrolladores.
+In this way, domain knowledge propagates consistently throughout the entire development cycle, maintaining coherence between what business experts think and what developers implement.
 
-## ZenWave Domain Model Language: Un Lenguaje de Modelado que funciona como Lenguaje Ubícuo
+## ZenWave Domain Model Language: A Modeling Language that Works as Ubiquitous Language
 
-ZenWave Domain Model Language (ZDL) es un lenguaje de modelado que permite describir el contenido de servicios backend apoyandose en principios de DDD, API-First y Arquitecturas Event-Driven.
+ZenWave Domain Model Language (ZDL) is a modeling language that allows describing the content of backend services based on DDD principles and API-First for Event-Driven Architectures.
 
-ZDL es un lenguaje compacto, legible y expresivo. Que además funciona bien como formato de Lenguaje Ubícuo, y qué gracias al conjunto de [Plugins de ZenWave SDK](https://www.zenwave360.io/zenwave-sdk/), puede ser convertido en distintos artefactos de software y documentación, propagando así el lenguaje común a través de todo el proceso de desarrollo.
+ZDL is a compact, readable, and expressive language. It also works well as a Ubiquitous Language format, and thanks to the set of [ZenWave SDK Plugins](https://www.zenwave360.io/zenwave-sdk/), it can be converted into different software artifacts and documentation, thus propagating the common language throughout the entire development process.
 
-Inspirado inicialmente en [JHipster Domain Language (JDL)](https://www.jhipster.tech/jdl/intro) y tomando prestada su sintaxis, ZDL extiende JDL más allá de la definición de entidades y sus relaciones para aplicaciones CRUD. Añade soporte para definir servicios, comandos, y eventos de dominio, así como integración con especificaciones API-First como OpenAPI, AsyncAPI y AVRO.
+Initially inspired by [JHipster Domain Language (JDL)](https://www.jhipster.tech/jdl/intro) and borrowing its syntax, ZDL extends JDL beyond the definition of entities and their relationships for CRUD applications. It adds support for defining services, commands, and domain events, as well as integration with API-First specifications like OpenAPI, AsyncAPI, and AVRO.
 
-ZDL está especialmente pensado para recoger los descubrimientos de una sesión de [Event Storming](https://www.eventstorming.com/) de **nivel de diseño**, para un _Bounded Context_, como primer paso para llevar el lenguaje de los expertos de negocios a la documentación técnica y el código fuente.
+ZDL is especially designed to capture the discoveries from a **design-level** [Event Storming](https://www.eventstorming.com/) session, for a _Bounded Context_, as the first step to bring the language of business experts to technical documentation and source code.
 
 <Image alt="Event-Storming to ZDL Mapping" src={eventStormingZdlMapping} />
 
-ZDL permite representar en un lenguaje **developer friendly** y **machine friendly**:
+In this [GitHub repository](https://github.com/ZenWave360/zenwave-playground) you can find different examples of ZDL models, both for microservices and modular monoliths, such as this example: [customer-address-jpa.zdl](https://github.com/ZenWave360/zenwave-playground/blob/main/zenwave-jpa-baseline/zenwave-model.zdl)
 
-- Los **comandos** de entrada al _bounded context_: ya sean vía APIs REST, eventos asincrónicos, disparadores temporales...
-- Los **eventos de dominio** internos y externos que nuestro bounded context emitirá como consecuencia de los comandos invocados.
-- Los **agregados**, **entidades**, **value objects** y **relaciones** que componen el modelo de dominio.
-- Las **políticas de negocio** que regulan el comportamiento del dominio.
-- Conectar/Documentar los comandos y eventos con **especificaciones API-First** (OpenAPI, AsyncAPI, AVRO)
+## Business Domain Modeling with ZenWave 360º
 
-En el este [repositorio de github](https://github.com/ZenWave360/zenwave-playground) puedes encontrar distintos ejemplos de modelos ZDL, tanto para microservicios como para monolitos modulares, como este ejemplo: [customer-address-jpa.zdl](https://github.com/ZenWave360/zenwave-playground/blob/main/zenwave-jpa-baseline/zenwave-model.zdl)
+> A good model is one that allows accommodating changes in the direction and perspective of business experts.
 
-## Modelado de Dominio de Negocio con ZenWave 360º
+ZenWave 360º Business Domain Modeling is sustained by three pillars:
 
-> Un buen modelo es aquel que permite acomodar cambios en la dirección y perspectiva de los expertos de negocio.
-
-El Modelado de Dominio de Negocio de ZenWave 360º se sustenta en tres pilares:
-
-- **Comprender el Modelo Mental** de los Expertos de Negocio.
-- Usar el **Lenguaje de Modelado ZDL** para crear un Lenguaje Ubícuo que refleje el modelo mental de los Expertos de Negocio.
-- Usar **ZenWave SDK** para convertir el Modelo ZDL **en diferentes Artefactos de Software** acelerando el proceso de desarrollo.
+- **Understanding the Mental Model** of Business Experts.
+- Using the **ZDL Modeling Language** to create a Ubiquitous Language that reflects the mental model of Business Experts.
+- Using **ZenWave SDK** to convert the ZDL Model **into different Software Artifacts** accelerating the development process.
 
 <Image alt="Domain Driven Design Feedback Loop" dark={dddFeedbackLoopDark} light={dddFeedbackLoopLight}/>
 
-### Comprender el Modelo Mental de los expertos de negocio
+### Understanding the Mental Model of Business Experts
 
-Domain Driven Design enfatiza **la importancia de comprender el dominio de negocio** para crear software efectivo.
+Domain Driven Design emphasizes **the importance of understanding the business domain** to create effective software.
 
-Si no captamos correctamente el modelo mental de los expertos de negocio, ninguna cantidad de **Código Limpio**, **Arquitectura Limpia**, **Arquitectura Hexagonal**, etc... ayudará a crear software mantenible y de calidad.
+If we don't correctly capture the mental model of business experts, no amount of **Clean Code**, **Clean Architecture**, **Hexagonal Architecture**, etc... will help create maintainable and quality software.
 
-**Event-Storming**: es un método excelente para captar el modelo mental de los expertos de negocio y comprender los procesos de negocio, debido a su **baja barrera tecnológica** de entrada y porque es **perfecto para modelar Arquitecturas Event-Driven**.
+**Event-Storming**: is an excellent method for capturing the mental model of business experts and understanding business processes, due to its **low technological barrier** to entry and because it's **perfect for modeling Event-Driven Architectures**.
 
 <Image src={eventStorming} alt="Event Storming" />
 
-El lenguaje **ZDL** permite documentar de manera estructurada el Modelo Mental de los expertos de negocio, siguiendo principios de DDD y Arquitecturas Event-Driven. Permite **mapear los descubrimientos de una sesión de Event-Storming**, reteniendo el lenguaje de los expertos de negocio.
+The **ZDL** language allows documenting the Mental Model of business experts in a structured way, following DDD principles and Event-Driven Architectures. It allows **mapping the discoveries from an Event-Storming session**, retaining the language of business experts.
 
-Como experto técnico puedes usar este Lenguaje de Modelado ZDL para comunicarte dentro de tu equipo y narrar la historia expresada por el modelo de vuelta a los expertos de dominio en su propio lenguaje.
+As a technical expert, you can use this ZDL Modeling Language to communicate within your team and narrate the story expressed by the model back to domain experts in their own language.
 
-### Convertir el Lenguaje Ubícuo en diferentes Artefactos de Software con ZenWave SDK
+### Converting Ubiquitous Language into Different Software Artifacts with ZenWave SDK
 
-> La mejor manera de validar un modelo conceptual es implementarlo.
+> The best way to validate a conceptual model is to implement it.
 
-ZenWave SDK permite acelerar el proceso de desarrollo, convertiendo tus Modelos de Dominio en Software y Pruebas funcionales. **El software funcionando** es la mejor manera de evaluar la validez de un modelo conceptual. Permite **una retroalimentación temprana** a todos los miembros del equipo de desarrollo, lo cual es crucial para el refinamiento iterativo del modelo.
+ZenWave SDK allows accelerating the development process, converting your Domain Models into Software and functional Tests. **Working software** is the best way to evaluate the validity of a conceptual model. It enables **early feedback** to all development team members, which is crucial for iterative model refinement.
 
 <Image alt="Speed Feedback Loop" dark={speedFeedbackLoopDark} light={speedFeedbackLoopLight} style={{marginTop: '15px'}}/>
 
-Esto además permite la propagación del Lenguaje Ubícuo recogido en el ZDL al código, APIs, tests, documentación y diagramas... de manera automática.
+This also enables the propagation of the Ubiquitous Language captured in the ZDL to code, APIs, tests, documentation, and diagrams... automatically.
 
-En las siguientes secciones veremos cómo podemos modelar un dominio sencillo y convertirlo en un proyecto completo de Spring-Boot con Kotlin.
+In the following sections, we'll see how we can model a simple domain and convert it into a complete Spring-Boot project with Kotlin.
 
-## ZenWave 360: Inicio Rápido para los más Impacientes
+## ZenWave 360: Quick Start for the Impatient
 
-Esta sección es para los más impacientes, si quieres probar las capacidades de ZenWave 360 _de extremo a extremo_ y generar un proyecto completo de Spring Boot a partir de un modelo ZDL, aquí tienes una guía paso a paso concisa y directa. Esta sección está diseñada para usuarios que prefieren acciones inmediatas sin entrar en detalles extensos al principio. En las siguientes secciones veremos en más detalle como modelar un dominio con ZenWave 360.
+This section is for the most impatient. If you want to test ZenWave 360's capabilities _end-to-end_ and generate a complete Spring Boot project from a ZDL model, here's a concise and direct step-by-step guide. This section is designed for users who prefer immediate actions without going into extensive details at the beginning. In the following sections, we'll see in more detail how to model a domain with ZenWave 360.
 
-1. **Clona el proyecto base**: Descarga el [proyecto base](https://github.com/ZenWave360/zenwave-playground/tree/main/zenwave-jpa-baseline). Alternativamente, puedes crear un proyecto Maven desde https://start.spring.io/, aunque tendrás que configurar manualmente el OpenAPI Maven Generator y el ZenWave SDK Maven Plugin para AsyncAPI. Cualquier proyecto de Spring-Boot de un solo modulo maven será compatible, ya que zenwave únicamente genera código de negocio.
+1. **Clone the base project**: Download the [base project](https://github.com/ZenWave360/zenwave-playground/tree/main/zenwave-jpa-baseline). Alternatively, you can create a Maven project from https://start.spring.io/, although you'll need to manually configure the OpenAPI Maven Generator and the ZenWave SDK Maven Plugin for AsyncAPI. Any single-module Spring-Boot Maven project will be compatible, as ZenWave only generates business code.
 
-2. **Instala las herramientas necesarias**: Sigue las instrucciones en [Getting Started](https://www.zenwave360.io/docs/getting-started/) para instalar ZenWave SDK CLI y el [ZenWave Domain Model Editor for ZDL para IntelliJ](https://plugins.jetbrains.com/plugin/22858-zenwave-domain-model-editor-for-zdl).
+2. **Install the necessary tools**: Follow the instructions in [Getting Started](https://www.zenwave360.io/docs/getting-started/) to install ZenWave SDK CLI and the [ZenWave Domain Model Editor for ZDL for IntelliJ](https://plugins.jetbrains.com/plugin/22858-zenwave-domain-model-editor-for-zdl).
 
-3. **Ejecuta los plugins**: En IntelliJ, abre el archivo `zenwave-scripts.zw` y ejecuta cada plugin individualmente. Utiliza el botón verde de `Play` que aparece en el margen izquierdo junto a cada plugin.
+3. **Execute the plugins**: In IntelliJ, open the `zenwave-scripts.zw` file and execute each plugin individually. Use the green `Play` button that appears in the left margin next to each plugin.
 
-4. **Plugins que se ejecutarán**: Al seguir estos pasos, estarás ejecutando los siguientes plugins:
-   - `ZDLToOpenAPIPlugin`: Genera una definición OpenAPI a partir del modelo ZDL.
-   - `ZDLToAsyncAPIPlugin`: Genera una definición AsyncAPI v3 a partir del modelo ZDL.
-   - `BackendApplicationDefaultPlugin`: Genera el código fuente del proyecto Spring Boot. Se trata del core únicamente, sin controladores ni adaptadores.
-   - `OpenAPIControllersPlugin`: Genera los controladores web para exponer el core a través de una API REST.
-   - `SpringWebTestClientPlugin`: Genera pruebas de integración para los controladores web.
-   - `OpenAPIKaratePlugin`: Genera pruebas de aceptación basadas en KarateDSL para las APIs REST.
+4. **Plugins that will be executed**: By following these steps, you'll be executing the following plugins:
+   - `ZDLToOpenAPIPlugin`: Generates an OpenAPI definition from the ZDL model.
+   - `ZDLToAsyncAPIPlugin`: Generates an AsyncAPI v3 definition from the ZDL model.
+   - `BackendApplicationDefaultPlugin`: Generates the Spring Boot project source code. This is the core only, without controllers or adapters.
+   - `OpenAPIControllersPlugin`: Generates web controllers to expose the core through a REST API.
+   - `SpringWebTestClientPlugin`: Generates integration tests for web controllers.
+   - `OpenAPIKaratePlugin`: Generates acceptance tests based on KarateDSL for REST APIs.
 
-Esto generará un proyecto Spring-Boot completo y funcional, aunque hay ciertas secciones que requerirán tu revisión e implementación manual:
+<Image src={pluginScreenShot} style={{marginTop: '10px'}} />
 
-- **Mappers de MapStruct**: Aunque los mappers generados compilan correctamente, es importante verificar que mapeen los datos de forma adecuada, especialmente en conversiones complejas o no triviales.
-- **Tests automatizados**: Tanto las pruebas unitarias como de integración se generan como esqueletos básicos. Deberás completar la lógica de las pruebas y proporcionar datos de entrada realistas.
-- **Implementación de servicios**: Para métodos que van más allá de operaciones CRUD básicas, deberás revisar y ajustar la implementación que ZenWave ha inferido según tu lógica de negocio específica.
+This will generate a complete and functional Spring-Boot project, although there are certain sections that will require your review and manual implementation:
 
-**Ventaja clave**: ZenWave genera únicamente código de negocio limpio, sin dependencias exóticas. Utiliza exclusivamente tecnologías estándar como Spring-Boot, Spring-Cloud, MapStruct y Lombok (opcional), garantizando compatibilidad con cualquier starter de proyectos o arquetipo existente.
+- **MapStruct Mappers**: Although the generated mappers compile correctly, it's important to verify that they map data appropriately, especially in complex or non-trivial conversions.
+- **Automated Tests**: Both unit and integration tests are generated as basic skeletons. You'll need to complete the test logic and provide realistic input data.
+- **Service Implementation**: For methods that go beyond basic CRUD operations, you'll need to review and adjust the implementation that ZenWave has inferred according to your specific business logic.
 
-Siguiendo estos pasos, tendrás un proyecto completo funcionando en minutos: API-First con OpenAPI y AsyncAPI, arquitectura Clean/Hexagonal o por capas, tests unitarios con implementaciones en memoria y pruebas de integración con SpringBootTest, Spring WebTestClient y KarateDSL. Listo para experimentar con todas las capacidades de ZenWave 360.
+**Key advantage**: ZenWave generates only clean business code, without exotic dependencies. It uses exclusively standard technologies like Spring-Boot, Spring-Cloud, MapStruct, and Lombok (optional), ensuring compatibility with any existing project starter or archetype.
 
-En las siguientes secciones exploraremos en detalle cómo modelar un dominio usando ZDL.
+Following these steps, you'll have a complete working project in minutes: API-First with OpenAPI and AsyncAPI, Clean/Hexagonal or layered architecture, unit tests with in-memory implementations and integration tests with SpringBootTest, Spring WebTestClient, and KarateDSL. Ready to experiment with all ZenWave 360 capabilities.
 
-## Caso Práctico: Customers Service - Del Modelo ZDL al Proyecto Spring-Boot
+In the following sections, we'll explore in detail how to model a domain using ZDL.
 
-Ahora que has experimentado las capacidades de ZenWave 360, vamos a modelar paso a paso un servicio sencillo para la gestión de un "Maestro de Clientes".
+## Practical Case: Customers Service - From ZDL Model to Spring-Boot Project
 
-Desde el punto de vista estratégico, se trata de un subdominio **genérico** o de **soporte**: no aporta valor competitivo directo a la empresa, pero es crucial para el funcionamiento de otros subdominios más críticos.
+Now that you've experienced ZenWave 360's capabilities, let's model step by step a simple service for managing a "Customer Master".
 
-Este servicio maestro de clientes gestionará:
+From a strategic point of view, this is a **generic** or **supporting** subdomain: it doesn't provide direct competitive value to the company, but it's crucial for the operation of other more critical subdomains.
 
-- La creación, actualización y eliminación de clientes
-- La notificación de cambios de estado a otros servicios interesados mediante colas de mensajería
+This customer master service will manage:
 
-Aunque sea un subdominio genérico, es fundamental modelarlo usando el lenguaje de los expertos de negocio que interactuarán con él. Por ejemplo, si los expertos se refieren a los clientes como "Customer" en lugar de "Client" o "Prospect", debemos adoptar ese término exacto en el modelo para evitar ambigüedades y asegurar que el lenguaje ubícuo permee todo el sistema. 
+- Creation, updating, and deletion of customers
+- Notification of state changes to other interested services via message queues
 
-En este caso práctico, basándonos en el modelo mental de los expertos, utilizaremos "Customer" como entidad principal con sus atributos clave.
+Although it's a generic subdomain, it's essential to model it using the language of the business experts who will interact with it. For example, if experts refer to customers as "Customer" instead of "Client" or "Prospect", we must adopt that exact term in the model to avoid ambiguities and ensure the ubiquitous language permeates the entire system.
 
-### Creando un ZDL para nuestro Customers Service
+In this practical case, based on the mental model of the experts, we'll use "Customer" as the main entity with its key attributes.
 
-Comenzaremos creando un archivo con extensión `.zdl` para nuestro modelo. Los archivos ZDL comienzan con una sección de documentación global y una sección de configuración donde podemos definir propiedades globales que utilizarán todos los plugins de ZenWave SDK.
+### Creating a ZDL for our Customers Service
 
-Estas dos secciones son opcionales, pero en caso de existir deben ir juntas al comienzo del archivo ZDL.
+We'll start by creating a file with `.zdl` extension for our model. ZDL files begin with a global documentation section and a configuration section where we can define global properties that will be used by all ZenWave SDK plugins.
+
+These two sections are optional, but if they exist, they must go together at the beginning of the ZDL file.
 
 ```zdl
 /**
- * Servicio Maestro de Clientes.
+ * Customer Master Service.
  *
- * Este modelo describe un servicio maestro de clientes que gestiona los datos de los clientes...
+ * This model describes a customer master service that manages customer data...
  *
  * Use zenwave-scripts.zw to generate your code from this model definition.
  */
 config {
-    title "Servicio Maestro de Clientes"
+    title "Customer Master Service"
     basePackage "io.zenwave360.example"
     persistence jpa
     databaseType postgresql
@@ -214,25 +221,25 @@ config {
 }
 ```
 
-### Modelando Comandos y Eventos de Dominio
+### Modeling Domain Commands and Events
 
-Existen múltiples enfoques para comenzar a modelar un servicio: desde el modelo interno, los comandos de entrada, la API REST, o los eventos publicados...
+There are multiple approaches to start modeling a service: from the internal model, input commands, REST API, or published events...
 
-En este caso comenzaremos modelando los comandos de entrada y eventos de dominio que forman parte de este bounded context, es decir, su interfaz pública.
+In this case, we'll start by modeling the input commands and domain events that are part of this bounded context, that is, its public interface.
 
-Agrupamos los comandos en un servicio y documentamos a través de qué APIs el servicio expone sus comandos y eventos.
+We group commands in a service and document through which APIs the service exposes its commands and events.
 
-En ZDL, cada servicio gestiona siempre uno o varios agregados. Como aún no hemos creado ningún agregado, simplemente crearemos una entidad `Customer` vacía y la usaremos como raíz del agregado.
+In ZDL, each service always manages one or several aggregates. Since we haven't created any aggregate yet, we'll simply create an empty `Customer` entity and use it as the aggregate root.
 
-Creamos:
+We create:
 
-- Un servicio `CustomerService` para gestionar los clientes (el agregado `Customer`)
-- Un comando de entrada `enrollCustomer` que:
-  - Recibe los datos de entrada de un `CustomerInput`
-  - Devuelve el agregado recién creado `Customer`
-  - Emite un evento de dominio `CustomerEnrolled`
+- A `CustomerService` service to manage customers (the `Customer` aggregate)
+- An input command `enrollCustomer` that:
+  - Receives input data from a `CustomerInput`
+  - Returns the newly created aggregate `Customer`
+  - Emits a domain event `CustomerEnrolled`
 
-**NOTA**: Los comandos también pueden recibir como parámetro de entrada la propia entidad agregado, en este caso `Customer`.
+**NOTE**: Commands can also receive the aggregate entity itself as an input parameter, in this case `Customer`.
 
 ```zdl
 @aggregate
@@ -258,11 +265,11 @@ event CustomerEnrolled {
 }
 ```
 
-### Conectando el Servicio con el Exterior vía APIs
+### Connecting the Service with the Outside via APIs
 
-Ahora vamos a documentar cómo nuestro `CustomerService` se comunicará con el mundo exterior a través de APIs REST y asíncronas.
+Now we're going to document how our `CustomerService` will communicate with the outside world through REST and asynchronous APIs.
 
-Para ello vamos a utilizar ciertas anotaciones (decoradores) para documentar
+For this, we'll use certain annotations (decorators) to document
 
 ```zdl
 @rest("/customers")
@@ -277,39 +284,41 @@ event CustomerEnrolled {
 }
 ```
 
-Estas anotaciones nos sirven no solo para documentar cómo nuestro servicio se comunica con el exterior, sino que además gracias a los plugins de ZenWave SDK (`ZDLToOpenAPIPlugin` y `ZDLToAsyncAPIPlugin`), nos permiten generar una versión preliminar de dichas APIs.
+These annotations serve not only to document how our service communicates with the outside, but also thanks to ZenWave SDK plugins (`ZDLToOpenAPIPlugin` and `ZDLToAsyncAPIPlugin`), they allow us to generate a preliminary version of said APIs.
 
-El formato ZDL ha evolucionado como lenguaje IDL para definir tanto APIs de tipo OpenAPI como AsyncAPI de manera casi completa:
+The ZDL format has evolved as an IDL language to define both OpenAPI and AsyncAPI type APIs almost completely:
 
-- [Exponiendo una API REST](https://www.zenwave360.io/docs/zenwave-sdk/exposing-a-rest-api/)
-- [Produciendo Eventos de Dominio](https://www.zenwave360.io/docs/zenwave-sdk/producing-domain-events/)
-- [Consumiendo Comandos Asíncronos](https://www.zenwave360.io/docs/zenwave-sdk/consuming-async-commands/)
+- [Exposing a REST API](https://www.zenwave360.io/docs/zenwave-sdk/exposing-a-rest-api/)
+- [Producing Domain Events](https://www.zenwave360.io/docs/zenwave-sdk/producing-domain-events/)
+- [Consuming Async Commands](https://www.zenwave360.io/docs/zenwave-sdk/consuming-async-commands/)
 
-#### Convertir ZDL a OpenAPI
+#### Converting ZDL to OpenAPI
 
-La sintaxis heredada de JHipster JDL permite definir el payload de las peticiones y respuestas de manera compacta:
+The syntax inherited from JHipster JDL allows defining request and response payloads in a compact way:
 
-- **Nombre de los campos**: Utilizando el lenguaje ubícuo del dominio
-- **Tipos de datos**: String, Integer, Long, Boolean, etc.
-- **Validaciones**: required, maxlength, pattern, min, max, etc.
-- **Relaciones y entidades anidadas**: Para estructuras de datos complejas
+- **Field names**: Using the domain's ubiquitous language
+- **Data types**: String, Integer, Long, Boolean, etc.
+- **Validations**: required, maxlength, pattern, min, max, etc.
+- **Relationships and nested entities**: For complex data structures
 
-Para la definición de los distintos endpoints utilizamos las siguientes anotaciones:
+For defining different endpoints, we use the following annotations:
 
-**Configuración del servicio:**
-- `@rest("/<path>")` - Define la ruta base del servicio
+**Service configuration:**
+- `@rest("/<path>")` - Defines the service's base path
 
-**Métodos HTTP:**
-- `@post`, `@get`, `@put`, `@delete`, `@patch` - Especifican el método HTTP para cada comando
+**HTTP methods:**
+- `@post`, `@get`, `@put`, `@delete`, `@patch` - Specify the HTTP method for each command
 
-**Configuración avanzada de endpoints:**
-- `@put("/{customerId}")` - Define rutas con parámetros de path
-- `@post({ path: "/search", params: {search: String}, status: 200 })` - Incluye query params y códigos de respuesta personalizados (POST por defecto genera status `201`, en el caso de una búsqueda más adecuado es `200`)
-- `@paginated` - Indica que el endpoint devuelve resultados paginados
-- `@filedownload("documentData.data")` - Endpoint de descarga de archivos, donde `documentData.data` es el campo que contiene los datos del archivo
-- `@fileupload("myfile")` - Endpoint multipart con campo `myfile` de tipo binario para subida de archivos
+**Advanced endpoint configuration:**
+- `@put("/{customerId}")` - Defines routes with path parameters
+- `@post({ path: "/search", params: {search: String}, status: 200 })`
+  - Includes query params and their types
+  - Custom response codes: POST by default generates status `201`, in the case of a search `200` is more appropriate
+- `@paginated` - Indicates that the endpoint returns paginated results
+- `@filedownload("documentData.data")` - File download endpoint (binary), where `documentData.data` is the field containing the file data
+- `@fileupload("myfile")` - Multipart endpoint with `myfile` field of binary type for file upload
 
-El siguiente ejemplo muestra un servicio completo con operaciones CRUD:
+The following example shows a complete service with CRUD operations:
 
 ```zdl
 @rest("/customers")
@@ -331,24 +340,28 @@ service CustomerService for (Customer) {
 }
 ```
 
-Este modelo ZDL generaría automáticamente una [definición OpenAPI completa](https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml) con todos los endpoints, esquemas de datos y validaciones correspondientes.
+When using the `ZDLToOpenAPIPlugin`, the following:
 
-Puedes ver el [modelo ZDL completo](https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl) en el repositorio de ejemplos de ZenWave.
+<RemoteCode summary="ZDL Model" url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl" language="zdl" collapsed={true} showLegend={true} />
 
-Para más detalles sobre cómo definir APIs REST en ZDL, consulta la documentación sobre [Exponiendo una API REST](https://www.zenwave360.io/docs/zenwave-sdk/exposing-a-rest-api/).
+would produce this:
 
-#### Convertir ZDL a AsyncAPI
+<RemoteCode summary="OpenAPI Definition" url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml" language="yaml" collapsed={true} showLegend={true} />
 
-Definir APIs AsyncAPI con ZDL es igualmente sencillo y directo.
+For more details on how to define REST APIs in ZDL, see the documentation on [Exposing a REST API](https://www.zenwave360.io/docs/zenwave-sdk/exposing-a-rest-api/).
 
-El proceso consiste en crear entidades de tipo `event` que siguen las mismas reglas de sintaxis que las entidades `entity`: nombres de campos, tipos de datos, validaciones, documentación, anotaciones y entidades anidadas.
+#### Converting ZDL to AsyncAPI
 
-Una vez definidos los eventos, los anotamos con `@asyncapi` para especificar:
+Defining AsyncAPI APIs with ZDL is equally simple and straightforward.
 
-- **`channel`**: Nombre del canal donde se publican los eventos. Múltiples eventos pueden compartir el mismo canal, especialmente útil para eventos de tipo AVRO
-- **`topic`**: Nombre del tópico específico para la publicación. En AsyncAPI v3 corresponde al campo `address` de la definición del canal
+The process consists of creating `event` type entities that follow the same syntax rules as `entity` entities: field names, data types, validations, documentation, annotations, and nested entities.
 
-**Ejemplo práctico:**
+Once events are defined, we annotate them with `@asyncapi` to specify:
+
+- **`channel`**: Name of the channel where events are published. Multiple events can share the same channel, especially useful for AVRO type events
+- **`topic`**: Name of the specific topic for publication. In AsyncAPI v3 corresponds to the `address` field of the channel definition
+
+**Practical example:**
 
 ```zdl
 @copy(Customer)
@@ -356,19 +369,43 @@ Una vez definidos los eventos, los anotamos con `@asyncapi` para especificar:
 event CustomerEvent {
     id Long required
     version Integer
-    // Todos los campos de Customer se copian aquí, excepto las relaciones
+    // All Customer fields are copied here, except relationships
     paymentMethods PaymentMethod[]
 }
 ```
 
-Este modelo ZDL generaría automáticamente una [definición AsyncAPI completa](https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/asyncapi.yml) con todos los esquemas de eventos y configuraciones de canales correspondientes.
+<div className="codegeneration">
+  <div className="codegeneration__command">When using the `ZDLToAsyncAPIPlugin`, the following</div>
+  <div className="codegeneration__source">
+    <RemoteCode summary="ZDL Model" language="zdl" collapsed={true} showLegend={true}
+                url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl"/>
+  </div>
+  would produce this:
+  <div className="codegeneration__output">
+    <RemoteCode summary="AsyncAPI Definition" language="yaml" collapsed={true} showLegend={true}
+                url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/asyncapi.yml"/>
+  </div>
+</div>
 
-### Modelando el Agregado de Clientes
+with all event schemas and corresponding channel configurations.
 
-Ahora definiremos la estructura interna del agregado `Customer`, aplicando los principios de DDD:
+<CodeGeneration
+  text1="When using the `ZDLToAsyncAPIPlugin`, the following"
+  sourceTitle="ZDL Entity Model" sourceLanguage="zdl"
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl"
+  text2="would produce this:"
+  outputTitle="AsyncAPI Definition" outputLanguage="yaml"
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/asyncapi.yml"
+  text3="with all event schemas and corresponding channel configurations."
+/>
 
-- **Lenguaje Ubícuo**: Utilizamos la estructura, nombres de campos y descripciones (javadoc) para capturar y documentar el vocabulario específico del dominio
-- **Agregado**: Marcamos la entidad `Customer` con `@aggregate` para indicar que es la raíz de un agregado. Por simplicidad, utilizamos un agregado centrado en datos, aunque podríamos modelar un agregado más rico con comportamiento específico del dominio
+
+### Modeling the Customer Aggregate
+
+Now we'll define the internal structure of the `Customer` aggregate, applying DDD principles:
+
+- **Ubiquitous Language**: We use the structure, field names, and descriptions (javadoc) to capture and document the domain-specific vocabulary
+- **Aggregate**: We mark the `Customer` entity with `@aggregate` to indicate it's an aggregate root. For simplicity, we use a data-centric aggregate, although we could model a richer aggregate with specific domain behavior
 
 ```zdl
 /**
@@ -378,8 +415,7 @@ Ahora definiremos la estructura interna del agregado `Customer`, aplicando los p
 entity Customer {
     /** Customer name */
     name String required maxlength(254)
-    /** Customer familiar name is how we refer to the customer in a friendly way */
-    familiarName String required maxlength(254)
+
     /** Customer email is used to contact the customer */
     email String required maxlength(254) pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)
 
@@ -404,11 +440,11 @@ relationship OneToMany {
 }
 ```
 
-#### Sobre Modelos Relacionales y/o Documentales
+#### About Relational and/or Document Models
 
-ZDL soporta tanto el diseño de **Modelos Relacionales** (heredado de JHipster JDL) como **Modelos Documentales**, utilizando entidades anidadas para mayor expresividad y eficiencia.
+ZDL supports both **Relational Model** design (inherited from JHipster JDL) and **Document Models**, using nested entities for greater expressiveness and efficiency.
 
-**Ejemplos de entidades anidadas:**
+**Examples of nested entities:**
 
 ```zdl
 @aggregate
@@ -440,12 +476,12 @@ entity Customer {
 }
 ```
 
-**Consideraciones para modelos relacionales (JPA):**
+**Considerations for relational models (JPA):**
 
-En el caso de modelos relacionales, las entidades anidadas tienen una semántica específica:
+In the case of relational models, nested entities have specific semantics:
 
-- **Entidades anidadas simples**: Se mapean a columnas de la misma tabla que la entidad raíz
-- **Arrays de entidades anidadas**: No están soportados directamente en el modelo relacional, pero pueden almacenarse en una columna JSON usando el decorador `@json`
+- **Simple nested entities**: Map to columns in the same table as the root entity
+- **Arrays of nested entities**: Not directly supported in the relational model, but can be stored in a JSON column using the `@json` decorator
 
 ```zdl
 @aggregate
@@ -456,174 +492,184 @@ entity Customer {
 }
 ```
 
-### Fichero de Scripts ZenWave SDK
+### ZenWave SDK Scripts File
 
-El [ZenWave Domain Model Editor for ZDL](https://plugins.jetbrains.com/plugin/22858-zenwave-domain-model-editor-for-zdl) para IntelliJ permite configurar y ejecutar los plugins de ZenWave SDK directamente desde el editor.
+The [ZenWave Domain Model Editor for ZDL for IntelliJ](https://plugins.jetbrains.com/plugin/22858-zenwave-domain-model-editor-for-zdl) allows configuring and executing ZenWave SDK plugins directly from the editor.
 
-Para ello utilizamos un archivo con extensión `.zw` que contiene las configuraciones de los distintos plugins de ZenWave SDK en la sección `config`, siguiendo este formato:
+For this, we use a file with `.zw` extension that contains the configurations of the different ZenWave SDK plugins in the `config` section, following this format:
 
 ```zdl
 config {
-    // Opciones globales de configuración
+    // Global configuration options
     zdlFile "zenwave-model.zdl"
 
     plugins {
-        /** Descripción de esta ejecución de plugin */
+        /** Description of this plugin execution */
         PluginName {
-            // Opciones específicas del plugin
-            // Sobreescriben las opciones globales
+            // Plugin-specific options
+            // Override global options
         }
     }
 }
 ```
 
-**Ventajas de este enfoque:**
+**Advantages of this approach:**
 
-- **Configuración compartida**: Permite guardar y compartir con el equipo las configuraciones para cada plugin
-- **Ejecución simplificada**: Facilita la ejecución de plugins con un solo clic desde el editor
-- **Reproducibilidad**: Garantiza que todos los miembros del equipo ejecuten los plugins con la misma configuración
-- **Trazabilidad**: Mantiene un historial de las configuraciones utilizadas para la construccion del proyecto
+- **Shared configuration**: Allows saving and sharing plugin configurations with the team
+- **Simplified execution**: Facilitates plugin execution with a single click from the editor
+- **Reproducibility**: Ensures all team members execute plugins with the same configuration
+- **Traceability**: Maintains a history of configurations used for project construction
 
-Es habitual la ejecución iterativa de los plugins, especialmente durante las fases iniciales del desarrollo, para validar tanto el modelo de dominio como las configuraciones específicas de cada plugin.
+Iterative execution of plugins is common, especially during initial development phases, to validate both the domain model and specific configurations for each plugin.
 
-**Ejecución desde el editor:**
+**Execution from the editor:**
 
-El plugin de IntelliJ detecta automáticamente los archivos `.zw` y muestra un botón `Play` en el margen izquierdo junto a cada configuración de plugin. Al hacer clic, el editor:
+The IntelliJ plugin automatically detects `.zw` files and shows a `Play` button in the left margin next to each plugin configuration. When clicked, the editor:
 
-1. Construye automáticamente la línea de comandos necesaria
-2. La ejecuta en una consola integrada
+1. Automatically builds the necessary command line
+2. Executes it in an integrated console
 
-**Requisito importante**: `jbang` debe estar instalado y disponible en el PATH de la consola configurada por defecto en IntelliJ.
+**Important requirement**: `jbang` must be installed and available in the PATH of the console configured by default in IntelliJ.
 
 ![ZenWaveModelEditor Plugins](./ZenWaveModelEditor-Plugins-light.png)
 
-**Precedencia de configuraciones:**
+**Configuration precedence:**
 
-Es importante entender que las configuraciones se aplican siguiendo una jerarquía específica, donde las más específicas tienen prioridad sobre las más generales:
+It's important to understand that configurations are applied following a specific hierarchy, where the most specific ones take priority over the more general ones:
 
-1. **Configuraciones por línea de comandos** (máxima prioridad)
-2. **Configuraciones específicas de cada plugin** (en el archivo `*.zw`)
-3. **Configuraciones globales** (en el archivo `*.zw`)
-4. **Configuraciones del modelo** (en el archivo `*.zdl`) (mínima prioridad)
+1. **Command line configurations** (highest priority)
+2. **Plugin-specific configurations** (in the `*.zw` file)
+3. **Global configurations** (in the `*.zw` file)
+4. **Model configurations** (in the `*.zdl` file) (lowest priority)
 
-Las configuraciones del modelo (`*.zdl`) tienen la menor prioridad en la jerarquía, permitiendo que sean sobreescritas por configuraciones más específicas. Se recomienda documentar en el archivo de modelo `*.zdl` las configuraciones fundamentales relacionadas con el dominio y la estructura del proyecto: `basePackage`, `persistence`, `layout`, etc.
+Model configurations (`*.zdl`) have the lowest priority in the hierarchy, allowing them to be overridden by more specific configurations. It's recommended to document in the model file `*.zdl` the fundamental configurations related to the domain and project structure: `basePackage`, `persistence`, `layout`, etc.
 
-## Customización del Código Generado
+## Generated Code Customization
 
-ZenWave SDK surge de una necesidad personal de contar con una herramienta de análisis y diseño que pudiera generar proyectos, inicialmente Java y Spring-Boot, con la suficiente flexibilidad para adaptarse a las necesidades de cada proyecto, equipo y cliente.
+ZenWave SDK arose from a personal need to have an analysis and design tool that could generate projects, initially Java and Spring-Boot, with sufficient flexibility to adapt to the needs of each project, team, and client.
 
-### Tipos de Customización Disponibles
+### Available Customization Types
 
-ZenWave SDK ofrece diferentes niveles de customización que se adaptan a distintas necesidades y niveles de complejidad:
+ZenWave SDK offers different levels of customization that adapt to different needs and complexity levels:
 
-**Customización Básica:**
-- **Layouts de arquitectura**: Elige entre diferentes estilos arquitectónicos (capas, clean/hexagonal, simple packaging)
-- **Configuración de paquetes**: Personaliza la estructura de packages generados
-- **Monolitos modulares**: Configura múltiples módulos compartiendo clases base comunes
+**Basic Customization:**
+- **Architecture layouts**: Choose between different architectural styles (layers, clean/hexagonal, simple packaging)
+- **Package configuration**: Customize the structure of generated packages
+- **Modular monoliths**: Configure multiple modules sharing common base classes
 
-**Customización Intermedia:**
-- **Plantillas personalizadas**: Modifica plantillas específicas para pequeños ajustes (anotaciones, starters propios, etc.)
+**Intermediate Customization:**
+- **Custom templates**: Modify specific templates for small adjustments (annotations, custom starters, etc.)
 
-**Customización Avanzada:**
-- **Extensión del classpath**: Añade dependencias y plugins personalizados vía JBang
-- **Customización total**: Ejemplo de sustitución completa reemplazando Java por Kotlin
-- **Creación de plugins**: Desarrolla plugins completamente nuevos para casos específicos
+**Advanced Customization:**
+- **Classpath extension**: Add custom dependencies and plugins via JBang
+- **Total customization**: Example of complete substitution replacing Java with Kotlin
+- **Plugin creation**: Develop completely new plugins for specific cases
 
-## Customización Básica
+### Basic Customization
 
-### Layouts de Arquitectura
+#### Architecture Layouts
 
-La manera más sencilla de customizar el código generado es seleccionando el layout arquitectónico que mejor se adapte a tu proyecto:
+The simplest way to customize generated code is by selecting the architectural layout that best fits your project:
 
 ```zdl
 config {
-    title "Mi Aplicación Backend"
+    title "My Backend Application"
     basePackage "io.zenwave360.example"
     persistence jpa
     databaseType postgresql
 
-    // Opciones disponibles:
+    // Available options:
     // DefaultProjectLayout, LayeredProjectLayout, SimpleDomainProjectLayout
     // CleanHexagonalProjectLayout, HexagonalProjectLayout, CleanArchitectureProjectLayout
     layout CleanHexagonalProjectLayout
 }
 ```
 
-También podrías crear tu propia clase layout, añadirla al classpath vía JBang y referenciarla aquí con el nombre de clase totalmente cualificado.
+You can check the source code of each layout in the ZenWave SDK repository:
 
-### Configuración de Paquetes
+<RemoteCode summary="LayeredProjectLayout" visibleRange="3,33" language="java" collapsed={true} showLegend={true}
+            url="https://github.com/ZenWave360/zenwave-sdk/blob/main/zenwave-sdk-cli/src/main/java/io/zenwave360/sdk/zdl/layouts/LayeredProjectLayout.java" />
 
-Puedes personalizar cualquier ruta de paquete en el layout elegido:
+<RemoteCode summary="CleanHexagonalProjectLayout" visibleRange="3,33" language="java" collapsed={true} showLegend={true}
+            url="https://github.com/ZenWave360/zenwave-sdk/blob/main/zenwave-sdk-cli/src/main/java/io/zenwave360/sdk/zdl/layouts/CleanHexagonalProjectLayout.java" />
+
+<RemoteCode summary="SimpleDomainProjectLayout" visibleRange="3,33" language="java" collapsed={true} showLegend={true}
+            url="https://github.com/ZenWave360/zenwave-sdk/blob/main/zenwave-sdk-cli/src/main/java/io/zenwave360/sdk/zdl/layouts/SimpleDomainProjectLayout.java" />
+
+You could also create your own layout class, add it to the classpath via JBang, and reference it here with the fully qualified class name.
+
+#### Package Configuration
+
+You can customize any package path in the chosen layout:
 
 ```zdl
 config {
     layout CleanHexagonalProjectLayout
     
-    // Personalización de paquetes específicos
+    // Specific package customization
     layout.entitiesPackage "{{basePackage}}.core.model"
     layout.openApiApiPackage "{{basePackage}}.web"
     layout.openApiModelPackage "{{basePackage}}.web.dtos"
 }
 ```
 
-### Monolitos Modulares
+#### Modular Monoliths
 
-En un principio ZenWave SDK fue diseñado para generar microservicios, aunque nada impide utilizarlo para generar módulos de un monolito.
+Initially, ZenWave SDK was designed to generate microservices, although nothing prevents using it to generate modules of a monolith.
 
-La principal peculiaridad a la hora de construir monolitos modulares es compartir clases base entre los distintos módulos para evitar código duplicado.
+The main peculiarity when building modular monoliths is sharing base classes between different modules to avoid code duplication.
 
-Para proyectos monolíticos es necesario configurar el nombre paquete base del módulo, que será el paquete raíz de todos los paquetes generados por ZenWave SDK (equivalente a `basePackage` en microservicios).
-
+For monolithic projects, it's necessary to configure the module's base package name, which will be the root package of all packages generated by ZenWave SDK (equivalent to `basePackage` in microservices).
 
 ```zdl
-// Configuración específica del módulo
+// Module-specific configuration
 config {
-    title "Módulo de Clientes"
+    title "Customer Module"
     layout CleanHexagonalProjectLayout
     layout.moduleBasePackage "io.zenwave360.example.modules.customers"
 }
 ```
 
-Y además configurar los paquetes base para compartir clases entre módulos, ya que probablemente se encuentren a un nivel superior al de los propios módulos.
+And also configure the base packages to share classes between modules, as they will probably be at a higher level than the modules themselves.
 
 ```zdl
-// Configuración común para todos los módulos
+// Common configuration for all modules
 config {
-    title "Monolito Modular"
+    title "Modular Monolith"
     basePackage "io.zenwave360.example"
 
-    // Paquetes compartidos entre módulos
+    // Packages shared between modules
     layout.commonPackage "{{basePackage}}.common"
     layout.infrastructureRepositoryCommonPackage "{{commonPackage}}"
     layout.adaptersWebMappersCommonPackage "{{commonPackage}}.mappers"
 }
 ```
 
-## Customización Intermedia
+### Intermediate Customization
 
-### Plantillas Personalizadas
+#### Custom Templates
 
-Para modificaciones específicas sin crear un plugin completo, puedes sobreescribir plantillas individuales:
+For specific modifications without creating a complete plugin, you can override individual templates:
 
-**Proceso:**
-1. Localiza la plantilla original en el repositorio de ZenWave SDK
-2. Copia la plantilla a `.zenwave/templates/[ruta-original]` en tu proyecto
-3. Modifica el contenido según tus necesidades
+**Process:**
+1. Locate the original template in the ZenWave SDK repository
+2. Copy the template to `.zenwave/templates/[original-path]` in your project
+3. Modify the content according to your needs
 
-**Ejemplo:** Personalizar repositorios de Spring Data con una clase base:
+**Example:** Customize Spring Data repositories with a base class:
 
 ```
 .zenwave/templates/io/zenwave360/sdk/plugins/BackendApplicationDefaultGenerator/
   src/main/java/core/outbound/jpa/imperative/EntityRepository.java.hbs
 ```
 
-**Limitaciones:** Este enfoque permite modificar plantillas pero no añadir nuevos helpers o cambiar la lógica de generación.
+**Limitations:** This approach allows modifying templates but not adding new helpers or changing generation logic.
 
-## Customización Avanzada
+### Advanced Customization
 
-### Extensión del Classpath con JBang
+#### Classpath Extension with JBang
 
-Para customizaciones que requieren nuevas dependencias o plugins, puedes utilizar la magia de JBang, por ejemplo creando un archivo `jbang-catalog.json` en la raiz de un proyecto, sobreescribiria el classpath de ZenWave SDK cuando es invocado desde ese directorio:
+For customizations requiring new dependencies or plugins, you can use JBang's magic, for example by creating a `jbang-catalog.json` file in the project root, which would override ZenWave SDK's classpath when invoked from that directory:
 
 ```json
 {
@@ -633,8 +679,8 @@ Para customizaciones que requieren nuevas dependencias o plugins, puedes utiliza
       "script-ref": "io.github.zenwave360.zenwave-sdk:zenwave-sdk-cli:RELEASE",
       "dependencies": [
         "org.slf4j:slf4j-simple:1.7.36",
-        "<tu-dependencia-personalizada>",
-        // ... dependencias estándar de ZenWave
+        "<your-custom-dependency>",
+        // ... standard ZenWave dependencies
       ],
       "main": "io.zenwave360.sdk.Main"
     }
@@ -642,15 +688,15 @@ Para customizaciones que requieren nuevas dependencias o plugins, puedes utiliza
 }
 ```
 
-**Nota importante:** Las dependencias añadidas al inicio sobreescribirán las clases de ZenWave SDK.
+**Important note:** Dependencies added at the beginning will override ZenWave SDK classes.
 
-### Customización total: Ejemplo de sustitución completa reemplazando Java por Kotlin
+#### Total customization: Example of complete substitution replacing Java with Kotlin
 
-ZenWave SDK permite una customization total. De hecho, incluye una customización completa que reemplaza Java por Kotlin.
+ZenWave SDK allows total customization. In fact, it includes a complete customization that replaces Java with Kotlin.
 
-Puedes consultar el [código fuente de la customización de Kotlin](https://github.com/ZenWave360/zenwave-sdk/tree/main/plugins/customizations/kotlin-backend-application) para ver cómo se implementa.
+You can check the [Kotlin customization source code](https://github.com/ZenWave360/zenwave-sdk/tree/main/plugins/customizations/kotlin-backend-application) to see how it's implemented.
 
-En términos prácticos, para utilizar la customización de Kotlin, simplemente configura la opción `templates` con la clase correspondiente en los siguientes plugins:
+In practical terms, to use the Kotlin customization, simply configure the `templates` option with the corresponding class in the following plugins:
 
 ```zdl
 config {
@@ -674,38 +720,97 @@ config {
 }
 ```
 
-### Creación de Plugins Personalizados
+#### Creating Custom Plugins
 
-Para necesidades específicas, puedes crear plugins completamente nuevos que generen cualquier tipo de artefacto: código, APIs, documentación, tests...
+For specific needs, you can create completely new plugins that generate any type of artifact: code, APIs, documentation, tests...
 
-**Herramientas disponibles:**
-- Parser de ZDL
-- Parser de OpenAPI/AsyncAPI con resolución de referencias
-- Formatedores de código Java (Google, Palantir, Spring) y Kotlin (ktfmt)
-- Motor de plantillas Handlebars
+**Available tools:**
+- ZDL Parser
+- OpenAPI/AsyncAPI Parser with reference resolution
+- Java code formatters (Google, Palantir, Spring) and Kotlin (ktfmt)
+- Handlebars template engine
 
-Puedes basarte en cualquiera de los plugins existentes y/o utilizar el Plugin `ZdlToJsonPlugin` para inspeccionar la estructura del modelo ZDL y entender las transformaciones necesarias para alcanzar tu objetivo.
+You can base your work on any existing plugin and/or use the `ZdlToJsonPlugin` Plugin to inspect the ZDL model structure and understand the transformations needed to achieve your goal.
 
 ```bash
 jbang zw -p ZdlToJsonPlugin zdlFile=zenwave-model.zdl
 ```
 
-## Recursos Adicionales
+## Complete Spring-Boot Project with Kotlin
 
-### Documentación de Layouts
-- [LayeredProjectLayout](https://github.com/ZenWave360/zenwave-sdk/blob/main/zenwave-sdk-cli/src/main/java/io/zenwave360/sdk/zdl/layouts/LayeredProjectLayout.java)
-- [CleanHexagonalProjectLayout](https://github.com/ZenWave360/zenwave-sdk/blob/main/zenwave-sdk-cli/src/main/java/io/zenwave360/sdk/zdl/layouts/CleanHexagonalProjectLayout.java)
-- [SimpleDomainProjectLayout](https://github.com/ZenWave360/zenwave-sdk/blob/main/zenwave-sdk-cli/src/main/java/io/zenwave360/sdk/zdl/layouts/SimpleDomainProjectLayout.java)
+As a practical demonstration of everything explained, we have developed a complete project that implements DDD principles using ZenWave SDK:
 
-### Ejemplos de Proyectos
-- [Customización Kotlin](https://github.com/ZenWave360/zenwave-sdk/tree/main/plugins/customizations/kotlin-backend-application)
-- [Proyecto Spring-Boot con Kotlin](https://github.com/ZenWave360/zenwave-playground/tree/main/examples/kustomer-address-jpa)
-- [Monolito Modular](https://github.com/ZenWave360/zenwave-playground/tree/main/examples/modulith-clinical-tool-jpa)
+**🔗 [Kustomer with Address and Payment Methods in JPA](https://github.com/ZenWave360/zenwave-playground/tree/main/examples/kustomer-address-jpa)**
 
-### Plugins Disponibles
-- backend-application-default
-- zdl-to-openapi / zdl-to-asyncapi
-- openapi-controllers / openapi-karate
-- asyncapi-spring-cloud-streams3
-- customizations/kotlin-backend-application
-- [Lista completa](https://github.com/ZenWave360/zenwave-sdk/tree/main/plugins)
+### Technology Stack
+
+We have chosen a simple but complete technology stack that can serve as a solid foundation for any modern enterprise microservice:
+
+- Spring-Boot 3.5.x
+- Hibernate
+- Spring-Data-JPA
+- MapStruct
+- OpenAPI Generator
+- AsyncAPI Generator (ZenWave SDK)
+- Avro + Avro Compiler
+- Spring-Cloud-Streams
+- Spring-Security
+- TestContainers with Docker Compose
+
+### Functionality and Domain Model
+
+The project implements complete management of the `Customer` **aggregate** with the following characteristics:
+
+#### Entities and Value Objects
+- **Customer**: Aggregate root entity
+- **Address**: Collection of addresses persisted as JSON in database
+- **PaymentMethod**: `OneToMany` relationship managed by JPA/Hibernate
+- **PaymentMethodType**: Enum with custom converter (persists as integer)
+
+#### Available Operations
+- ✅ **Complete CRUD** via REST API
+- 🔍 **Paginated search** with filters
+- 📡 **Domain events** published to Kafka for each operation
+- 🔐 **Authentication** with Spring Security
+
+### ZenWave SDK Models
+
+The project was built using the following ZenWave SDK models:
+
+- **[zenwave-model.zdl](https://github.com/ZenWave360/zenwave-playground/blob/main/examples/kustomer-address-jpa/zenwave-model.zdl)**: Domain model definition
+- **[zenwave-scripts.zw](https://github.com/ZenWave360/zenwave-playground/blob/main/examples/kustomer-address-jpa/zenwave-scripts.zdl)**: Code generation scripts
+
+### Running the Project
+
+Follow the instructions in the **[README.md](https://github.com/ZenWave360/zenwave-playground/blob/main/examples/kustomer-address-jpa/README.md)** to run the project:
+
+```bash
+# Start infrastructure (Kafka, PostgreSQL)
+docker-compose up -d
+
+# Run the application
+mvn spring-boot:run -Dspring-boot.run.profiles=local
+```
+
+You can access the functionality through:
+
+- **SwaggerUI**: http://localhost:8080/swagger-ui/index.html
+- **Credentials**: `admin/password`
+
+
+## Conclusion
+
+In this article, we explored how ZenWave 360º bridges the gap between Domain-Driven Design theory and practical implementation. We demonstrated how ZenWave Domain Language (ZDL) serves as an effective Ubiquitous Language that captures the mental model of business experts and automatically propagates it throughout the entire development process.
+
+**Key takeaways:**
+
+- **From Event Storming to Code**: ZDL effectively maps Event Storming discoveries into a structured format that preserves business language while enabling automatic code generation
+- **Ubiquitous Language in Practice**: Unlike traditional DDD implementations where the common language often gets lost in translation, ZDL ensures consistency from business conversations to executable code
+- **Complete Project Generation**: With ZenWave SDK, we generated a fully functional Spring Boot Kotlin project including clean architecture, REST APIs, domain events, and comprehensive tests
+- **Customization Flexibility**: The framework offers multiple levels of customization, from simple template overrides to complete architectural transformations
+
+**The ZenWave 360º advantage** lies in its ability to maintain domain knowledge coherence throughout the development lifecycle. Business experts can recognize their language in the generated code, architects can ensure proper DDD implementation, and developers can focus on business logic rather than boilerplate infrastructure.
+
+By combining strategic DDD thinking with tactical implementation through automated code generation, ZenWave 360º enables teams to build software that truly reflects the business domain while maintaining high code quality and architectural consistency.
+
+**Ready to get started?** Explore the [complete Kotlin example project](https://github.com/ZenWave360/zenwave-playground/tree/main/examples/kustomer-address-jpa) and see how ZenWave 360º can accelerate your next DDD project.
