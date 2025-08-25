@@ -10,7 +10,7 @@ export function PageWrapper({
     data: { mdx },
   },
 }) {
-  console.log(`PageWrapper.js ${mdx?.fields?.pageType}`)
+  // console.log(`PageWrapper.js ${mdx?.fields?.pageType}`)
   if (!mdx?.fields?.pageType) return children
   switch (mdx.fields.pageType) {
     case 'doc':
@@ -23,7 +23,7 @@ export function PageWrapper({
         </DocLayout>
       )
     case 'page':
-      console.log("PageWrapper", children);
+      // console.log("PageWrapper", children);
       if(children.key === '/') {
         return <HomeLayout title={mdx.fields.title}>{children}</HomeLayout>
       } else {

@@ -52,7 +52,7 @@ const TocContainer = styled.div`
 `
 
 export function PageLayout({ children, tableOfContents, editLink, ...props }) {
-    console.log(`PageLayout.js`)
+    // console.log(`PageLayout.js`)
     return (
         <WebSiteLayout {...props}>
             <Container>

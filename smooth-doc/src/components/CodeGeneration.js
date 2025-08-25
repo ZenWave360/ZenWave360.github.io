@@ -1,6 +1,14 @@
 import React from 'react';
 import styled from '@xstyled/styled-components';
 import { RemoteCode } from './RemoteCode';
+import ReactMarkdown from 'react-markdown';
+
+// Component to render processed markdown
+const MarkdownText = ({ children }) => {
+  if (typeof children !== 'string') return children;
+  
+  return <ReactMarkdown>{children}</ReactMarkdown>;
+};
 
 const CodeGenerationContainer = styled.div`
     position: relative; /* Allows absolute positioning of the gear */
@@ -144,7 +152,7 @@ export const CodeGeneration = ({
 
       {text1 && (
         <CommandSection className="codegeneration__command">
-          {text1}
+          <MarkdownText>{text1}</MarkdownText>
         </CommandSection>
       )}
 
@@ -162,7 +170,7 @@ export const CodeGeneration = ({
         </SourceSection>
       )}
 
-      {text2}
+      <MarkdownText>{text2}</MarkdownText>
 
       {(outputUrl || outputContent) && (
         <OutputSection className="codegeneration__output">
@@ -180,7 +188,7 @@ export const CodeGeneration = ({
 
       {text3 && (
         <AfterTextSection className="codegeneration__after-text">
-          {text3}
+          <MarkdownText>{text3}</MarkdownText>
         </AfterTextSection>
       )}
     </CodeGenerationContainer>

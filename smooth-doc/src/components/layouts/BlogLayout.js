@@ -15,7 +15,7 @@ const Container = styled.div`
 `
 
 const BlogLayout = ({ data, ...props }) => {
-    console.log(`BlogLayout.js`)
+    // console.log(`BlogLayout.js`)
   const posts = data.allBlogPost.nodes
     return (
         <WebSiteLayout {...props}>

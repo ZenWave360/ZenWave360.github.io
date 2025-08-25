@@ -46,6 +46,7 @@ async function fetchRemoteContent(url, visibleRange, originalUrl = null) {
   const cacheKey = `${fetchUrl}:${visibleRange || 'full'}`
 
   if (remoteContentCache.has(cacheKey)) {
+    console.log(`Using cached content for: ${fetchUrl}`)
     return remoteContentCache.get(cacheKey)
   }
 
@@ -58,6 +59,7 @@ async function fetchRemoteContent(url, visibleRange, originalUrl = null) {
     }
 
     let content = await response.text()
+    console.log(`Fetched content from: ${fetchUrl}`)
 
     // Apply visibleRange if provided (format: "start,end" with 1-based indexing)
     if (visibleRange) {
@@ -81,8 +83,10 @@ async function fetchRemoteContent(url, visibleRange, originalUrl = null) {
 
 // Function to extract RemoteCode components from MDX content
 function extractRemoteCodeComponents(mdxContent) {
-  const remoteCodeRegex = /<RemoteCode[^>]*>/g
   const components = []
+
+  // Extract explicit RemoteCode components
+  const remoteCodeRegex = /<RemoteCode[^>]*>/g
   let match
 
   while ((match = remoteCodeRegex.exec(mdxContent)) !== null) {
@@ -99,6 +103,42 @@ function extractRemoteCodeComponents(mdxContent) {
         language: languageMatch ? languageMatch[1] : 'text',
         visibleRange: visibleRangeMatch ? visibleRangeMatch[1] : null,
         originalComponent: componentStr
+      })
+    }
+  }
+
+  // Extract CodeGeneration components and their sourceUrl/outputUrl properties
+  const codeGenerationRegex = /<CodeGeneration[^>]*(?:\/>|>[\s\S]*?<\/CodeGeneration>)/g
+  let codeGenMatch
+
+  while ((codeGenMatch = codeGenerationRegex.exec(mdxContent)) !== null) {
+    const componentStr = codeGenMatch[0]
+
+    // Extract sourceUrl and related props
+    const sourceUrlMatch = componentStr.match(/sourceUrl=["']([^"']+)["']/)
+    const sourceLanguageMatch = componentStr.match(/sourceLanguage=["']([^"']+)["']/)
+    const sourceVisibleRangeMatch = componentStr.match(/sourceVisibleRange=["']([^"']+)["']/)
+
+    if (sourceUrlMatch) {
+      components.push({
+        url: sourceUrlMatch[1],
+        language: sourceLanguageMatch ? sourceLanguageMatch[1] : 'text',
+        visibleRange: sourceVisibleRangeMatch ? sourceVisibleRangeMatch[1] : null,
+        originalComponent: `CodeGeneration.sourceUrl: ${componentStr}`
+      })
+    }
+
+    // Extract outputUrl and related props
+    const outputUrlMatch = componentStr.match(/outputUrl=["']([^"']+)["']/)
+    const outputLanguageMatch = componentStr.match(/outputLanguage=["']([^"']+)["']/)
+    const outputVisibleRangeMatch = componentStr.match(/outputVisibleRange=["']([^"']+)["']/)
+
+    if (outputUrlMatch) {
+      components.push({
+        url: outputUrlMatch[1],
+        language: outputLanguageMatch ? outputLanguageMatch[1] : 'text',
+        visibleRange: outputVisibleRangeMatch ? outputVisibleRangeMatch[1] : null,
+        originalComponent: `CodeGeneration.outputUrl: ${componentStr}`
       })
     }
   }
@@ -355,7 +395,7 @@ async function onCreateMdxNode({ node, getNode, actions, createNodeId }, options
       socialImage: node.frontmatter.socialImage,
     }
     const mdxBlogPostId = createNodeId(`${node.id} >>> BlogPost`)
-    console.log('mdxBlogPostId', mdxBlogPostId )
+    // console.log('mdxBlogPostId', mdxBlogPostId )
     await createNode({
       ...fieldData,
       // Required fields.
@@ -415,9 +455,13 @@ async function createPages({ graphql, actions, reporter }) {
 
   const filteredEdges = data.allMdx.edges.filter((edge) => {
     if (edge.node.parent.sourceInstanceName === 'default-page') {
+      // Check if fields exists before accessing slug
+      if (!edge.node.fields) {
+        return true
+      }
       const { slug } = edge.node.fields
       const hasCustom404 = data.allMdx.edges.find(
-        (_edge) => edge !== _edge && _edge.node.fields.slug === slug,
+        (_edge) => edge !== _edge && _edge.node.fields && _edge.node.fields.slug === slug,
       )
       return !hasCustom404
     }
@@ -426,6 +470,11 @@ async function createPages({ graphql, actions, reporter }) {
 
   // Create pages
   filteredEdges.forEach(({ node }) => {
+    // Check if fields exists before accessing its properties
+    if (!node.fields) {
+      return
+    }
+
     if (node.fields.redirect) {
       createRedirect({
         fromPath: node.fields.slug,
@@ -489,6 +538,25 @@ const pluginOptionsSchema = (/** @type {{ Joi: import('joi') }} */ { Joi }) => {
 
 const onCreateWebpackConfig = ({ stage, rules, loaders, plugins, actions }) => {
   actions.setWebpackConfig({
+    resolve: {
+      fallback: {
+        path: require.resolve('path-browserify'),
+        url: require.resolve('url/'),
+        util: require.resolve('util/'),
+        fs: false,
+        stream: require.resolve('stream-browserify'),
+        buffer: require.resolve('buffer/'),
+        process: require.resolve('process/browser'),
+        os: false,
+        crypto: false,
+      },
+    },
+    plugins: [
+      new (require('webpack')).ProvidePlugin({
+        process: 'process/browser',
+        Buffer: ['buffer', 'Buffer'],
+      }),
+    ],
     module: {
       rules: [
         {

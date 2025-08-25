@@ -3,7 +3,7 @@ title: "DDD In Practice: From Ubiquitous Language DSL to Complete Spring-Boot Ko
 slug: /posts/DDD-In-Practice_From_DSL_to_Complete_Spring-Boot_Kotlin/
 image: automobile.png
 author: Ivan Garcia Sainz-Aja
-date: 2025-08-16T09:00:00+02:00
+date: 2025-08-22T09:00:00+02:00
 excerpt: 'In this article, we will explore how to use ZenWave360 to generate a complete SpringBoot Kotlin project from a Ubiquitous Language DSL model.'
 tags:
   - ZenWave360
@@ -340,13 +340,17 @@ service CustomerService for (Customer) {
 }
 ```
 
-When using the `ZDLToOpenAPIPlugin`, the following:
+<RemoteCode summary="ZDL Model" collapsed={true} language="zdl"
+            url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl" />
 
-<RemoteCode summary="ZDL Model" url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl" language="zdl" collapsed={true} showLegend={true} />
-
-would produce this:
-
-<RemoteCode summary="OpenAPI Definition" url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml" language="yaml" collapsed={true} showLegend={true} />
+<CodeGeneration
+  text1="When using the `ZDLToOpenAPIPlugin`, the following"
+  sourceTitle="ZDL Model" sourceLanguage="zdl"
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl"
+  text2="would produce this:"
+  outputTitle="OpenAPI Definition" outputLanguage="yaml"
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml"
+/>
 
 For more details on how to define REST APIs in ZDL, see the documentation on [Exposing a REST API](https://www.zenwave360.io/docs/zenwave-sdk/exposing-a-rest-api/).
 
@@ -373,21 +377,6 @@ event CustomerEvent {
     paymentMethods PaymentMethod[]
 }
 ```
-
-<div className="codegeneration">
-  <div className="codegeneration__command">When using the `ZDLToAsyncAPIPlugin`, the following</div>
-  <div className="codegeneration__source">
-    <RemoteCode summary="ZDL Model" language="zdl" collapsed={true} showLegend={true}
-                url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl"/>
-  </div>
-  would produce this:
-  <div className="codegeneration__output">
-    <RemoteCode summary="AsyncAPI Definition" language="yaml" collapsed={true} showLegend={true}
-                url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/asyncapi.yml"/>
-  </div>
-</div>
-
-with all event schemas and corresponding channel configurations.
 
 <CodeGeneration
   text1="When using the `ZDLToAsyncAPIPlugin`, the following"
