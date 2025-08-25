@@ -274,45 +274,7 @@ function getPageType(contentFilePath) {
 async function onCreateMdxNode({ node, getNode, actions, createNodeId }, options) {
   const { createNodeField, createNode, createParentChildLink } = actions
 
-  // Process RemoteCode components in MDX content
-  if (node.internal.type === 'Mdx' && node.body) {
-    const remoteCodeComponents = extractRemoteCodeComponents(node.body)
-
-    for (const component of remoteCodeComponents) {
-      const originalUrl = component.url
-      const fetchUrl = transformGitHubUrl(originalUrl)
-      const sourceUrl = createGitHubSourceUrl(originalUrl, component.visibleRange)
-      const cacheKey = `${fetchUrl}:${component.visibleRange || 'full'}`
-      const content = await fetchRemoteContent(originalUrl, component.visibleRange, originalUrl)
-
-      const remoteCodeNodeId = createNodeId(`${node.id} >>> RemoteCodeContent >>> ${cacheKey}`)
-
-      const remoteCodeData = {
-        url: fetchUrl,
-        originalUrl: originalUrl,
-        sourceUrl: sourceUrl,
-        language: component.language,
-        visibleRange: component.visibleRange,
-        content: content,
-        cacheKey: cacheKey
-      }
-
-      await createNode({
-        ...remoteCodeData,
-        id: remoteCodeNodeId,
-        parent: node.id,
-        children: [],
-        internal: {
-          type: 'RemoteCodeContent',
-          contentDigest: createContentDigest(remoteCodeData),
-          content: JSON.stringify(remoteCodeData),
-          description: 'Remote code content fetched at build time'
-        }
-      })
-
-      createParentChildLink({ parent: node, child: getNode(remoteCodeNodeId) })
-    }
-  }
+  // Create node fields FIRST to ensure pages work even if remote content processing fails
   const slug = node.frontmatter.slug || createFilePath({ node, getNode })
   const pageType = getPageType(node.internal.contentFilePath);
 
@@ -411,6 +373,57 @@ async function onCreateMdxNode({ node, getNode, actions, createNodeId }, options
     })
     createParentChildLink({ parent: node, child: getNode(mdxBlogPostId) })
   }
+
+  // Process RemoteCode components in MDX content AFTER all fields are created
+  // This ensures that if remote content processing fails, the page fields are still created
+  if (node.internal.type === 'Mdx' && node.body) {
+    try {
+      const remoteCodeComponents = extractRemoteCodeComponents(node.body)
+
+      for (const component of remoteCodeComponents) {
+        try {
+          const originalUrl = component.url
+          const fetchUrl = transformGitHubUrl(originalUrl)
+          const sourceUrl = createGitHubSourceUrl(originalUrl, component.visibleRange)
+          const cacheKey = `${fetchUrl}:${component.visibleRange || 'full'}`
+          const content = await fetchRemoteContent(originalUrl, component.visibleRange, originalUrl)
+
+          const remoteCodeNodeId = createNodeId(`${node.id} >>> RemoteCodeContent >>> ${cacheKey}`)
+
+          const remoteCodeData = {
+            url: fetchUrl,
+            originalUrl: originalUrl,
+            sourceUrl: sourceUrl,
+            language: component.language,
+            visibleRange: component.visibleRange,
+            content: content,
+            cacheKey: cacheKey
+          }
+
+          await createNode({
+            ...remoteCodeData,
+            id: remoteCodeNodeId,
+            parent: node.id,
+            children: [],
+            internal: {
+              type: 'RemoteCodeContent',
+              contentDigest: createContentDigest(remoteCodeData),
+              content: JSON.stringify(remoteCodeData),
+              description: 'Remote code content fetched at build time'
+            }
+          })
+
+          createParentChildLink({ parent: node, child: getNode(remoteCodeNodeId) })
+        } catch (componentError) {
+          console.error(`Failed to process remote code component for ${component.url}:`, componentError.message)
+          // Continue processing other components even if one fails
+        }
+      }
+    } catch (extractionError) {
+      console.error(`Failed to extract remote code components from ${node.internal.contentFilePath}:`, extractionError.message)
+      // Don't fail the entire node creation if remote content processing fails
+    }
+  }
 }
 
 function onCreateNode(...args) {
@@ -455,13 +468,9 @@ async function createPages({ graphql, actions, reporter }) {
 
   const filteredEdges = data.allMdx.edges.filter((edge) => {
     if (edge.node.parent.sourceInstanceName === 'default-page') {
-      // Check if fields exists before accessing slug
-      if (!edge.node.fields) {
-        return true
-      }
       const { slug } = edge.node.fields
       const hasCustom404 = data.allMdx.edges.find(
-        (_edge) => edge !== _edge && _edge.node.fields && _edge.node.fields.slug === slug,
+        (_edge) => edge !== _edge && _edge.node.fields.slug === slug,
       )
       return !hasCustom404
     }
@@ -470,11 +479,6 @@ async function createPages({ graphql, actions, reporter }) {
 
   // Create pages
   filteredEdges.forEach(({ node }) => {
-    // Check if fields exists before accessing its properties
-    if (!node.fields) {
-      return
-    }
-
     if (node.fields.redirect) {
       createRedirect({
         fromPath: node.fields.slug,
