@@ -82,6 +82,8 @@ module.exports = function config(options) {
             remarkPlugins: [
               // Add GitHub Flavored Markdown (GFM) support
               require(`remark-gfm`),
+              // Add PlantUML support
+              require(`@akebifiky/remark-simple-plantuml`),
             ],
             rehypePlugins: [rehypeMetaAsAttributes],
           },
@@ -92,6 +94,7 @@ module.exports = function config(options) {
                 maxWidth: 1200,
               },
             },
+
             { resolve: 'gatsby-remark-autolink-headers' },
           ],
         },

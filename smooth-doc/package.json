@@ -33,6 +33,7 @@
     "react-dom": "*"
   },
   "dependencies": {
+    "@akebifiky/remark-simple-plantuml": "^1.0.2",
     "@docsearch/css": "^3.1.1",
     "@docsearch/react": "^3.1.1",
     "@mdx-js/loader": "^2.1.3",
