@@ -129,13 +129,21 @@ export function useSideNavState() {
   return React.useMemo(() => {
     const navGroups = groupNodes(data.allMdx.edges.map((edge) => edge.node))
     navGroups.sort(sortGroupsWithConfig(data.site.siteMetadata.sections))
-    return { navGroups }
+
+    // Filter out specific sections that should not appear in sidebar
+    const hiddenSections = ['DDD Examples', 'EDA Examples']
+    const filteredNavGroups = navGroups.filter(group => !hiddenSections.includes(group.name))
+
+    return { navGroups: filteredNavGroups }
   }, [data])
 }
 
 export function useSideNavPrevNext({ navGroups }) {
   const { pathname } = useLocation()
-  const nodes = navGroups.flatMap((group) => group.nodes)
+  // Only include visible nav groups for prev/next navigation
+  const hiddenSections = [] // ['DDD Examples', 'EDA Examples']
+  const visibleNavGroups = navGroups.filter(group => !hiddenSections.includes(group.name))
+  const nodes = visibleNavGroups.flatMap((group) => group.nodes)
   const nodeIndex = nodes.findIndex(
     (node) => withPrefix(node.fields.slug) === pathname,
   )
