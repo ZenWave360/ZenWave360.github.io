@@ -1,0 +1,73 @@
+---
+section: DDD Examples
+title: Kustomer Address JPA Service (Kotlin)
+slug: /docs/examples/ddd-examples/kustomer-address-jpa/
+---
+import { Image, Quote, QuoteAuthor, RemoteCode } from "smooth-doc/components";
+
+# Customer Address JPA Service
+
+https://github.com/ZenWave360/zenwave-playground/tree/main/examples/kustomer-address-jpa
+
+SpringBoot + Java microservice for a "Customer Address Service" using JPA for persistence for this Domain Model:
+
+```plantuml
+@startuml
+class Customer << aggregate >> {
+Customer entity
+--
+String name
+String email
+Address[] addresses
+--
+@OneToMany paymentMethods
+}
+
+    Customer *--down- Address
+    class Address  {
+Stored in a JSON column in the database.
+--
+String street
+String city
+}
+
+    Customer o--down- PaymentMethod
+    class PaymentMethod  {
+PaymentMethodType type
+String cardNumber
+--
+@ManyToOne customer
+}
+
+    PaymentMethod --down-> PaymentMethodType
+    enum PaymentMethodType {
+VISA(1)
+MASTERCARD(2)
+}
+
+@enduml
+```
+
+With these REST Endpoints:
+
+![OpenAPI Endpoints](https://github.com/ZenWave360/zenwave-playground/raw/main/examples/kustomer-address-jpa/src/main/resources/public/apis/endpoints-screenshot.png)
+
+And these Domain Events published to a Kafka Topic:
+
+![AsyncAPI Operations](https://github.com/ZenWave360/zenwave-playground/raw/main/examples/kustomer-address-jpa/src/main/resources/public/apis/asyncapi-operations.png)
+
+As defined on this
+
+<RemoteCode
+  title="ZenWave Model for Customer Address JPA Service"
+  language="zdl"
+  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/kustomer-address-jpa/zenwave-model.zdl" />
+
+And generated using this
+
+<RemoteCode
+  title="ZenWave Scripts for Customer Address JPA Service"
+  language="zdl"
+  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/kustomer-address-jpa/zenwave-scripts.zw" />
+
+with [ZenWave Model Editor] for IntelliJ IDEA.
