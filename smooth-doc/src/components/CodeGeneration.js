@@ -137,12 +137,14 @@ export const CodeGeneration = ({
   sourceContent,
   sourceLanguage = 'text',
   sourceVisibleRange,
+  sourceCollapsed,
   text2,
   outputTitle,
   outputUrl,
   outputContent,
   outputLanguage = 'text',
   outputVisibleRange,
+  outputCollapsed,
   text3
 }) => {
 
@@ -164,7 +166,7 @@ export const CodeGeneration = ({
             content={sourceContent}
             language={sourceLanguage}
             visibleRange={sourceVisibleRange}
-            collapsed={true}
+            collapsed={sourceCollapsed}
             showLegend={sourceUrl != null}
           />
         </SourceSection>
@@ -180,7 +182,7 @@ export const CodeGeneration = ({
             content={outputContent}
             language={outputLanguage}
             visibleRange={outputVisibleRange}
-            collapsed={true}
+            collapsed={outputCollapsed}
             showLegend={outputUrl != null}
           />
         </OutputSection>

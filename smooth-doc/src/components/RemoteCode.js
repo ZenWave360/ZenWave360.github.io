@@ -29,6 +29,7 @@ export const RemoteCode = ({ url, language = 'text', content = '', visibleRange,
 
     if (match) {
       const [, user, repo, branch, filePath] = match
+      console.log(`Transforming GitHub URL: ${inputUrl} to ${user}/${repo}/refs/heads/${branch}/${filePath}`)
       return `https://raw.githubusercontent.com/${user}/${repo}/refs/heads/${branch}/${filePath}`
     }
 
@@ -82,7 +83,9 @@ export const RemoteCode = ({ url, language = 'text', content = '', visibleRange,
           setDynamicContent(text);
           setLoading(false);
         } catch (err) {
-          setError('Failed to fetch content: ' + err.message);
+          setError(`Failed to fetch content (${url}): ${err.message}`);
+          console.log(`Failed to fetch content (${url}): ${err.message}`);
+          console.error(err);
           setLoading(false);
         }
       };
