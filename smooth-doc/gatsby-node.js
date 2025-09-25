@@ -50,12 +50,13 @@ async function fetchRemoteContent(url, visibleRange, originalUrl = null) {
     return remoteContentCache.get(cacheKey)
   }
 
+  console.log(`Fetching remote content from: ${fetchUrl}`)
+  
   try {
-    console.log(`Fetching remote content from: ${fetchUrl}`)
     const response = await fetch(fetchUrl)
 
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+      throw new Error(`Failed to fetch remote content from ${fetchUrl} - HTTP ${response.status}: ${response.statusText}`)
     }
 
     let content = await response.text()
@@ -74,10 +75,9 @@ async function fetchRemoteContent(url, visibleRange, originalUrl = null) {
     remoteContentCache.set(cacheKey, content)
     return content
   } catch (error) {
-    console.error(`Failed to fetch content from ${fetchUrl}:`, error.message)
-    const errorContent = `// Error fetching content from ${fetchUrl}\n// ${error.message}`
-    remoteContentCache.set(cacheKey, errorContent)
-    return errorContent
+    const errorMessage = `BUILD FAILED: Unable to fetch remote content from ${fetchUrl}${originalUrl && originalUrl !== fetchUrl ? ` (original: ${originalUrl})` : ''}. Reason: ${error.message}`
+    console.error(errorMessage)
+    throw new Error(errorMessage)
   }
 }
 

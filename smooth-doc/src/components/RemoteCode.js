@@ -15,7 +15,9 @@ const StyledDetails = styled.details`
 `;
 
 // RemoteCode component to display pre-fetched content or fetch dynamically in dev mode
-export const RemoteCode = ({ url, language = 'text', content = '', visibleRange, showLegend = true, summary, collapsed = false }) => {
+export const RemoteCode = ({ url, language = 'text', content = '', visibleRange, showLegend = true, title, summary, collapsed = false }) => {
+  title = title || summary
+  summary = summary || title
   const [dynamicContent, setDynamicContent] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);

@@ -158,12 +158,33 @@ export function usePrismTheme() {
   return th('prism-theme')({ theme })
 }
 
+function trimEmptyLines(code) {
+  const lines = code.split('\n')
+  
+  // Find first non-empty line
+  let startIndex = 0
+  while (startIndex < lines.length && lines[startIndex].trim() === '') {
+    startIndex++
+  }
+  
+  // Find last non-empty line
+  let endIndex = lines.length - 1
+  while (endIndex >= 0 && lines[endIndex].trim() === '') {
+    endIndex--
+  }
+  
+  // Return trimmed content, preserving original indentation of content lines
+  return lines.slice(startIndex, endIndex + 1).join('\n')
+}
+
 export function Code({ children, lang = 'markup', meta }) {
   const prismTheme = usePrismTheme()
+  const trimmedCode = trimEmptyLines(children)
+  
   if (/live/.test(meta)) {
     return (
       <LiveProvider
-        code={children.trim()}
+        code={trimmedCode}
         transformCode={(code) => `${importToRequire(code)}`}
         scope={{ require: req }}
         language={lang}
@@ -184,7 +205,7 @@ export function Code({ children, lang = 'markup', meta }) {
   return (
     <Highlight
       {...defaultProps}
-      code={children.trim()}
+      code={trimmedCode}
       language={lang}
       theme={prismTheme}
     >
