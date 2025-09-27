@@ -10,9 +10,17 @@ Canonical ZenWave example of a DDD Aggregate with JPA persistence and Externaliz
 
 This is a canonical example of a ZenWave designed and generated project, around a DDD Aggregate persisted with JPA and externalized Domain Events published to a Kafka topic. You can find the [Complete Source Code](https://github.com/ZenWave360/zenwave-playground/tree/main/examples/customer-address-jpa) at GitHub.
 
-## Customer Aggregate and Service
+## What You'll Learn
+- How to model a DDD aggregate using ZDL
+- Generate REST APIs from domain models
+- Implement event-driven architecture with AsyncAPI
+- Create a complete Spring Boot microservice
 
-This is a Java/SpringBoot microservice exposing CRUD operations for a `Customer` aggregate as a REST API and Kafka Domain Events.
+We assume you have already read the [Getting Started](https://www.zenwave360.io/docs/getting-started/) section and installed ZenWave SDK CLI and IntelliJ Plugin and are somewhat familiar with the concepts of DDD and Event-Driven Architecture.
+
+## What we will be building: A Customer Master Data Service
+
+We will be building a Java/SpringBoot microservice exposing CRUD operations for a `Customer` aggregate as a REST API and publishing Domain Events to Kafka.
 
 The `Customer` entity is the root of the aggregate, holding relationships to other entities:
 - an array of `Address` entities stored in a JSON column in the database and
@@ -77,19 +85,23 @@ https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-add
 
 ## Building with ZenWave Domain Model and SDK
 
-The full application was generated using this ZDL model:
+When modeling a microservice with ZenWave SDK we usually do it using two main files:
+- A `zenwave-model.zdl` file containing the domain model and service definitions, we use this file to iterate and refine the domain model.
+- A `zenwave-scripts.zw` file containing the plugin configurations and executions, you can run each plugin individually from [ZenWave Model Editor for IntelliJ](/plugin/) to generate different aspects of the application.
+
+The full application we are building in this example was defined in the following ZDL model:
 
 <RemoteCode
-  title="ZenWave Model for Customer Address JPA Service"
+  title="`zenwave-model.zdl` for Customer Master Data Service"
   language="zdl" collapsed={true}
   url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl" />
 
-and running each of these plugins using the [ZenWave Model Editor for IntelliJ](/plugin/):
-
 <RemoteCode
-  title="ZenWave Scripts for Customer Address JPA Service"
+  title="`zenwave-scripts.zw` for Customer Master Data Service"
   language="zdl" collapsed={true}
   url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-scripts.zw" />
+
+> NOTE: You can name this files as you wish, just mind the file extension `.zdl` for the domain model and `.zw` for the scripts and in `.zw` pointing to the proper `zdlFile` file containing the domain model.
 
 So let's dive into the details of how this application was built using ZenWave SDK.
 
@@ -98,7 +110,7 @@ So let's dive into the details of how this application was built using ZenWave S
 Let's start with the configuration section of the ZDL model:
 
 <RemoteCode
-  title="ZenWave Model Configuration for Customer Address JPA Service"
+  title="ZenWave Model Configuration for Customer Master Data Service"
   language="zdl" collapsed={false} visibleRange="1,18"
   url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl" />
 
@@ -118,27 +130,27 @@ Additional configurations customizing the project layout:
   language="xml" collapsed={true} visibleRange="326,362"
   url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/pom.xml" />
 
-### Domain Model
+### Domain Modeling
 
 Domain modeling starts with the `entity` declarations. Entities body contains fields, nested entities. `id` and `version` fields are added automatically to entities. Entities decorated with `@auditing` will also have `createdDate`, `createdBy`, `lastModifiedDate`, and `lastModifiedBy` fields added automatically.
 
 Entities decorated with `@aggregate` are considered the root of an aggregate and a Spring Data repository is generated for them and can be used on `services`.
 
-Nested entities are equivalente not entities decorated with `@embedded` are not persisted separately, they are part of the aggregate root entity:
+Nested entities are equivalente to entities decorated with `@embedded` which are not persisted separately, they are part of the aggregate root entity:
 
-- In `mongodb` they are stored as nested documents and they don't have an id or version fields.
-- In `jpa` they are stored either as `@Embeddable` or as a JSON column in the database. In this particular example, we are using a JSON column to store the `addresses` array in the `Customer` entity.
+- In `mongodb` they are stored as nested documents, and they don't have an id or version fields.
+- In `jpa` they are stored either as `@Embeddable` or as a JSON column in the database. In this particular example, we are using a JSON column to store the `addresses` array in the `Customer` entity. (Arrays are not supported as `@Embeddable` in JPA)
 
-Relationships are modeled following JHipster JDL syntax and the corresponding fields are added to its entities. In DDD, rich relationships between aggregates and should be mapped only by their id. With ZenWave SDK you can use `@OneToXXX` relationships between aggregates, which are mapped by their id and have a read-only reference to the entity, allowing for a richer domain model in the ZDL while keeping the DDD principles. This is not the case in this example, but is good to know that possibility exists.
+Relationships are modeled following JHipster JDL syntax and the corresponding fields are added to entities. In DDD, relationships between aggregates should typically be mapped only by their id. ZenWave SDK allows you to use `@OneToXXX` relationships between aggregates, which are mapped by their id and include a read-only reference to the related entity, enabling a richer domain model in the ZDL while maintaining DDD principles. This pattern is not used in this example, but it's good to know this capability exists.
 
 <RemoteCode
-  title="ZenWave Domain Model for Customer Address JPA Service"
+  title="ZenWave Domain Model for Customer Master Data Service"
   language="zdl" collapsed={false} visibleRange="20,46"
   url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl" />
 
 <RemoteCode
   title="Customer Entity Generated by ZenWave SDK"
-  language="java" collapsed={true}
+  language="java" collapsed={true} visibleRange="23,115"
   url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/java/io/zenwave360/example/core/domain/Customer.java" />
 
 <RemoteCode
@@ -195,7 +207,7 @@ This will generate a `CustomerService`, a `CustomerServiceImpl` referencing `Cus
 <RemoteCode
   title="CustomerServiceTest.java Generated by ZenWave SDK"
   language="java" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/java/io/zenwave360/example/core/CustomerServiceTest.java" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/java/io/zenwave360/example/core/implementation/CustomerServiceTest.java" />
 
 This `CustomerServiceTest` is just an skeleton, you will need to provide testing data and assertions.
 
@@ -206,9 +218,9 @@ ZenWave SDK generates a complete suit of both Unit and Integration Tests:
 
 #### Core Integration Tests
 
-`BackendApplicationDefaultPlugin` generates Integration Tests for infrastructure classes, that is repositories that are set as `@SpringBootTests` against TestContainers with `docker-compose.yml`
+`BackendApplicationDefaultPlugin` generates Integration Tests for `infrastructure` or `outbound adapter classes` (repositories in this case) that run as `@SpringBootTest` against TestContainers using [docker-compose.yml](https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/docker-compose.yml) configuration.
 
-It tests that JPA configuration and relationships are mapped correctly. You as the developer still need to populate test with input data and parameters and provide an initial state for your database in the standard file `src/test/resources/data.sql`. These integration tests are transactional so after each test database state is rolledback to its original state.
+These tests verify that JPA configuration and entity relationships are correctly mapped. As the developer, you need to populate tests with input data and assertions, and provide initial database state in the standard `src/test/resources/data.sql` file. These integration tests are transactional, so the database state is rolled back to its original state after each test.
 
 <RemoteCode
   title="Testing JPA and relationshipst in CustomerRepositoryIntegrationTest.java"
@@ -216,16 +228,31 @@ It tests that JPA configuration and relationships are mapped correctly. You as t
   url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/java/io/zenwave360/example/infrastructure/jpa/CustomerRepositoryIntegrationTest.java" />
 
 
+Remember to verify that Services list in `DockerComposeInitializer.java` match the services declared in `docker-compose.yml`, pay particular attention to the database service name, which is `app` in this case.
+
+<RemoteCode
+  title="Services List in DockerComposeInitializer.java"
+  language="java" collapsed={false} visibleRange="43,49"
+  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/java/io/zenwave360/example/config/DockerComposeInitializer.java" />
+
+`DockerComposeInitializer.java` contains the annotation required to start TestContainers in your `@SpringBootTest` tests:
+
+<RemoteCode
+  title="BaseRepositoryIntegrationTest.java"
+  language="java" collapsed={true}
+  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/java/io/zenwave360/example/infrastructure/jpa/BaseRepositoryIntegrationTest.java" />
+
+
 #### Core Unit Tests
 
-`BackendApplicationDefaultPlugin` also generates Unit Tests for your core services that will InMemory Repository implementations (avoiding using Mockito). It also generates a `ServicesInMemoryConfig.java` so you can get a service implementation wired with InMemory dependencies:
+`BackendApplicationDefaultPlugin` also generates Unit Tests for your core services that use InMemory Repository implementations (avoiding Mockito). It also generates a `ServicesInMemoryConfig.java` to provide service implementations wired with InMemory dependencies:
 
 <RemoteCode
   title="Using ServicesInMemoryConfig.java in Service Tests"
   language="java" collapsed={true} visibleRange="19,33"
   url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/java/io/zenwave360/example/core/implementation/CustomerServiceTest.java" />
 
-You can provide in-memory test data creating as many json files in `src/test/resources/{{persistence}}/data/{{aggregateName}}/{{id}}.json` and they will populate the in-memory repository before each test.
+You can provide in-memory test data by creating JSON files in `src/test/resources/{{persistence}}/data/{{aggregateName}}/{{id}}.json` - these will populate the in-memory repository before each test runs.
 
 <RemoteCode
   title="src/test/resources/data/jpa/customer/1.json"
@@ -235,15 +262,15 @@ You can provide in-memory test data creating as many json files in `src/test/res
 
 ### Exposing a REST API for your Service
 
-Services can also be decorated with `@rest`, `get`, `@post`, `@put`, `@delete`, `@patch` annotations to document how they will be exposed to the outside world via REST API. `ZdlToOpenAPIPlugin` can generate a complete OpenAPI definition from these annotations, you can then further customize by hand or applying OpenAPI `overlays` at code generation time.
+Services can be decorated with `@rest`, `@get`, `@post`, `@put`, `@delete`, `@patch` annotations to document how they will be exposed as REST endpoints. The `ZdlToOpenAPIPlugin` can generate a complete OpenAPI definition from these annotations, which you can then customize manually or by applying OpenAPI overlays during code generation.
 
-`ZdlToOpenAPIPlugin` will generate `#/components/schemas/**` for all entities, inputs and outputs present as part of your service commands. There are also annotations to create `@fileupload` and `@filedownload` endpoints, which are not part of this example. (See [Clinical Tool - Modulith](/docs/examples/ddd-examples/modulith-clinical-tool-jpa/) example for more details.)
+The `ZdlToOpenAPIPlugin` will generate `#/components/schemas/**` for all entities, inputs and outputs used in your service commands. Additional annotations like `@fileupload` and `@filedownload` are available for file handling endpoints (see the [Clinical Tool - Modulith](/docs/examples/ddd-examples/modulith-clinical-tool-jpa/) example for details).
 
 #### Create Customer Endpoint
 
 <CodeGeneration
   text1="When using the `ZDLToOpenAPIPlugin`, the following"
-  sourceTitle="@post createCustomer(Customer) Customer" sourceLanguage="zdl" sourceVisibleRange="57,58" sourceCollapsed={false}
+  sourceTitle="this service command:" sourceLanguage="zdl" sourceVisibleRange="57,58" sourceCollapsed={false}
   sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl"
   text2="would produce this:"
   outputTitle="src/main/resources/public/apis/openapi.yml" outputLanguage="yaml" outputVisibleRange="27,44"
@@ -255,7 +282,7 @@ Services can also be decorated with `@rest`, `get`, `@post`, `@put`, `@delete`, 
   sourceTitle="src/main/resources/public/apis/openapi.yml" sourceLanguage="yaml" sourceVisibleRange="27,44"
   sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml"
   text2="would produce this java code:"
-  outputTitle="CustomerApiController.java" outputLanguage="java" outputVisibleRange="69,74"
+  outputTitle="CustomerApiController.java" outputLanguage="java" outputVisibleRange="69,77"
   outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/java/io/zenwave360/example/adapters/web/CustomerApiController.java"
 />
 
@@ -271,13 +298,13 @@ And its corresponding:
   language="java" collapsed={true} visibleRange="28,37"
   url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/java/io/zenwave360/example/adapters/web/CustomerApiControllerTest.java" />
 
-Remember that generated `Mappers` and `Tests` are provided as a starting point, you will need to adapt them to your needs.
+> Remember that generated `Mappers` and `Tests` are provided as a starting point, you will need to adapt them to your needs.
 
 #### Search Customer Endpoint
 
 <CodeGeneration
   text1="When using the `ZDLToOpenAPIPlugin`, the following"
-  sourceTitle="searchCustomers(CustomerSearchCriteria) Customer[]" sourceLanguage="zdl" sourceVisibleRange="65,67" sourceCollapsed={false}
+  sourceTitle="sevice command `@paginated` and returning an aray:" sourceLanguage="zdl" sourceVisibleRange="65,67" sourceCollapsed={false}
   sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl"
   text2="would produce this:"
   outputTitle="src/main/resources/public/apis/openapi.yml" outputLanguage="yaml" outputVisibleRange="102,123"
@@ -285,7 +312,7 @@ Remember that generated `Mappers` and `Tests` are provided as a starting point, 
 />
 
 <CodeGeneration
-  text1="When using the `OpenAPIControllersPlugin`, the following"
+  text1="When using the `OpenAPIControllersPlugin`, the previous OpenAPI definition:"
   sourceTitle="src/main/resources/public/apis/openapi.yml" sourceLanguage="yaml" sourceVisibleRange="102,123"
   sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml"
   text2="would produce this java code:"
@@ -302,14 +329,14 @@ And its corresponding:
 
 #### Web Adapters Unit Tests
 
-`OpenAPIControllersPlugin` will generate not only Spring MVC controllers implementing your openapi.yml but also Unit Tests that also uses `ServicesInMemoryConfig.java`.
+`OpenAPIControllersPlugin` generates Spring MVC controllers that implement your OpenAPI specification, along with corresponding Unit Tests that use `ServicesInMemoryConfig.java` for dependency injection.
 
 <RemoteCode
   title="Unit Testing Spring MVC Controllers"
   language="java" collapsed={true} visibleRange="14,37"
   url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/java/io/zenwave360/example/adapters/web/CustomerApiControllerTest.java" />
 
-You can skip generating this controller Unit Tests if you prefer to test your REST API instead of the Java controllers.
+You can disable controller Unit Test generation if you prefer to test your REST API through HTTP calls instead of testing the Java controllers directly.
 
 ### Web Adapters Integration Tests with Spring WebTestClient
 
@@ -330,7 +357,7 @@ If you prefer to test your REST API via HTTP semantics you can use `SpringWebTes
   sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-scripts.zw"
   text2="would produce this Business Flow API test:"
   outputTitle="CustomerApiIntegrationTest" outputLanguage="java" outputCollapsed={true}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/java/io/zenwave360/example/adapters/web/CreateUpdateDeleteCustomerIntegrationTest.java"
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/java/io/zenwave360/example/adapters/web/CreateUpdateDeleteCustomerIntegrationTest.java"
 />
 
 You can control whether these are Unit or Integration Tests with `@SpringBootTest` in
@@ -341,7 +368,7 @@ You can control whether these are Unit or Integration Tests with `@SpringBootTes
   url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/java/io/zenwave360/example/adapters/web/BaseWebTestClientTest.java" />
 
 
-As always is your task as the developer to populate input data and parameters in your java tests compatible with the initial state, whether its a conteinerized database or an inmemory implementation.
+As always, it's your responsibility as the developer to provide test data and parameters that match the initial state, whether you're using a containerized database or an in-memory implementation.
 
 
 ### Publishing Domain Events with AsyncAPI
@@ -380,35 +407,51 @@ Then you can configure ZenWave SDK Maven Plugin to generate all required DTOs an
   language="xml" collapsed={true} visibleRange="376,437"
   url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/pom.xml" />
 
+Because we are using avro as payload format, we also need to configure avro-maven-plugin to generate java classes from our avro schemas:
+
+<RemoteCode
+  title="avro-maven-plugin configured to generate java classes from avro schemas"
+  language="xml" collapsed={true} visibleRange="439,460"
+  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/pom.xml" />
+
 Please refer to https://www.zenwave360.io/zenwave-sdk/plugins/asyncapi-spring-cloud-streams3/ for more details about how to configure ZenWave SDK Maven Plugin.
 
 
-## Running your freshly created Customer Service
+## Running the Customer Service
 
-### Requirements
+### Prerequisites
 
-* JDK 21+
-* Maven 3.8.+
-* Docker Compose: in case you don't have Docker-Compose installed in your machine, install [Rancher Desktop](https://rancherdesktop.io/) and configure `dockerd` as engine (instead of `containerd`), this will include `docker` and `docker-compose` commands in your PATH.
-* Your favorite IDE
+* **JDK 21+**
+* **Maven 3.8+**
+* **Docker & Docker Compose** - If you don't have Docker Compose installed, we recommend [Rancher Desktop](https://rancherdesktop.io/) configured with `dockerd` engine (not `containerd`), which includes both `docker` and `docker-compose` commands.
+* **Your favorite IDE**
 
-### Running Docker and Spring-Boot
+### Quick Start
 
-Use the following commands to run the application or tests:
+Follow these steps to run the complete application:
 
-* Start docker dependencies:
+1. **Start infrastructure services:**
+   ```bash
+   docker-compose up -d
+   ```
 
-```bash
-docker-compose up -d
-```
+2. **Run the Spring Boot application:**
+   ```bash
+   mvn spring-boot:run
+   ```
 
-* Run the application:
+3. **Access the API:**
+   - Open [Swagger UI](http://localhost:8080/swagger-ui/index.html) in your browser
+   - Use **Basic Authentication**: username `admin`, password `password`
 
-```bash
-mvn spring-boot:run
-```
+4. **Test the endpoints:**
+   - Try creating a customer via the POST `/customers` endpoint
+   - Retrieve customers using GET `/customers/search`
 
-* Open [Swagger UI](http://localhost:8080/swagger-ui/index.html) in your browser.
-Use "Basic Authentication" with username `admin` and password `password` to authenticate.
+### What's Running
 
-Happy Coding!! 🚀🚀🚀
+- **PostgreSQL** (port 5432) - Customer data persistence
+- **Kafka** (port 9092) - Domain events messaging
+- **Spring Boot App** (port 8080) - REST API and business logic
+
+Happy Coding! 🚀
