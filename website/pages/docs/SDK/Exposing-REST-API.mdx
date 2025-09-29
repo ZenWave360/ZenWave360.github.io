@@ -4,440 +4,374 @@ title: Exposing a REST API
 slug: /docs/zenwave-sdk/exposing-a-rest-api/
 order: 8
 ---
-import { Image, Quote, QuoteAuthor } from "smooth-doc/components";
+import { CodeGeneration, Image, Quote, QuoteAuthor, RemoteCode } from 'smooth-doc/components'
 import openapiCustomerServiceOutline from './images/openapi-customer-service-outline.png'
 
-# Exposing a REST API for your Service
+# Exposing a REST API for your Domain Services
+Because writing YAML by hand and dealing with boilerplate code is tedious...
 
-While ZDL Models the inside of your application, OpenAPI (whether generated, or manually written) will be the source of truth for your REST API.
+Thanks to ZenWave Domain Language ZDL and ZenWave SDK you can:
 
-You can still document your ZDL Models for:
+- Use [ZDLToOpenAPIPlugin](/zenwave-sdk/plugins/zdl-to-openapi/) to generate complete OpenAPI v3 specifications from your domain models.
+- Use OpenAPI Generator Maven plugin to generate SpringMVC Controller Interfaces and DTOs from OpenAPI.
+- Use [OpenAPIControllersPlugin](/zenwave-sdk/plugins/openapi-controllers/) to generate SpringMVC Controllers (skeletons) implementing OpenAPI Controller Interfaces.
+- Use [SpringWebTestClientPlugin](/zenwave-sdk/plugins/openapi-spring-webtestclient/) to generate Spring WebTestClient Tests for your SpringMVC Controllers.
+- use [OpenAPIKaratePlugin](/zenwave-sdk/plugins/openapi-karate/) to generate KarateDSL API Tests for your REST APIs from your OpenAPI specifications.
 
-- Annotate each service command documenting how it is connected to the REST API.
-- Generate a quite complete draft versions of OpenAPI from these ZDL models annotations.
+## ZenWave Domain Language as Interface Definition Language (IDL) for OpenAPI
 
-## Using ZenWave ZDL as Definition Language for OpenAPI
+Because writing YAML by hand is no fun... You can use ZDL models as Interface Definition Language (IDL) to generate OpenAPI v3 with ZenWave SDK [ZDLToOpenAPIPlugin](/zenwave-sdk/plugins/zdl-to-openapi/).
 
-Annotating each service command to document how is connected to the REST API.
+This approach allows you to:
 
-ZenWave SDK will use the service command name for matching with OpenAPI operationId, but you can always set it explicitly like this: `@get({path: "/somepath", operationId: "someOperationId"})`
+- Define APIs using a compact, developer-friendly syntax
+- Maintain consistency between your domain model and API contracts
+- Consisten style between your different APIs: naming, pagination, status codes, error handling...
+- Reduce manual YAML writing and potential errors
 
-Supported annotations are:
+ZDL has evolved to support defining OpenAPI APIs almost completely, including file uploads and downloads, status codes, and more.
 
-- `@rest("/customers")` marks this service as exposed via REST API and defines the base path for all operations in this service.
-- `@get`, `@post`, `@put`, `@delete`, `@patch` defines the HTTP method for the operation.
-- `@paginated` defines that the operation will return a paginated response.
+> ⚠️ **Remember**: Once generated, the OpenAPI definition becomes the source of truth for your REST API. ZDL serves as a starting point for rapid API design.
 
-So the following definition:
+### Decorating your Services with `@rest`
+
+First step is to decorate your services with `@rest` to indicate that they will be exposed via REST API and define the base path for all operations in this service.
 
 ```zdl
-/**
- * Customer Service annotated for REST and AsyncAPI serves two purposes:
- *   1. Document how each service command will be exposed to the outside world.
- *   2. Generate draft versions of AsyncAPI and OpenAPI from your ZDL models.
- */
 @rest("/customers")
 service CustomerService for (Customer) {
-    @post
-    createCustomer(Customer) Customer
-    @put("/{customerId}")
-    updateCustomer(id, Customer) Customer?
-    @put({ path: "/{customerId}/address/{identifier}", params: {identifier: Long} }) // specify param types
-    updateCustomerAddress(id, AddressInput) Customer?
-    @delete("/{customerId}")
-    deleteCustomer(id)
-    @get("/{customerId}")
-    getCustomer(id) Customer?
-    @paginated
-    @get({path: "/search", params: {search: String}}) // this creates a query param in the OpenAPI
-    listCustomers() Customer[]
-}
-
-@inline
-input AddressInput {
-    identifier String
-    address Address
+    //...
 }
 ```
 
-Will produce the following OpenAPI definition:
+Now you can use `ZDLToOpenAPIPlugin` to generate an OpenAPI definition from your ZDL model:
+
+<RemoteCode
+  summary="ZDLToOpenAPIPlugin in zenwave-scripts.zw"
+  language="zdl" collapsed={false} visibleRange="6,10"
+  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-scripts.zw" />
+
+Remember that this is equivalent to running:
+
+<RemoteCode
+  summary="ZDLToOpenAPIPlugin using JBang CLI"
+  language="zdl" collapsed={true}
+  content={`jbang zw -p ZDLToOpenAPIPlugin \\
+    zdlFile=zenwave-model.zdl \\
+    idType=integer \\
+    idTypeFormat=int64 \\
+    targetFolder=. \\
+    targetFile=src/main/resources/public/apis/openapi.yml`} />
 
 <Image src={openapiCustomerServiceOutline} alt="OpenAPI Customer Service Outline" align={"left"}/>
 
-> ⚠️ REMEMBER: Once generated, OpenAPI definition becomes the source of truth for your REST API.
+### Decorating your Service Methods with `@get`, `@post`, `@put`, `@delete`, `@patch`
 
-### Pagination Flavor(s)
+All `@get`, `@post`, `@put`, `@delete`, `@patch` support the following syntax:
 
-ZDLToOpenAPI supports the following pagination style out of the box:
+- `@get("/somepath/{somePathParam}")`: simpler form, shorthand for `@get({path: "/somepath/{somePathParam}"})`
+- `@get({path: "/somepath", status: 200, params: {search: String}, operationId: "someOperationId"})`:
+  - `path`: the path for this operation, relative to the service base path.
+  - `status`: the default status code for this operation, this is usefull for `@post` operations that return `200` instead of the default `201`.
+  - `params`: a map of parameters and their types, they will match path params o query params if no path param was matched.
+  - `operationId`: the operationId for this operation, by default it will use the service command name.
 
-```zdl
-@rest("/customers")
-service CustomerService for (Customer) {
-    @paginated
-    @get("/search")
-    listCustomers() Customer[]
-}
-```
-becomes ...
+<CodeGeneration
+  text1="When using the `ZDLToOpenAPIPlugin`, the following"
+  sourceTitle="decorated service:" sourceLanguage="zdl" sourceVisibleRange="55,68" sourceCollapsed={false}
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl"
+  text2="would produce this openapi definition:"
+  outputTitle="src/main/resources/public/apis/openapi.yml" outputLanguage="yaml" outputCollapsed={true}
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml"
+/>
 
-```yaml
-paths:
-  /customers/search:
-    get:
-      operationId: listCustomers
-      description: "listCustomers"
-      tags: [Customer]
-      parameters:
-        - $ref: "#/components/parameters/page"
-        - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/sort"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CustomerPaginated"
-components:
-  schemas:
-    CustomerPaginated:
-      allOf:
-      - $ref: "#/components/schemas/Page"
-      - x-business-entity-paginated: "Customer"
-      - properties:
-          content:
-            type: "array"
-            items:
-              $ref: "#/components/schemas/Customer"
+#### Using `@get`
 
-    Page:
-      type: object
-      required:
-        - "content"
-        - "totalElements"
-        - "totalPages"
-        - "size"
-        - "number"
-      properties:
-        number:
-          type: integer
-          minimum: 0
-        numberOfElements:
-          type: integer
-          minimum: 0
-        size:
-          type: integer
-          minimum: 0
-          maximum: 200
-          multipleOf: 25
-        totalElements:
-          type: integer
-        totalPages:
-          type: integer
+As you would expect, `@get` will generate a `GET` operations, with path and query parameters defined in the `path` and `params` properties, with their corresponding data types. It will return an status code `200` by default, but you can change it using the `status` property.
 
-  parameters:
-    page:
-      name: page
-      in: query
-      description: The number of results page
-      schema:
-        type: integer
-        format: int32
-        default: 0
-    limit:
-      name: limit
-      in: query
-      description: The number of results in a single page
-      schema:
-        type: integer
-        format: int32
-        default: 20
-    sort:
-      name: sort
-      in: query
-      description: The number of results page
-      schema:
-        type: array
-        items:
-          type: string
-```
+<CodeGeneration
+  text1="When using the `ZDLToOpenAPIPlugin`, the following"
+  sourceTitle="this service command:" sourceLanguage="zdl" sourceVisibleRange="59,60" sourceCollapsed={false}
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl"
+  text2="would produce this:"
+  outputTitle="src/main/resources/public/apis/openapi.yml" outputLanguage="yaml" outputVisibleRange="45,63" outputCollapsed={true}
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml"
+/>
 
-> Currently, you will need to create a custom implementation of ZDLToOpenAPI to support your own pagination style.
+If the method command has a command payload, it will be expanded as path or query parameters.
 
-We are working on providing different pagination flavors out of the box and providing a way to customize the pagination style without the need to create your own plugin.
+<CodeGeneration
+  text1="When using the `ZDLToOpenAPIPlugin`, the following"
+  sourceTitle="this service command:" sourceLanguage="zdl" sourceVisibleRange="160,161" sourceCollapsed={false}
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/models/surveys.zdl"
+  text2="would produce this:"
+  outputTitle="src/main/resources/public/apis/surveys-public-openapi.yml" outputLanguage="yaml" outputVisibleRange="28,55" outputCollapsed={true}
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/src/main/resources/public/apis/surveys-public-openapi.yml"
+/>
 
-## Generating SpringMVC Controller Interfaces with official OpenAPI Generator
+Notice how path and query parameter data types are inferred:
 
-Use the following configuration to generate SpringMVC Controller Interfaces from OpenAPI with the official [OpenAPI Generator - Spring](https://openapi-generator.tech/docs/generators/spring/):
+- `name` path param is inferred from `SurveyByNameAndPatient.name` field type `String`.
+- `patientId` path param is inferred from `SurveyByNameAndPatient.patientId` field type `Long`.
+- `lang` is added as query parameter because it is not a path parameter.
 
-```xml
-<plugin>
-  <groupId>org.openapitools</groupId>
-  <artifactId>openapi-generator-maven-plugin</artifactId>
-  <version>7.8.0</version>
-  <executions>
-    <execution>
-      <goals>
-        <goal>generate</goal>
-      </goals>
-      <phase>generate-sources</phase>
-      <configuration>
-        <inputSpec>${project.basedir}/src/main/resources/public/apis/openapi.yml</inputSpec>
-        <skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
-        <generatorName>spring</generatorName>
-        <apiPackage>${openApiApiPackage}</apiPackage>
-        <modelPackage>${openApiModelPackage}</modelPackage>
-        <modelNameSuffix>DTO</modelNameSuffix>
-        <addCompileSourceRoot>true</addCompileSourceRoot>
-        <generateSupportingFiles>false</generateSupportingFiles>
-        <typeMappings>
-          <typeMapping>Double=java.math.BigDecimal</typeMapping>
-        </typeMappings>
-        <configOptions>
-          <useSpringBoot3>true</useSpringBoot3>
-          <documentationProvider>none</documentationProvider>
-          <openApiNullable>false</openApiNullable>
-          <useOptional>false</useOptional>
-          <useTags>true</useTags>
-          <interfaceOnly>true</interfaceOnly>
-          <skipDefaultInterface>true</skipDefaultInterface>
-          <delegatePattern>false</delegatePattern>
-        </configOptions>
-      </configuration>
-    </execution>
-  </executions>
-</plugin>
-```
+#### Using `@post` for Creating Resources
 
-These settings are compatible with [OpenAPI: REST Controllers Generator](https://www.zenwave360.io/zenwave-sdk/plugins/openapi-controllers/):
+Posts are used to create new resources. The default status code is `201`, if you need to change it, because you are implementing a search operation for example, you can use the `status` property.
 
-- `<typeMapping>Double=java.math.BigDecimal</typeMapping>`
-- `<useSpringBoot3>true</useSpringBoot3>` (use SpringBoot 3 and jakarta annotations)
-- `<openApiNullable>false</openApiNullable>` (we use java.util.Optional instead)
-- `<useOptional>false</useOptional>` (do not use java.util.Optional for parameters)
-- `<useTags>true</useTags>` (required for grouping the operations in services by tag)
-- `<interfaceOnly>true</interfaceOnly>`
-- `<delegatePattern>false</delegatePattern>`
+<CodeGeneration
+  text1="When using the `ZDLToOpenAPIPlugin`, the following"
+  sourceTitle="this service command:" sourceLanguage="zdl" sourceVisibleRange="57,58" sourceCollapsed={false}
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl"
+  text2="would produce this:"
+  outputTitle="src/main/resources/public/apis/openapi.yml" outputLanguage="yaml" outputVisibleRange="27,44" outputCollapsed={true}
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml"
+/>
 
-## Generating SpringMVC Controller from OpenAPI (skeletons)
+You can also use `@post` to implement search operations, in this case you should use `status: 200` to indicate that the operation returns a list of resources:
 
-You can use ZenWave SDK [OpenAPI: REST Controllers Generator](https://www.zenwave360.io/zenwave-sdk/plugins/openapi-controllers/) to generate SpringMVC Controllers (skeletons) from OpenAPI.
+<CodeGeneration
+  text1="When using the `ZDLToOpenAPIPlugin`, the following"
+  sourceTitle="this service command:" sourceLanguage="zdl" sourceVisibleRange="54,55" sourceCollapsed={false}
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/models/users.zdl"
+  text2="would produce this:"
+  outputTitle="src/main/resources/public/apis/openapi.yml" outputLanguage="yaml" outputVisibleRange="142,164" outputCollapsed={true}
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/src/main/resources/public/apis/users-openapi.yml"
+/>
 
-You can both use IntelliJ Plugin:
+#### Using `@put` for Updating Resources
 
-```zdl
-/**
- * ZenWave Online Food Delivery - Customers Module.
- */
-config {
-    title "ZenWave Online Food Delivery - Customers Module"
-    basePackage "io.zenwave360.example.customers"
-    targetFolder "modules/customers"
-    persistence mongodb
+<CodeGeneration
+  text1="When using the `ZDLToOpenAPIPlugin`, the following"
+  sourceTitle="this service command:" sourceLanguage="zdl" sourceVisibleRange="61,62" sourceCollapsed={false}
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl"
+  text2="would produce this:"
+  outputTitle="src/main/resources/public/apis/openapi.yml" outputLanguage="yaml" outputVisibleRange="64,87" outputCollapsed={true}
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml"
+/>
 
-    // these can be executed directly from ZenWave IntelliJ Plugin
-    plugins {
+#### Using `@delete` for Deleting Resources
 
-        ZDLToOpenAPIPlugin {
-            idType string
-            targetFile "{{targetFolder}}/src/main/resources/apis/openapi.yml"
-        }
+Delete operations would return a `204` status code by default, but you can change it using the `status` property.
 
-        OpenAPIControllersPlugin {
-            apiFile "modules/customers/src/main/resources/apis/openapi.yml" // relative to project root
-            zdlFile "models/customers.zdl" // this file: relative project root
+<CodeGeneration
+  text1="When using the `ZDLToOpenAPIPlugin`, the following"
+  sourceTitle="this service command:" sourceLanguage="zdl" sourceVisibleRange="63,64" sourceCollapsed={false}
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl"
+  text2="would produce this:"
+  outputTitle="src/main/resources/public/apis/openapi.yml" outputLanguage="yaml" outputVisibleRange="88,101" outputCollapsed={true}
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml"
+/>
 
-            // these should match the values of openapi-generator-maven-plugin
-            openApiApiPackage "{{basePackage}}.adapters.web"
-            openApiModelPackage "{{basePackage}}.adapters.web.model"
-            openApiModelNameSuffix DTO
-        }
-    }
-}
-```
+#### Using `@patch` for Partial Updates
 
-Or JBang CLI:
+<CodeGeneration
+  text1="When using the `ZDLToOpenAPIPlugin`, the following"
+  sourceTitle="this service command:" sourceLanguage="zdl" sourceVisibleRange="166,167" sourceCollapsed={false}
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/models/surveys.zdl"
+  text2="would produce this:"
+  outputTitle="src/main/resources/public/apis/surveys-public-openapi.yml" outputLanguage="yaml" outputVisibleRange="93,133" outputCollapsed={true}
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/src/main/resources/public/apis/surveys-public-openapi.yml"
+/>
 
-```bash
-jbang zw -p io.zenwave360.sdk.plugins.OpenAPIControllersPlugin
-    apiFile=src/main/resources/model/openapi.yml \
-    zdlFile=src/main/resources/model/orders-model.jdl \
-    basePackage=io.zenwave360.example \
-    controllersPackage={{basePackage}}.adapters.web \
-    openApiApiPackage=io.zenwave360.example.adapters.web \
-    openApiModelPackage=io.zenwave360.example.adapters.web.model \
-    openApiModelNameSuffix=DTO \
-    targetFolder=.
-```
+<RemoteCode
+  title="#/components/schemas/SurveyAnswersPatch" sourceLanguage="yml" visibleRange="327,329" sourceCollapsed={false}
+  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/src/main/resources/public/apis/surveys-public-openapi.yml" />
 
-Generated Code:
+<CodeGeneration
+  text1="When configuring `schemaMappings` in `openapi-generator-maven-plugin` like this:"
+  sourceTitle="this service command:" sourceLanguage="xml" sourceVisibleRange="394,396" sourceCollapsed={false}
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/pom.xml"
+  text2="will generate a java method with `Map input` as parameter:"
+  outputTitle="src/main/resources/public/apis/surveys-public-openapi.yml" outputLanguage="java" outputVisibleRange="71,73" outputCollapsed={false}
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/src/main/java/io/zenwave360/example/clinicaltool/modules/surveys/web/SurveysApiController.java"
+/>
 
-```
- src/main/java/
-   📦 <basePackage>
-       📦 adapters
-           └─ web (controllersPackage)
-              ├─ 📦 mappers
-              |   └─ CustomerDTOsMapper.java (MapStruct mapper)
-              └─ CustomerApiController (SpringMVC: implements CustomerApi)
- src/test/java/
-   📦 <basePackage>
-       📦 adapters
-           └─ web (controllersPackage)
-              └─ CustomerApiControllerTest (UnitTest using ServicesInMemoryConfig)
-```
+Because `Map input` contains only the properties that where actually send by the client, you can easily implement a partial update.
 
-Given you configured rest annotations in your ZDL model, or customize it like `@get({path: "/somepath", operationId: "someOperationId"})`, this is the implementation you will get out of the box:
 
-```java
-@RestController
-@RequestMapping("/api")
-public class CustomerApiController implements CustomerApi {
+### Returning Paginated Lists with `@paginated`
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+`ZDLToOpenAPIPlugin` supports the following pagination style out of the box when using `@paginated` annotation:
 
-	@Autowired
-	private NativeWebRequest request;
+<CodeGeneration
+  text1="When using the `ZDLToOpenAPIPlugin`, the following"
+  sourceTitle="this `@paginated` service command:" sourceLanguage="zdl" sourceVisibleRange="65,67" sourceCollapsed={false}
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl"
+  text2="would produce this:"
+  outputTitle="src/main/resources/public/apis/openapi.yml" outputLanguage="yaml" outputVisibleRange="112,123" outputCollapsed={true}
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml"
+/>
 
-	private CustomerService customerService;
+With the `CustomerPaginated` schema defined as:
 
-	@Autowired
-	public CustomerApiController setCustomerService(CustomerService customerService) {
-		this.customerService = customerService;
-		return this;
-	}
+<RemoteCode
+  title="#/components/schemas/SurveyAnswersPatch" language="yml" visibleRange="158,166" collapsed={false}
+  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml" />
 
-	private CustomerDTOsMapper mapper = CustomerDTOsMapper.INSTANCE;
+And the following `components` definition:
 
-	@Override
-	public Optional<NativeWebRequest> getRequest() {
-		return Optional.ofNullable(request);
-	}
+<RemoteCode
+  title="#/components/schemas/SurveyAnswersPatch" language="yml" visibleRange="215,264" collapsed={true}
+  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml" />
 
-	@Override
-	public ResponseEntity<CustomerDTO> createCustomer(CustomerDTO reqBody) {
-		var input = mapper.asCustomer(reqBody);
-		var customer = customerService.createCustomer(input);
-		CustomerDTO responseDTO = mapper.asCustomerDTO(customer);
-		return ResponseEntity.status(201).body(responseDTO);
-	}
+### File Uploads
 
-	@Override
-	public ResponseEntity<CustomerPaginatedDTO> listCustomers(Optional<Integer> page, Optional<Integer> limit,
-			Optional<List<String>> sort) {
-		var customerPage = customerService.listCustomers(pageOf(page, limit, sort));
-		var responseDTO = mapper.asCustomerPaginatedDTO(customerPage);
-		return ResponseEntity.status(200).body(responseDTO);
-	}
+`ZDLToOpenAPIPlugin` supports generating OpenAPI definitions for file upload endpoints using the `@fileupload("fieldName")` annotation being `fieldName` the name of the field in the request body that contains the file data.
 
-	@Override
-	public ResponseEntity<CustomerDTO> updateCustomer(String customerId, CustomerDTO reqBody) {
-		var input = mapper.asCustomer(reqBody);
-		var customer = customerService.updateCustomer(customerId, input);
-		if (customer.isPresent()) {
-			CustomerDTO responseDTO = mapper.asCustomerDTO(customer.get());
-			return ResponseEntity.status(200).body(responseDTO);
-		}
-		else {
-			return ResponseEntity.notFound().build();
-		}
-	}
+<CodeGeneration
+  text1="When using the `ZDLToOpenAPIPlugin`, the following"
+  sourceTitle="this `@fileupload` service command:" sourceLanguage="zdl" sourceVisibleRange="40,42" sourceCollapsed={false}
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/models/documents.zdl"
+  text2="would produce this:"
+  outputTitle="src/main/resources/public/apis/openapi.yml" outputLanguage="yaml" outputVisibleRange="88,112" outputCollapsed={true}
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/src/main/resources/public/apis/documents-openapi.yml"
+/>
 
-	@Override
-	public ResponseEntity<Void> deleteCustomer(String customerId) {
-		// TODO: customerService.deleteCustomer(customerId);
-		return ResponseEntity.status(204).build();
-	}
+And the corresponding SpringMVC Controller:
 
-	@Override
-	public ResponseEntity<CustomerDTO> getCustomer(String customerId) {
-		var customer = customerService.getCustomer(customerId);
-		if (customer.isPresent()) {
-			CustomerDTO responseDTO = mapper.asCustomerDTO(customer.get());
-			return ResponseEntity.status(200).body(responseDTO);
-		}
-		else {
-			return ResponseEntity.notFound().build();
-		}
-	}
+<RemoteCode
+  title="DocumentApiController.java#uploadDocument" language="yml" visibleRange="79,106" collapsed={true}
+  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/src/main/java/io/zenwave360/example/clinicaltool/modules/documents/DocumentApiController.java" />
 
-	@Override
-	public ResponseEntity<CustomerDTO> updateCustomerAddress(String customerId, String identifier, AddressDTO reqBody) {
-		var input = mapper.asAddress(reqBody);
-		var customer = customerService.updateCustomerAddress(customerId, identifier, input);
-		if (customer.isPresent()) {
-			CustomerDTO responseDTO = mapper.asCustomerDTO(customer.get());
-			return ResponseEntity.status(200).body(responseDTO);
-		}
-		else {
-			return ResponseEntity.notFound().build();
-		}
-	}
 
-	protected Pageable pageOf(Optional<Integer> page, Optional<Integer> limit, Optional<List<String>> sort) {
-		return PageRequest.of(page.orElse(0), limit.orElse(10));
-	}
 
-}
+### File Downloads
+
+`ZDLToOpenAPIPlugin` supports generating OpenAPI definitions for file upload endpoints using the `@filedownload("javaFieldName")` annotation, being `javaFieldName` the name of the field in java model that contains the binary data to be downloaded.
+
+<CodeGeneration
+  text1="When using the `ZDLToOpenAPIPlugin`, the following"
+  sourceTitle="this `@filedownload` service command:" sourceLanguage="zdl" sourceVisibleRange="36,38" sourceCollapsed={false}
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/models/documents.zdl"
+  text2="would produce this:"
+  outputTitle="src/main/resources/public/apis/openapi.yml" outputLanguage="yaml" outputVisibleRange="45,73" outputCollapsed={true}
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/src/main/resources/public/apis/documents-openapi.yml"
+/>
+
+And the corresponding SpringMVC Controller:
+
+<RemoteCode
+  title="DocumentApiController.java#uploadDocument" language="java" visibleRange="60,70" collapsed={true}
+  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/src/main/java/io/zenwave360/example/clinicaltool/modules/documents/DocumentApiController.java" />
+
+
+
+## OpenAPI Generator Maven Plugin
+
+<RemoteCode
+  title="openapi-generator-maven-plugin in pom.xml" language="xml" visibleRange="326,362" collapsed={true}
+  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/pom.xml" />
+
+Important configuration properties for compatibility with `OpenAPIControllersPlugin`:
+
+- `<useSpringBoot3>true</useSpringBoot3>` use SpringBoot 3 and jakarta annotations
+- `<openApiNullable>false</openApiNullable>` we use java.util.Optional instead
+- `<useOptional>false</useOptional>` do not use java.util.Optional for parameters
+- `<useTags>true</useTags>` required for grouping the operations in services by tag
+- `<sortParamsByRequiredFlag>false</sortParamsByRequiredFlag>` required for matching path params in generated code
+
+
+### Generating SpringMVC Controller Interfaces and DTOs from OpenAPI yaml
+
+Previous `openapi-generator-maven-plugin` will generate as part of the maven build the following java code:
+
+- target/generated-sources/openapi/src/main/java/io/zenwave360/example/adapters/web/CustomerApi.java
+- target/generated-sources/openapi/src/main/java/io/zenwave360/example/adapters/web/model/CustomerDTO.java
+- target/generated-sources/openapi/src/main/java/io/zenwave360/example/adapters/web/model/AddressDTO.java
+- target/generated-sources/openapi/src/main/java/io/zenwave360/example/adapters/web/model/PaymentMethodDTO.java
+- target/generated-sources/openapi/src/main/java/io/zenwave360/example/adapters/web/model/PaymentMethodTypeDTO.java
+- target/generated-sources/openapi/src/main/java/io/zenwave360/example/adapters/web/model/CustomerSearchCriteriaDTO.java
+- target/generated-sources/openapi/src/main/java/io/zenwave360/example/adapters/web/model/CustomerPaginatedDTO.java
+- target/generated-sources/openapi/src/main/java/io/zenwave360/example/adapters/web/model/PageDTO.java
+
+These classes are part of your project compilee sources and will be compiled and packaged as part of your application. In the next section we will be implementing `CustomerApi.java` generated interface.
+
+Do not edit this code by hand, it will be overwritten by the maven build. You will need to edit `openapi.yml` definition instead and then run maven build again, for instance:
+
+```shell
+mvn clean test-compile
 ```
 
-And this for the Unit Test:
+### Generating SpringMVC Controller Implementations from OpenAPI yaml
 
-```java
-public class CustomerApiControllerTest {
+While `openapi-generator-maven-plugin` can generate SpringMVC annotated Controller Interfaces and their DTOs, you will need to implement the interface methods yourself.
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+Thankfully, ZenWave SDK provides a plugin to generate SpringMVC Controller Implementations from OpenAPI yaml.
 
-	ServicesInMemoryConfig context = new ServicesInMemoryConfig();
+With [OpenAPIControllersPlugin](zenwave-sdk/plugins/openapi-controllers/) you can generate SpringMVC Controller Implementations from OpenAPI yaml.
 
-	CustomerApiController controller = new CustomerApiController().setCustomerService(context.customerService());
+<CodeGeneration
+  text1="When using the `OpenAPIControllersPlugin`, the following"
+  sourceTitle="this zdl script:" sourceLanguage="zdl" sourceVisibleRange="27,29" sourceCollapsed={false}
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-scripts.zw"
+  text2="would produce this:"
+  outputTitle="CustomerApiController.java" outputLanguage="java" outputVisibleRange="35,41" outputCollapsed={false}
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/java/io/zenwave360/example/adapters/web/CustomerApiController.java"
+/>
 
-	@Test
-	public void createCustomerTest() {
-		CustomerDTO reqBody = null;
-		var response = controller.createCustomer(reqBody);
-		Assertions.assertEquals(201, response.getStatusCode().value());
-	}
+And Unit Tests for your Controller:
 
-	@Test
-	public void listCustomersTest() {
-		Optional<Integer> page = null;
-		Optional<Integer> limit = null;
-		Optional<List<String>> sort = null;
-		var response = controller.listCustomers(page, limit, sort);
-		Assertions.assertEquals(200, response.getStatusCode().value());
-	}
+<RemoteCode
+  title="CustomerApiControllerTest.java" language="java" visibleRange="14,37" collapsed={true}
+  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/java/io/zenwave360/example/adapters/web/CustomerApiControllerTest.java" />
 
-	@Test
-	public void updateCustomerTest() {
-		String customerId = null;
-		CustomerDTO reqBody = null;
-		var response = controller.updateCustomer(customerId, reqBody);
-		Assertions.assertEquals(200, response.getStatusCode().value());
-	}
+## Testing REST APIs
 
-	@Test
-	public void deleteCustomerTest() {
-		String customerId = null;
-		var response = controller.deleteCustomer(customerId);
-		Assertions.assertEquals(204, response.getStatusCode().value());
-	}
+You can also generate API Tests for your REST APIs from your OpenAPI specifications.
 
-	@Test
-	public void getCustomerTest() {
-		String customerId = null;
-		var response = controller.getCustomer(customerId);
-		Assertions.assertEquals(200, response.getStatusCode().value());
-	}
+### Generating Spring WebTestClient Tests from OpenAPI yaml
 
-	@Test
-	public void updateCustomerAddressTest() {
-		String customerId = null;
-		String identifier = null;
-		AddressDTO reqBody = null;
-		var response = controller.updateCustomerAddress(customerId, identifier, reqBody);
-		Assertions.assertEquals(200, response.getStatusCode().value());
-	}
+With`WebTestClient` you can test your REST API via HTTP semantics while in the same JVM process as your application.
 
-}
-```
+ZenWave`SpringWebTestClientPlugin` can generate both single endpoint tests as well as business flows spanning multiple endpoints:
+
+<CodeGeneration
+  text1="When using the `SpringWebTestClientPlugin`, the following"
+  sourceTitle="zenwave-scripts.zw" sourceLanguage="zdl" sourceVisibleRange="31,33" sourceCollapsed={false}
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-scripts.zw"
+  text2="would produce this API test:"
+  outputTitle="CustomerApiIntegrationTest" outputLanguage="java" outputCollapsed={true}
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/java/io/zenwave360/example/adapters/web/CustomerApiControllerTest.java"
+/>
+
+<CodeGeneration
+  text1="When using the `SpringWebTestClientPlugin`, the following"
+  sourceTitle="zenwave-scripts.zw" sourceLanguage="zdl" sourceVisibleRange="35,44" sourceCollapsed={false}
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-scripts.zw"
+  text2="would produce this Business Flow API test:"
+  outputTitle="CustomerApiIntegrationTest" outputLanguage="java" outputCollapsed={true}
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/java/io/zenwave360/example/adapters/web/CreateUpdateDeleteCustomerIntegrationTest.java"
+/>
+
+You can control whether these are Unit or Integration Tests with `@SpringBootTest` in
+
+<RemoteCode
+  title="BaseWebTestClientTest.java"
+  language="java" collapsed={true} visibleRange="14,27"
+  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/java/io/zenwave360/example/adapters/web/BaseWebTestClientTest.java" />
+
+
+As always, it's your responsibility as the developer to provide test data and parameters that match the initial state, whether you're using a containerized database or an in-memory implementation.
+
+### Generating KarateDSL Tests from OpenAPI yaml
+
+You can also generate KarateDSL Tests from OpenAPI yaml. Both single endpoint tests as well as business flows spanning multiple endpoints.
+
+<CodeGeneration
+  text1="When using the `OpenAPIKaratePlugin`, the following"
+  sourceTitle="zenwave-scripts.zw" sourceLanguage="zdl" sourceVisibleRange="24,44" sourceCollapsed={false}
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-scripts.zw"
+  text2="would produce this API test:"
+  outputTitle="CustomerApi.feature KarateDSL API Test" outputLanguage="cucumber" outputCollapsed={true}
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/resources/io/zenwave360/example/adapters/web/CustomerApi.feature"
+/>
+
+<CodeGeneration
+  text1="When using the `OpenAPIKaratePlugin`, the following"
+  sourceTitle="zenwave-scripts.zw" sourceLanguage="zdl" sourceVisibleRange="46,51" sourceCollapsed={false}
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-scripts.zw"
+  text2="would produce this Business Flow API test:"
+  outputTitle="CreateUpdateDeleteCustomerKarateTest.feature KarateDSL Business Flow Test" outputLanguage="cucumber" outputCollapsed={true}
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/resources/io/zenwave360/example/adapters/web/CreateUpdateDeleteCustomerKarateTest.feature"
+/>
