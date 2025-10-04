@@ -8,15 +8,11 @@ import { CodeGeneration, Image, Quote, QuoteAuthor, RemoteCode } from 'smooth-do
 import openapiCustomerServiceOutline from './images/openapi-customer-service-outline.png'
 
 # Exposing a REST API for your Domain Services
-Because writing YAML by hand and dealing with boilerplate code is tedious...
+Because writing YAML and dealing with boilerplate code is no fun...
 
-Thanks to ZenWave Domain Language ZDL and ZenWave SDK you can:
+In the following sections, we'll explore how to use ZenWave Domain Language (ZDL) as an Interface Definition Language (IDL) for OpenAPI, leveraging ZenWave SDK to generate complete OpenAPI v3 specifications from your domain models.
 
-- Use [ZDLToOpenAPIPlugin](/zenwave-sdk/plugins/zdl-to-openapi/) to generate complete OpenAPI v3 specifications from your domain models.
-- Use OpenAPI Generator Maven plugin to generate SpringMVC Controller Interfaces and DTOs from OpenAPI.
-- Use [OpenAPIControllersPlugin](/zenwave-sdk/plugins/openapi-controllers/) to generate SpringMVC Controllers (skeletons) implementing OpenAPI Controller Interfaces.
-- Use [SpringWebTestClientPlugin](/zenwave-sdk/plugins/openapi-spring-webtestclient/) to generate Spring WebTestClient Tests for your SpringMVC Controllers.
-- use [OpenAPIKaratePlugin](/zenwave-sdk/plugins/openapi-karate/) to generate KarateDSL API Tests for your REST APIs from your OpenAPI specifications.
+You can then use these generated OpenAPI definitions to build various aspects of your application using [ZenWave API-First tooling](/API-First/OpenAPI/).
 
 ## ZenWave Domain Language as Interface Definition Language (IDL) for OpenAPI
 
@@ -257,121 +253,3 @@ And the corresponding SpringMVC Controller:
 
 
 
-## OpenAPI Generator Maven Plugin
-
-<RemoteCode
-  title="openapi-generator-maven-plugin in pom.xml" language="xml" visibleRange="326,362" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/pom.xml" />
-
-Important configuration properties for compatibility with `OpenAPIControllersPlugin`:
-
-- `<useSpringBoot3>true</useSpringBoot3>` use SpringBoot 3 and jakarta annotations
-- `<openApiNullable>false</openApiNullable>` we use java.util.Optional instead
-- `<useOptional>false</useOptional>` do not use java.util.Optional for parameters
-- `<useTags>true</useTags>` required for grouping the operations in services by tag
-- `<sortParamsByRequiredFlag>false</sortParamsByRequiredFlag>` required for matching path params in generated code
-
-
-### Generating SpringMVC Controller Interfaces and DTOs from OpenAPI yaml
-
-Previous `openapi-generator-maven-plugin` will generate as part of the maven build the following java code:
-
-- target/generated-sources/openapi/src/main/java/io/zenwave360/example/adapters/web/CustomerApi.java
-- target/generated-sources/openapi/src/main/java/io/zenwave360/example/adapters/web/model/CustomerDTO.java
-- target/generated-sources/openapi/src/main/java/io/zenwave360/example/adapters/web/model/AddressDTO.java
-- target/generated-sources/openapi/src/main/java/io/zenwave360/example/adapters/web/model/PaymentMethodDTO.java
-- target/generated-sources/openapi/src/main/java/io/zenwave360/example/adapters/web/model/PaymentMethodTypeDTO.java
-- target/generated-sources/openapi/src/main/java/io/zenwave360/example/adapters/web/model/CustomerSearchCriteriaDTO.java
-- target/generated-sources/openapi/src/main/java/io/zenwave360/example/adapters/web/model/CustomerPaginatedDTO.java
-- target/generated-sources/openapi/src/main/java/io/zenwave360/example/adapters/web/model/PageDTO.java
-
-These classes are part of your project compilee sources and will be compiled and packaged as part of your application. In the next section we will be implementing `CustomerApi.java` generated interface.
-
-Do not edit this code by hand, it will be overwritten by the maven build. You will need to edit `openapi.yml` definition instead and then run maven build again, for instance:
-
-```shell
-mvn clean test-compile
-```
-
-### Generating SpringMVC Controller Implementations from OpenAPI yaml
-
-While `openapi-generator-maven-plugin` can generate SpringMVC annotated Controller Interfaces and their DTOs, you will need to implement the interface methods yourself.
-
-Thankfully, ZenWave SDK provides a plugin to generate SpringMVC Controller Implementations from OpenAPI yaml.
-
-With [OpenAPIControllersPlugin](zenwave-sdk/plugins/openapi-controllers/) you can generate SpringMVC Controller Implementations from OpenAPI yaml.
-
-<CodeGeneration
-  text1="When using the `OpenAPIControllersPlugin`, the following"
-  sourceTitle="this zdl script:" sourceLanguage="zdl" sourceVisibleRange="27,29" sourceCollapsed={false}
-  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-scripts.zw"
-  text2="would produce this:"
-  outputTitle="CustomerApiController.java" outputLanguage="java" outputVisibleRange="35,129" outputCollapsed={false}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/java/io/zenwave360/example/adapters/web/CustomerApiController.java"
-/>
-
-And Unit Tests for your Controller:
-
-<RemoteCode
-  title="CustomerApiControllerTest.java (excerpt)" language="java" visibleRange="14,37" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/java/io/zenwave360/example/adapters/web/CustomerApiControllerTest.java" />
-
-## Testing REST APIs
-
-You can also generate API Tests for your REST APIs from your OpenAPI specifications.
-
-### Generating Spring WebTestClient Tests from OpenAPI yaml
-
-With`WebTestClient` you can test your REST API via HTTP semantics while in the same JVM process as your application.
-
-ZenWave`SpringWebTestClientPlugin` can generate both single endpoint tests as well as business flows spanning multiple endpoints:
-
-<CodeGeneration
-  text1="When using the `SpringWebTestClientPlugin`, the following"
-  sourceTitle="zenwave-scripts.zw" sourceLanguage="zdl" sourceVisibleRange="31,33" sourceCollapsed={false}
-  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-scripts.zw"
-  text2="would produce this API test:"
-  outputTitle="CustomerApiIntegrationTest.java (excerpt)" outputLanguage="java" outputVisibleRange="19,62" outputCollapsed={false}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/java/io/zenwave360/example/adapters/web/CustomerApiIntegrationTest.java"
-/>
-
-<CodeGeneration
-  text1="When using the `SpringWebTestClientPlugin`, the following"
-  sourceTitle="zenwave-scripts.zw" sourceLanguage="zdl" sourceVisibleRange="35,40" sourceCollapsed={false}
-  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-scripts.zw"
-  text2="would produce this Business Flow API test:"
-  outputTitle="CustomerApiIntegrationTest" outputLanguage="java" outputCollapsed={true}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/java/io/zenwave360/example/adapters/web/CreateUpdateDeleteCustomerIntegrationTest.java"
-/>
-
-You can control whether these are Unit or Integration Tests with `@SpringBootTest` in
-
-<RemoteCode
-  title="BaseWebTestClientTest.java"
-  language="java" collapsed={true} visibleRange="14,27"
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/java/io/zenwave360/example/adapters/web/BaseWebTestClientTest.java" />
-
-
-As always, it's your responsibility as the developer to provide test data and parameters that match the initial state, whether you're using a containerized database or an in-memory implementation.
-
-### Generating KarateDSL Tests from OpenAPI yaml
-
-You can also generate KarateDSL Tests from OpenAPI yaml. Both single endpoint tests as well as business flows spanning multiple endpoints.
-
-<CodeGeneration
-  text1="When using the `OpenAPIKaratePlugin`, the following"
-  sourceTitle="zenwave-scripts.zw" sourceLanguage="zdl" sourceVisibleRange="42,44" sourceCollapsed={false}
-  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-scripts.zw"
-  text2="would produce this API test:"
-  outputTitle="CustomerApi.feature KarateDSL API Test" outputLanguage="gherkin" outputCollapsed={false}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/resources/io/zenwave360/example/adapters/web/CustomerApi.feature"
-/>
-
-<CodeGeneration
-  text1="When using the `OpenAPIKaratePlugin`, the following"
-  sourceTitle="zenwave-scripts.zw" sourceLanguage="zdl" sourceVisibleRange="46,51" sourceCollapsed={false}
-  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-scripts.zw"
-  text2="would produce this Business Flow API test:"
-  outputTitle="CreateUpdateDeleteCustomerKarateTest.feature KarateDSL Business Flow Test" outputLanguage="gherkin" outputCollapsed={false}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/resources/io/zenwave360/example/adapters/web/CreateUpdateDeleteCustomerKarateTest.feature"
-/>
