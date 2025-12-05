@@ -564,7 +564,7 @@ const onCreateWebpackConfig = ({ stage, rules, loaders, plugins, actions }) => {
     module: {
       rules: [
         {
-          test: /\.mdx$/,
+          test: /\.mdx?$/,
           use: require.resolve('@mdx-js/loader'),
         },
       ],

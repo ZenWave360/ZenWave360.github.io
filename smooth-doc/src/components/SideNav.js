@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useStaticQuery, graphql, Link, withPrefix } from 'gatsby'
 import styled from '@xstyled/styled-components'
 // eslint-disable-next-line import/no-unresolved
@@ -63,7 +63,7 @@ const groupNodes = (nodes) =>
   }, [])
 
 const Nav = styled.nav`
-  padding: 4 3 5;
+  padding: 0 3 2;
 `
 
 const NavGroup = styled.div`
@@ -75,7 +75,23 @@ const NavGroupTitle = styled.h4`
   font-weight: 500;
   color: on-background-light;
   text-transform: uppercase;
-  margin: 0 0 3 0;
+  margin: 0 0 1 0;
+    
+  // CollapseIcon
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  
+  &:hover {
+    color: on-background;
+  }
+`
+
+const CollapseIcon = styled.span`
+  font-size: 12;
+  transition: transform 0.2s ease;
+  transform: ${props => props.isExpanded ? 'rotate(90deg)' : 'rotate(0deg)'};
 `
 
 const NavGroupMenu = styled.ul`
@@ -83,6 +99,9 @@ const NavGroupMenu = styled.ul`
   padding: 0;
   border-left: 1;
   border-left-color: layout-border;
+  max-height: ${props => props.isExpanded ? '1000px' : '0'};
+  overflow: ${props => props.isExpanded ? 'visible' : 'hidden'};
+  transition: max-height 0.1s ease;
 `
 
 const NavGroupMenuItem = styled.li`
@@ -154,20 +173,51 @@ export function useSideNavPrevNext({ navGroups }) {
 }
 
 export function SideNav({ navGroups }) {
+  const [expandedSections, setExpandedSections] = useState(() => {
+    // Initialize sections: collapsible sections (>3 items) start expanded
+    const initial = {}
+    navGroups.forEach((group, index) => {
+      initial[index] = group.nodes.length > 3 // Only sections with >3 items are collapsible and start expanded
+    })
+    return initial
+  })
+
+  const toggleSection = (index) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [index]: !prev[index]
+    }))
+  }
+
   return (
     <Nav>
-      {navGroups.map((navGroup, index) => (
-        <NavGroup key={index}>
-          <NavGroupTitle>{navGroup.name}</NavGroupTitle>
-          <NavGroupMenu>
-            {navGroup.nodes.map((page) => (
-              <NavGroupMenuItem key={page.id}>
-                <Link to={page.fields.slug}>{page.fields.title}</Link>
-              </NavGroupMenuItem>
-            ))}
-          </NavGroupMenu>
-        </NavGroup>
-      ))}
+      {navGroups.map((navGroup, index) => {
+        const isCollapsible = navGroup.nodes.length > 3
+        const isExpanded = expandedSections[index]
+
+        return (
+          <NavGroup key={index}>
+            <NavGroupTitle 
+              onClick={isCollapsible ? () => toggleSection(index) : undefined}
+              style={{ cursor: isCollapsible ? 'pointer' : 'default' }}
+            >
+              {navGroup.name}
+              {isCollapsible && (
+                <CollapseIcon isExpanded={isExpanded}>
+                  ▶
+                </CollapseIcon>
+              )}
+            </NavGroupTitle>
+            <NavGroupMenu isExpanded={isCollapsible ? isExpanded : true}>
+              {navGroup.nodes.map((page) => (
+                <NavGroupMenuItem key={page.id}>
+                  <Link to={page.fields.slug}>{page.fields.title}</Link>
+                </NavGroupMenuItem>
+              ))}
+            </NavGroupMenu>
+          </NavGroup>
+        )
+      })}
     </Nav>
   )
 }
