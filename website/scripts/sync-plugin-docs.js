@@ -51,6 +51,10 @@ async function syncPluginDocs() {
   
   for (const filePath of pluginFiles) {
     try {
+      if (filePath.endsWith('00-index.mdx')) {
+        console.log(`Skipping ${filePath}`);
+        continue;
+      }
       await syncSinglePlugin(filePath);
     } catch (error) {
       console.error(`❌ Failed to sync ${filePath}:`, error.message);

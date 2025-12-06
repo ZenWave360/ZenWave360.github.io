@@ -10,9 +10,13 @@ order: 1
 [![Maven Central](https://img.shields.io/maven-central/v/io.zenwave360.sdk/zenwave-sdk.svg?label=Maven%20Central&logo=apachemaven)](https://search.maven.org/artifact/io.zenwave360.sdk/zenwave-sdk)
 [![GitHub](https://img.shields.io/github/license/ZenWave360/zenwave-sdk)](https://github.com/ZenWave360/zenwave-sdk/blob/main/LICENSE)
 
-![AsyncAPI and Spring Cloud Streams 3](https://raw.githubusercontent.com/ZenWave360/zenwave-sdk/refs/heads/main/docs/ZenWave360-AsyncAPI-SpringCloudStreams.excalidraw.svg)
+![ZenWave AsyncAPI Generator](https://raw.githubusercontent.com/ZenWave360/zenwave-sdk/refs/heads/main/docs/ZenWave360-AsyncAPI-SpringCloudStreams.excalidraw.svg)
 
-The ZenWave AsyncAPI Generator solves a long-standing issue in event-driven Java applications: keeping message models and channel contracts fully aligned with their AsyncAPI specification. It provides build-time read-only code generation from AsyncAPI files sourced from their canonical locations: local files, classpath resources, or authenticated remote URLs.
+The ZenWave AsyncAPI Generator solves a long-standing issue in event-driven Java applications: 
+
+👉 keeping message models and channel contracts fully aligned with their AsyncAPI specification. 
+
+It provides build-time read-only code generation from AsyncAPI files sourced from their canonical locations: local files, classpath resources, or authenticated remote URLs.
 
 This approach eliminates API drift by enforcing the AsyncAPI file as the single source of truth for message schemas, channel definitions, and producer or consumer interfaces.
 
@@ -25,7 +29,6 @@ You just need to focus on implementing your business logic, and configuring eith
 A complete working example is available in the zenwave-playground repository: [asyncapi-shopping-cart](https://github.com/ZenWave360/zenwave-playground/blob/main/examples/asyncapi-shopping-cart/README.md).
 
 
-
 * [AsyncAPI Generator for Java / Spring-Boot](#asyncapi-generator-for-java--spring-boot)
     * [Features](#features)
     * [Quick Configuration](#quick-configuration)
@@ -36,7 +39,6 @@ A complete working example is available in the zenwave-playground repository: [a
     * [Gradle Usage](#gradle-usage)
     * [Configuration Options](#configuration-options)
     * [Getting Help](#getting-help)
-
 
 ## Features
 
@@ -218,12 +220,7 @@ tasks.register<dev.jbang.gradle.tasks.JBangTask>("generateAsyncApiProvider") {
         "--deps=" +
             "org.slf4j:slf4j-simple:1.7.36," +
             "io.zenwave360.sdk.plugins:asyncapi-generator:RELEASE," +
-            "org.apache.avro:avro-compiler:1.11.1",
-        "--java-options \"--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED\"",
-        "--java-options \"--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED\"",
-        "--java-options \"--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED\"",
-        "--java-options \"--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED\"",
-        "--java-options \"--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED\""
+            "org.apache.avro:avro-compiler:1.11.1"
     ))
     args.set(listOf(
         "-p", "AsyncAPIGenerator",

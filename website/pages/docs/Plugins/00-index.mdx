@@ -10,11 +10,17 @@ hide: true
 
 ZenWave SDK provides a collection of plugins to generate code from your domain models and API specifications.
 
+ZenWave SDK takes an end-to-end approach for Spring-Boot development, from capturing the **Ubiquitous Language** using a lightweight Domain-Specific Language (DSL), the [ZenWave Domain Language](/docs/event-driven-design/zenwave-domain-language/), to turning it into a maintainable Java or Kotlin Spring Boot project following modern enterprise practices: API-First development with OpenAPI and AsyncAPI, Spring Data for persistence, Spring Cloud Stream or Spring Kafka for messaging, configuration only Transactional Outbox pattern supported by Spring Modulith...
+
+With multiple options for structuring your code: Hexagonal, Classic Layered, or a Simple Domain packaging if you are building a Modular Monolith, or your microservice domain is very simple.
+
+If you want to start building a complete Spring Boot application start from [ZenWave SDK - Backend Application](/docs/zenwave-sdk/backend-application/) section or [From a DSL to a Complete Spring Boot Kotlin Project](https://www.zenwave360.io/posts/DDD-In-Practice_From_DSL_to_Complete_Spring-Boot_Kotlin/) blog post if you want to build a Kotlin project.
+
 ## Available Plugins
 
 - [AsyncAPI Generator for Java](/zenwave-sdk/plugins/asyncapi-generator/)
 - [AsyncAPI JsonSchema2Pojo](/zenwave-sdk/plugins/asyncapi-jsonschema2pojo/)
-- [Avro Schema Compiler](/zenwave-sdk/plugins/avro-schema-compiler/)
+- [(A Better) Avro Schema Generator](/zenwave-sdk/plugins/avro-schema-compiler/)
 - [Backend Application Default](/zenwave-sdk/plugins/backend-application-default/)
 - [Kotlin Backend Application](/zenwave-sdk/plugins/customizations/kotlin-backend-application/)
 - [OpenAPI Controllers](/zenwave-sdk/plugins/openapi-controllers/)
@@ -22,8 +28,14 @@ ZenWave SDK provides a collection of plugins to generate code from your domain m
 - [OpenAPI Karate](/zenwave-sdk/plugins/openapi-karate/)
 - [ZDL to OpenAPI](/zenwave-sdk/plugins/zdl-to-openapi/)
 - [ZDL to AsyncAPI](/zenwave-sdk/plugins/zdl-to-asyncapi/)
-- [Maven & Gradle Support](/zenwave-sdk/plugins/maven-plugin/)
+- [Maven & Gradle Support](/zenwave-sdk/zenwave-sdk-maven-plugin/)
 
 *Browse the individual plugin documentation pages for detailed configuration options and examples.*
+
+## Legacy Plugins
+
+- [AsyncAPI Spring Cloud Streams 3](/zenwave-sdk/plugins/asyncapi-spring-cloud-streams3/)
+- [JDL to AsyncAPI](https://github.com/ZenWave360/zenwave-sdk/tree/main/plugins/jdl-to-asyncapi)
+- [Java to JDL](https://github.com/ZenWave360/zenwave-sdk/tree/main/plugins/java-to-jdl)
 
 
