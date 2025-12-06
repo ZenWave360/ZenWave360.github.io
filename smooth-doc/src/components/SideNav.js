@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useStaticQuery, graphql, Link, withPrefix } from 'gatsby'
 import styled from '@xstyled/styled-components'
 // eslint-disable-next-line import/no-unresolved
@@ -16,6 +16,9 @@ const SideNavQuery = graphql`
             section
             order
             slug
+          }
+          frontmatter {
+            hide
           }
         }
       }
@@ -63,7 +66,7 @@ const groupNodes = (nodes) =>
   }, [])
 
 const Nav = styled.nav`
-  padding: 0 3 2;
+  padding: 0 3 0;
 `
 
 const NavGroup = styled.div`
@@ -146,7 +149,12 @@ const sortGroupsWithConfig = (section) => (a, b) => {
 export function useSideNavState() {
   const data = useStaticQuery(SideNavQuery)
   return React.useMemo(() => {
-    const navGroups = groupNodes(data.allMdx.edges.map((edge) => edge.node))
+    // Filter out pages with hide: true in frontmatter
+    const visibleNodes = data.allMdx.edges
+      .map((edge) => edge.node)
+      .filter((node) => !node.frontmatter?.hide)
+    
+    const navGroups = groupNodes(visibleNodes)
     navGroups.sort(sortGroupsWithConfig(data.site.siteMetadata.sections))
 
     // Filter out specific sections that should not appear in sidebar
@@ -173,32 +181,61 @@ export function useSideNavPrevNext({ navGroups }) {
 }
 
 export function SideNav({ navGroups }) {
+  const { pathname } = useLocation()
+
   const [expandedSections, setExpandedSections] = useState(() => {
     // Initialize sections: collapsible sections (>3 items) start expanded
     const initial = {}
-    navGroups.forEach((group, index) => {
-      initial[index] = group.nodes.length > 3 // Only sections with >3 items are collapsible and start expanded
+    navGroups.forEach((group) => {
+      const isZenWaveSDK = group.nodes.some(node => node.fields.slug.startsWith('/docs/zenwave-sdk/'))
+      const isSDKPlugins = group.nodes.some(node => node.fields.slug.startsWith('/zenwave-sdk/plugins'))
+
+      if (isZenWaveSDK) {
+        initial[group.name] = true // ZenWave SDK starts expanded
+      } else if (isSDKPlugins) {
+        initial[group.name] = false // SDK Plugins starts collapsed
+      } else {
+        initial[group.name] = group.nodes.length > 3 // Other sections follow original logic
+      }
     })
     return initial
   })
 
-  const toggleSection = (index) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [index]: !prev[index]
-    }))
+  // Update expanded sections when pathname changes
+  useEffect(() => {
+    setExpandedSections(prev => {
+      // console.log(`Pathname changed to: ${pathname}`, prev)
+      const newState = { ...prev }
+      if(pathname.startsWith('/zenwave-sdk/')) {
+        newState['SDK Plugins'] = true
+      }
+      if(pathname.startsWith('/docs/zenwave-sdk/')) {
+        newState['ZenWave SDK'] = true
+      }
+      return newState
+    })
+  }, [pathname, navGroups]) // Add upMd to dependencies
+
+  const toggleSection = (groupName) => {
+    const currentGroup = navGroups.find(group => group.name === groupName)
+
+    setExpandedSections(prev => {
+      const newState = { ...prev }
+      newState[groupName] = !prev[groupName]
+      return newState
+    })
   }
 
   return (
     <Nav>
-      {navGroups.map((navGroup, index) => {
+      {navGroups.map((navGroup) => {
         const isCollapsible = navGroup.nodes.length > 3
-        const isExpanded = expandedSections[index]
+        const isExpanded = expandedSections[navGroup.name]
 
         return (
-          <NavGroup key={index}>
+          <NavGroup key={navGroup.name}>
             <NavGroupTitle 
-              onClick={isCollapsible ? () => toggleSection(index) : undefined}
+              onClick={isCollapsible ? () => toggleSection(navGroup.name) : undefined}
               style={{ cursor: isCollapsible ? 'pointer' : 'default' }}
             >
               {navGroup.name}

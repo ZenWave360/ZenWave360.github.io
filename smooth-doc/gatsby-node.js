@@ -320,6 +320,12 @@ async function onCreateMdxNode({ node, getNode, actions, createNodeId }, options
     value: node.frontmatter.redirect || '',
   })
 
+  createNodeField({
+    name: 'hide',
+    node,
+    value: node.frontmatter.hide || false,
+  })
+
   function getOrderField() {
     if (!Number.isNaN(Number(node.frontmatter.order))) {
       return node.frontmatter.order
