@@ -29,13 +29,13 @@ The following examples are based on [Customer Service JPA Example Project](/docs
 
 <RemoteCode
   title="OpenAPI definition for Customer Service JPA Example" language="yaml" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml" />
 
 This is how you can configure `openapi-generator-maven-plugin` in your `pom.xml` to make it compatible with `OpenAPIControllersPlugin`:
 
 <RemoteCode
-  title="openapi-generator-maven-plugin in pom.xml" language="xml" visibleRange="326,362" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/pom.xml" />
+  title="openapi-generator-maven-plugin in pom.xml" language="xml" visibleRange="383,419" collapsed={true}
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/pom.xml" />
 
 Important configuration properties for compatibility with `OpenAPIControllersPlugin`:
 
@@ -78,17 +78,17 @@ With [OpenAPIControllersPlugin](zenwave-sdk/plugins/openapi-controllers/) you ca
 <CodeGeneration
   text1="When using the `OpenAPIControllersPlugin`, the following"
   sourceTitle="this zdl script:" sourceLanguage="zdl" sourceVisibleRange="27,29" sourceCollapsed={false}
-  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-scripts.zw"
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/zenwave-scripts.zw"
   text2="would produce this:"
-  outputTitle="CustomerApiController.java" outputLanguage="java" outputVisibleRange="35,129" outputCollapsed={false}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/java/io/zenwave360/example/adapters/web/CustomerApiController.java"
+  outputTitle="CustomerApiController.java" outputLanguage="java" outputVisibleRange="24,117" outputCollapsed={false}
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/src/main/java/io/zenwave360/example/adapters/web/CustomerApiController.java"
 />
 
 And Unit Tests for your Controller:
 
 <RemoteCode
-  title="CustomerApiControllerTest.java (excerpt)" language="java" visibleRange="14,37" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/java/io/zenwave360/example/adapters/web/CustomerApiControllerTest.java" />
+  title="CustomerApiControllerTest.java (excerpt)" language="java" visibleRange="12,35" collapsed={true}
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/src/test/java/io/zenwave360/example/adapters/web/CustomerApiControllerTest.java" />
 
 ## Testing REST APIs
 
@@ -103,27 +103,27 @@ ZenWave`SpringWebTestClientPlugin` can generate both single endpoint tests as we
 <CodeGeneration
   text1="When using the `SpringWebTestClientPlugin`, the following"
   sourceTitle="zenwave-scripts.zw" sourceLanguage="zdl" sourceVisibleRange="31,33" sourceCollapsed={false}
-  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-scripts.zw"
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/zenwave-scripts.zw"
   text2="would produce this API test:"
-  outputTitle="CustomerApiIntegrationTest.java (excerpt)" outputLanguage="java" outputVisibleRange="19,62" outputCollapsed={false}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/java/io/zenwave360/example/adapters/web/CustomerApiIntegrationTest.java"
+  outputTitle="CustomerApiIntegrationTest.java (excerpt)" outputLanguage="java" outputVisibleRange="17,79" outputCollapsed={false}
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/src/test/java/io/zenwave360/example/adapters/web/CustomerApiIntegrationTest.java"
 />
 
 <CodeGeneration
   text1="When using the `SpringWebTestClientPlugin`, the following"
   sourceTitle="zenwave-scripts.zw" sourceLanguage="zdl" sourceVisibleRange="35,40" sourceCollapsed={false}
-  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-scripts.zw"
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/zenwave-scripts.zw"
   text2="would produce this Business Flow API test:"
   outputTitle="CustomerApiIntegrationTest" outputLanguage="java" outputCollapsed={true}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/java/io/zenwave360/example/adapters/web/CreateUpdateDeleteCustomerIntegrationTest.java"
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/src/test/java/io/zenwave360/example/adapters/web/CreateUpdateDeleteCustomerIntegrationTest.java"
 />
 
 You can control whether these are Unit or Integration Tests with `@SpringBootTest` in
 
 <RemoteCode
   title="BaseWebTestClientTest.java"
-  language="java" collapsed={true} visibleRange="14,27"
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/java/io/zenwave360/example/adapters/web/BaseWebTestClientTest.java" />
+  language="java" collapsed={true} visibleRange="13,29"
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/src/test/java/io/zenwave360/example/adapters/web/BaseWebTestClientTest.java" />
 
 
 As always, it's your responsibility as the developer to provide test data and parameters that match the initial state, whether you're using a containerized database or an in-memory implementation.
@@ -135,17 +135,17 @@ You can also generate KarateDSL Tests from OpenAPI yaml. Both single endpoint te
 <CodeGeneration
   text1="When using the `OpenAPIKaratePlugin`, the following"
   sourceTitle="zenwave-scripts.zw" sourceLanguage="zdl" sourceVisibleRange="42,44" sourceCollapsed={false}
-  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-scripts.zw"
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/zenwave-scripts.zw"
   text2="would produce this API test:"
   outputTitle="CustomerApi.feature KarateDSL API Test" outputLanguage="gherkin" outputCollapsed={false}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/resources/io/zenwave360/example/adapters/web/CustomerApi.feature"
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/src/test/resources/io/zenwave360/example/adapters/web/CustomerApi.feature"
 />
 
 <CodeGeneration
   text1="When using the `OpenAPIKaratePlugin`, the following"
   sourceTitle="zenwave-scripts.zw" sourceLanguage="zdl" sourceVisibleRange="46,51" sourceCollapsed={false}
-  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-scripts.zw"
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/zenwave-scripts.zw"
   text2="would produce this Business Flow API test:"
   outputTitle="CreateUpdateDeleteCustomerKarateTest.feature KarateDSL Business Flow Test" outputLanguage="gherkin" outputCollapsed={false}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/test/resources/io/zenwave360/example/adapters/web/CreateUpdateDeleteCustomerKarateTest.feature"
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/src/test/resources/io/zenwave360/example/adapters/web/CreateUpdateDeleteCustomerKarateTest.feature"
 />

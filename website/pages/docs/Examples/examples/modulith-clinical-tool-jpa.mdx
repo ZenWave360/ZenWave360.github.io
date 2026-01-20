@@ -35,39 +35,39 @@ This project was generated using the following ZenWave scripts, as always you ca
 <RemoteCode
   summary="ZenWave Scripts for Clinical Tool - Modulith"
   language="zdl" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/zenwave-scripts.zw" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/zenwave-scripts.zw" />
 
 And ZenWave Domain Models located on folder: https://github.com/ZenWave360/zenwave-playground/tree/main/examples/modulith-clinical-tool-jpa/models
 
 <RemoteCode
   summary="Clinical Tool Domain Model.zdl"
   language="zdl" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/models/clinical.zdl" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/models/clinical.zdl" />
 
 <RemoteCode
   summary="Users Domain Model.zdl"
   language="zdl" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/models/users.zdl" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/models/users.zdl" />
 
 <RemoteCode
   summary="Documents Domain Model.zdl"
   language="zdl" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/models/documents.zdl" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/models/documents.zdl" />
 
 <RemoteCode
   summary="Master Data Domain Model.zdl"
   language="zdl" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/models/masterdata.zdl" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/models/masterdata.zdl" />
 
 <RemoteCode
   summary="Surveys Domain Model.zdl"
   language="zdl" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/models/surveys.zdl" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/models/surveys.zdl" />
 
 <RemoteCode
   summary="Terms and Conditions Domain Model.zdl"
   language="zdl" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/models/terms-and-conditions.zdl" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/models/terms-and-conditions.zdl" />
 
 ## Building a Modular Monolith with ZenWave SDK
 
@@ -78,14 +78,14 @@ In `zenwave-scripts.zw` we configure the `basePackage` and the `commonPackage`s:
 <RemoteCode
   summary="ZenWave Scripts for Clinical Tool - Modulith"
   language="zdl" collapsed={false} visibleRange="1,11"
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/zenwave-scripts.zw" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/zenwave-scripts.zw" />
 
 And each module has its own `moduleBasePackage`:
 
 <RemoteCode
   summary="Clinical Tool Domain Model.zdl"
   language="zdl" collapsed={false} visibleRange="1,6"
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/models/clinical.zdl" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/models/clinical.zdl" />
 
 This results in the following source folder structure, with shared base classes in `common` packages:
 
@@ -101,27 +101,27 @@ Given this service definition:
 
 <RemoteCode
   summary="Clinical Tool Domain Model.zdl"
-  language="zdl" collapsed={true} visibleRange="197,243"
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/models/clinical.zdl" />
+  language="zdl" collapsed={true} visibleRange="187,212"
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/models/clinical.zdl" />
 
 You can configure code ZenWave Scripts to include or exclude certain operations from each API:
 
 <RemoteCode
   summary="ZenWave Scripts for Clinical Tool - Modulith"
   language="zdl" collapsed={false} visibleRange="27,39"
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/zenwave-scripts.zw" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/zenwave-scripts.zw" />
 
 And then with the functionality split in two different OpenAPI definitions, you can generate their corresponding controllers and tests on different modules:
 
 <RemoteCode
   summary="ZenWave Scripts for Clinical Tool - Modulith"
-  language="zdl" collapsed={false} visibleRange="116,124"
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/zenwave-scripts.zw" />
+  language="zdl" collapsed={false} visibleRange="117,125"
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/zenwave-scripts.zw" />
 
 <RemoteCode
   summary="ZenWave Scripts for Clinical Tool - Modulith"
-  language="zdl" collapsed={true} visibleRange="126,134"
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/zenwave-scripts.zw" />
+  language="zdl" collapsed={true} visibleRange="127,135"
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/zenwave-scripts.zw" />
 
 ## Splitting one Service into multiple APIs on the same module
 
@@ -132,14 +132,14 @@ Again you can achieve that by generating two different OpenAPI definitions from 
 <RemoteCode
   summary="ZenWave Scripts for Clinical Tool - Modulith"
   language="zdl" collapsed={false} visibleRange="41,53"
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/zenwave-scripts.zw" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/zenwave-scripts.zw" />
 
 But in this case, because we don't do any special configuration when generating the controllers, they will be generated in the same module:
 
 <RemoteCode
-  summary="Clinical Tool Domain Model.zdl"
-  language="zdl" collapsed={false} visibleRange="136,144"
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/models/clinical.zdl" />
+  summary="ZenWave Scripts"
+  language="zdl" collapsed={false} visibleRange="136,145"
+  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/zenwave-scripts.zw" />
 
 ## Other interesting features
 
@@ -148,10 +148,10 @@ But in this case, because we don't do any special configuration when generating 
 <CodeGeneration
   text1="When decorating a service method with @fileupload like this:"
   sourceTitle="models/documents.zdl" sourceLanguage="zdl" sourceVisibleRange="40,42" sourceCollapsed={false}
-  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/models/documents.zdl"
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/models/documents.zdl"
   text2="then `ZDLToOpenAPIPlugin` will generate this OpenAPI definition:"
   outputTitle="OpenAPI Definition" outputLanguage="yaml" outputVisibleRange="88,104" outputCollapsed={false}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/src/main/resources/public/apis/documents-openapi.yml"
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/src/main/resources/public/apis/documents-openapi.yml"
 />
 
 ### File Downloads
@@ -159,18 +159,18 @@ But in this case, because we don't do any special configuration when generating 
 <CodeGeneration
   text1="When decorating a service method with @filedownload like this:"
   sourceTitle="models/documents.zdl" sourceLanguage="zdl" sourceVisibleRange="36,38" sourceCollapsed={false}
-  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/models/documents.zdl"
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/models/documents.zdl"
   text2="then `ZDLToOpenAPIPlugin` will generate this OpenAPI definition:"
-  outputTitle="OpenAPI Definition" outputLanguage="yaml" outputVisibleRange="45,73" outputCollapsed={false}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/src/main/resources/public/apis/documents-openapi.yml"
+  outputTitle="OpenAPI Definition" outputLanguage="yaml" outputVisibleRange="44,79" outputCollapsed={false}
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/src/main/resources/public/apis/documents-openapi.yml"
 />
 
 And the `OpenAPIControllersPlugin` will generate the corresponding controller code to handle file uploads and downloads.
 
 <RemoteCode
   summary="DocumentApiController.java"
-  language="java" collapsed={false} visibleRange="63,73"
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/src/main/java/io/zenwave360/example/clinicaltool/modules/documents/DocumentApiController.java" />
+  language="java" collapsed={false} visibleRange="61,71"
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/src/main/java/io/zenwave360/example/clinicaltool/modules/documents/DocumentApiController.java" />
 
 ### Domain Events between Modules
 
@@ -180,19 +180,16 @@ When a service method emits a domain event that is not annotated with @asyncapi,
 
 NOTE: currently ZenWave SDK is not able to generate listeners for domain events between modules, as with `@asyncapi` events, and you need to implement them manually.
 
-<CodeGeneration
-  text1="When decorating a service method with @filedownload like this:"
-  sourceTitle="models/documents.zdl" sourceLanguage="zdl" sourceVisibleRange="211,215" sourceCollapsed={false}
-  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/models/clinical.zdl"
-  text2="then `ZDLToOpenAPIPlugin` will generate this OpenAPI definition:"
-  outputTitle="OpenAPI Definition" outputLanguage="java" outputVisibleRange="53,62" outputCollapsed={false}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/src/main/java/io/zenwave360/example/clinicaltool/modules/clinical/core/implementation/PatientsServiceImpl.java"
+<RemoteCode
+  summary="When decorating a service method with @listener like this:"
+  language="zdl" visibleRange="210,211" collapsed={false}
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/models/clinical.zdl"
 />
 
 With an `EventPublisher` that use Spring's `ApplicationEventPublisher` under the hood (and also an `InMemoryEventPublisher` for testing purposes):
 
 <RemoteCode
   summary="DefaultEventPublisher.java"
-  language="zdl" collapsed={false} visibleRange="11,23"
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/src/main/java/io/zenwave360/example/clinicaltool/modules/clinical/infrastructure/events/DefaultEventPublisher.java" />
+  language="zdl" collapsed={false} visibleRange="9,22"
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/src/main/java/io/zenwave360/example/clinicaltool/modules/clinical/infrastructure/events/DefaultEventPublisher.java" />
 

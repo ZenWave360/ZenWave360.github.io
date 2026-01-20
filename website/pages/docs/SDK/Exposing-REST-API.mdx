@@ -45,7 +45,7 @@ Now you can use `ZDLToOpenAPIPlugin` to generate an OpenAPI definition from your
 <RemoteCode
   summary="ZDLToOpenAPIPlugin in zenwave-scripts.zw"
   language="zdl" collapsed={false} visibleRange="6,10"
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-scripts.zw" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/zenwave-scripts.zw" />
 
 Remember that this is equivalent to running:
 
@@ -75,10 +75,10 @@ All `@get`, `@post`, `@put`, `@delete`, `@patch` support the following syntax:
 <CodeGeneration
   text1="When using the `ZDLToOpenAPIPlugin`, the following"
   sourceTitle="decorated service:" sourceLanguage="zdl" sourceVisibleRange="55,68" sourceCollapsed={false}
-  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl"
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/zenwave-model.zdl"
   text2="would produce this openapi definition:"
   outputTitle="src/main/resources/public/apis/openapi.yml" outputLanguage="yaml" outputCollapsed={true}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml"
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml"
 />
 
 #### Using `@get`
@@ -88,10 +88,10 @@ As you would expect, `@get` will generate a `GET` operations, with path and quer
 <CodeGeneration
   text1="When using the `ZDLToOpenAPIPlugin`, the following"
   sourceTitle="this service command:" sourceLanguage="zdl" sourceVisibleRange="59,60" sourceCollapsed={false}
-  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl"
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/zenwave-model.zdl"
   text2="would produce this:"
   outputTitle="src/main/resources/public/apis/openapi.yml" outputLanguage="yaml" outputVisibleRange="45,63" outputCollapsed={false}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml"
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml"
 />
 
 If the method command has a command payload, it will be expanded as path or query parameters.
@@ -99,10 +99,10 @@ If the method command has a command payload, it will be expanded as path or quer
 <CodeGeneration
   text1="When using the `ZDLToOpenAPIPlugin`, the following"
   sourceTitle="this service command:" sourceLanguage="zdl" sourceVisibleRange="160,161" sourceCollapsed={false}
-  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/models/surveys.zdl"
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/models/surveys.zdl"
   text2="would produce this:"
   outputTitle="src/main/resources/public/apis/surveys-public-openapi.yml" outputLanguage="yaml" outputVisibleRange="28,55" outputCollapsed={false}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/src/main/resources/public/apis/surveys-public-openapi.yml"
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/src/main/resources/public/apis/surveys-public-openapi.yml"
 />
 
 Notice how path and query parameter data types are inferred:
@@ -118,10 +118,10 @@ Posts are used to create new resources. The default status code is `201`, if you
 <CodeGeneration
   text1="When using the `ZDLToOpenAPIPlugin`, the following"
   sourceTitle="this service command:" sourceLanguage="zdl" sourceVisibleRange="57,58" sourceCollapsed={false}
-  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl"
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/zenwave-model.zdl"
   text2="would produce this:"
   outputTitle="src/main/resources/public/apis/openapi.yml" outputLanguage="yaml" outputVisibleRange="27,44" outputCollapsed={false}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml"
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml"
 />
 
 You can also use `@post` to implement search operations, in this case you should use `status: 200` to indicate that the operation returns a list of resources:
@@ -129,10 +129,10 @@ You can also use `@post` to implement search operations, in this case you should
 <CodeGeneration
   text1="When using the `ZDLToOpenAPIPlugin`, the following"
   sourceTitle="this service command:" sourceLanguage="zdl" sourceVisibleRange="54,55" sourceCollapsed={false}
-  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/models/users.zdl"
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/models/users.zdl"
   text2="would produce this:"
-  outputTitle="src/main/resources/public/apis/openapi.yml" outputLanguage="yaml" outputVisibleRange="142,164" outputCollapsed={true}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/src/main/resources/public/apis/users-openapi.yml"
+  outputTitle="src/main/resources/public/apis/openapi.yml" outputLanguage="yaml" outputVisibleRange="158,180" outputCollapsed={true}
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/src/main/resources/public/apis/users-openapi.yml"
 />
 
 #### Using `@put` for Updating Resources
@@ -140,10 +140,10 @@ You can also use `@post` to implement search operations, in this case you should
 <CodeGeneration
   text1="When using the `ZDLToOpenAPIPlugin`, the following"
   sourceTitle="this service command:" sourceLanguage="zdl" sourceVisibleRange="61,62" sourceCollapsed={false}
-  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl"
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/zenwave-model.zdl"
   text2="would produce this:"
   outputTitle="src/main/resources/public/apis/openapi.yml" outputLanguage="yaml" outputVisibleRange="64,87" outputCollapsed={false}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml"
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml"
 />
 
 #### Using `@delete` for Deleting Resources
@@ -153,10 +153,10 @@ Delete operations would return a `204` status code by default, but you can chang
 <CodeGeneration
   text1="When using the `ZDLToOpenAPIPlugin`, the following"
   sourceTitle="this service command:" sourceLanguage="zdl" sourceVisibleRange="63,64" sourceCollapsed={false}
-  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl"
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/zenwave-model.zdl"
   text2="would produce this:"
   outputTitle="src/main/resources/public/apis/openapi.yml" outputLanguage="yaml" outputVisibleRange="88,101" outputCollapsed={false}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml"
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml"
 />
 
 #### Using `@patch` for Partial Updates
@@ -164,23 +164,23 @@ Delete operations would return a `204` status code by default, but you can chang
 <CodeGeneration
   text1="When using the `ZDLToOpenAPIPlugin`, the following"
   sourceTitle="this service command:" sourceLanguage="zdl" sourceVisibleRange="166,167" sourceCollapsed={false}
-  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/models/surveys.zdl"
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/models/surveys.zdl"
   text2="would produce this:"
-  outputTitle="src/main/resources/public/apis/surveys-public-openapi.yml" outputLanguage="yaml" outputVisibleRange="93,133" outputCollapsed={false}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/src/main/resources/public/apis/surveys-public-openapi.yml"
+  outputTitle="src/main/resources/public/apis/surveys-public-openapi.yml" outputLanguage="yaml" outputVisibleRange="93,128" outputCollapsed={false}
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/src/main/resources/public/apis/surveys-public-openapi.yml"
 />
 
 <RemoteCode
-  title="#/components/schemas/SurveyAnswersPatch" sourceLanguage="yml" visibleRange="327,329" sourceCollapsed={false}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/src/main/resources/public/apis/surveys-public-openapi.yml" />
+  title="#/components/schemas/SurveyAnswersPatch" sourceLanguage="yml" visibleRange="322,324" sourceCollapsed={false}
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/src/main/resources/public/apis/surveys-public-openapi.yml" />
 
 <CodeGeneration
   text1="When configuring `schemaMappings` in `openapi-generator-maven-plugin` like this:"
-  sourceTitle="this service command:" sourceLanguage="xml" sourceVisibleRange="394,396" sourceCollapsed={false}
-  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/pom.xml"
+  sourceTitle="this service command:" sourceLanguage="xml" sourceVisibleRange="398,400" sourceCollapsed={false}
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/pom.xml"
   text2="will generate a java method with `Map input` as parameter:"
   outputTitle="src/main/resources/public/apis/surveys-public-openapi.yml" outputLanguage="java" outputVisibleRange="71,73" outputCollapsed={false}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/src/main/java/io/zenwave360/example/clinicaltool/modules/surveys/web/SurveysApiController.java"
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/src/main/java/io/zenwave360/example/clinicaltool/modules/surveys/web/SurveysApiController.java"
 />
 
 Because `Map input` contains only the properties that where actually send by the client, you can easily implement a partial update.
@@ -193,23 +193,23 @@ Because `Map input` contains only the properties that where actually send by the
 <CodeGeneration
   text1="When using the `ZDLToOpenAPIPlugin`, the following"
   sourceTitle="this `@paginated` service command:" sourceLanguage="zdl" sourceVisibleRange="65,67" sourceCollapsed={false}
-  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/zenwave-model.zdl"
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/zenwave-model.zdl"
   text2="would produce this:"
   outputTitle="src/main/resources/public/apis/openapi.yml" outputLanguage="yaml" outputVisibleRange="102,123" outputCollapsed={false}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml"
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml"
 />
 
 With the `CustomerPaginated` schema defined as:
 
 <RemoteCode
-  title="#/components/schemas/SurveyAnswersPatch" language="yml" visibleRange="158,166" collapsed={false}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml" />
+  title="#/components/schemas/CustomerPaginated" language="yml" visibleRange="162,169" collapsed={false}
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml" />
 
 And the following `components` definition:
 
 <RemoteCode
-  title="Supporting Schemas for Pagination" language="yml" visibleRange="215,264" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml" />
+  title="Supporting Schemas for Pagination" language="yml" visibleRange="222,271" collapsed={true}
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml" />
 
 ### File Uploads
 
@@ -218,17 +218,17 @@ And the following `components` definition:
 <CodeGeneration
   text1="When using the `ZDLToOpenAPIPlugin`, the following"
   sourceTitle="this `@fileupload` service command:" sourceLanguage="zdl" sourceVisibleRange="40,42" sourceCollapsed={false}
-  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/models/documents.zdl"
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/models/documents.zdl"
   text2="would produce this:"
-  outputTitle="src/main/resources/public/apis/openapi.yml" outputLanguage="yaml" outputVisibleRange="88,112" outputCollapsed={false}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/src/main/resources/public/apis/documents-openapi.yml"
+  outputTitle="src/main/resources/public/apis/openapi.yml" outputLanguage="yaml" outputVisibleRange="95,134" outputCollapsed={false}
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/src/main/resources/public/apis/documents-openapi.yml"
 />
 
 And the corresponding SpringMVC Controller:
 
 <RemoteCode
-  title="DocumentApiController.java#uploadDocument" language="yml" visibleRange="79,106" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/src/main/java/io/zenwave360/example/clinicaltool/modules/documents/DocumentApiController.java" />
+  title="DocumentApiController.java#uploadDocument" language="yml" visibleRange="81,88" collapsed={true}
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/src/main/java/io/zenwave360/example/clinicaltool/modules/documents/DocumentApiController.java" />
 
 
 
@@ -239,17 +239,17 @@ And the corresponding SpringMVC Controller:
 <CodeGeneration
   text1="When using the `ZDLToOpenAPIPlugin`, the following"
   sourceTitle="this `@filedownload` service command:" sourceLanguage="zdl" sourceVisibleRange="36,38" sourceCollapsed={false}
-  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/models/documents.zdl"
+  sourceUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/models/documents.zdl"
   text2="would produce this:"
-  outputTitle="src/main/resources/public/apis/openapi.yml" outputLanguage="yaml" outputVisibleRange="45,73" outputCollapsed={false}
-  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/src/main/resources/public/apis/documents-openapi.yml"
+  outputTitle="src/main/resources/public/apis/openapi.yml" outputLanguage="yaml" outputVisibleRange="49,79" outputCollapsed={false}
+  outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/src/main/resources/public/apis/documents-openapi.yml"
 />
 
 And the corresponding SpringMVC Controller:
 
 <RemoteCode
-  title="DocumentApiController.java#uploadDocument" language="java" visibleRange="60,70" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/main/examples/modulith-clinical-tool-jpa/src/main/java/io/zenwave360/example/clinicaltool/modules/documents/DocumentApiController.java" />
+  title="DocumentApiController.java#uploadDocument" language="java" visibleRange="61,71" collapsed={true}
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/modulith-clinical-tool-jpa/src/main/java/io/zenwave360/example/clinicaltool/modules/documents/DocumentApiController.java" />
 
 
 
