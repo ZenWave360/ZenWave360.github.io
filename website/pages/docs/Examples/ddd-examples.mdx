@@ -4,7 +4,8 @@ title: DDD Examples
 slug: /docs/examples/ddd-examples/
 order: 0
 ---
-import { Image, Quote, QuoteAuthor, RemoteCode } from "smooth-doc/components";
+import { Image, Quote, QuoteAuthor, RemoteCode, Orange } from "smooth-doc/components";
+import orderFulfillmentKotlin from './examples/images/order-fulfillment-kotlin.excalidraw.svg';
 import customerAddressJpa from './examples/images/customer-address-jpa.excalidraw.svg.png';
 import kustomerAddressJpa from './examples/images/kustomer-address-jpa.excalidraw.svg';
 import clinicalToolC4 from './examples/images/modulith-clinical-tool/clinical-tool-c4.drawio.svg'
@@ -17,7 +18,18 @@ Practical examples of Domain-Driven Design (DDD) implementations using ZenWave S
 
 > This documentation is a work in progress. You can find the source code for all examples in the [zenwave-playground](https://github.com/ZenWave360/zenwave-playground) repository.
 
+## Order Fulfillment (Kotlin)
+
+This example shows how to use [ZenWave Domain Language](/docs/event-driven-design/zenwave-domain-language/) to apply an <Orange>ubiquitous language</Orange> for modeling a complete order-fulfillment microservice with Kotlin and Spring Boot.
+<a href="/docs/examples/ddd-examples/order-fullillment-kotlin/">
+<Image title="Order Fulfillment (Kotlin)" src={orderFulfillmentKotlin}  />
+</a>
+
+[Order Fulfillment (Kotlin)](/docs/examples/ddd-examples/order-fullillment-kotlin/)
+
 ## Customer Master Data Service (JPA)
+
+This example shows how to build a CRUD application using API-First principles, with both OpenAPI and AsyncAPI, and DDD entities and services with JPA persistence and externalized domain events.
 
 <a href="/docs/examples/ddd-examples/customer-address-jpa/">
 <Image title="Customer Master Data Service (JPA)" src={customerAddressJpa}  />
@@ -28,6 +40,8 @@ Practical examples of Domain-Driven Design (DDD) implementations using ZenWave S
 
 ## Kustomer Master Data Service (Kotlin + JPA) (Kotlin)
 
+This is a Kotlin version of the Customer Master Data Service example.
+
 <a href="/docs/examples/ddd-examples/kustomer-address-jpa/">
 <Image title="Customer Master Data Service (JPA)" src={kustomerAddressJpa}  />
 </a>
@@ -36,6 +50,8 @@ Practical examples of Domain-Driven Design (DDD) implementations using ZenWave S
 
 ## Clinical Tool - Modulith
 
+How to build a modular monolith for a "Clinical Tool" using <Orange>multiple ZDL Domain Models</Orange>, one per module.
+
 <a href="/docs/examples/ddd-examples/modulith-clinical-tool-jpa/">
 <Image title="Clinical Tool - Modulith" src={clinicalToolC4}  />
 </a>
@@ -43,6 +59,9 @@ Practical examples of Domain-Driven Design (DDD) implementations using ZenWave S
 [Clinical Tool - Modulith](/docs/examples/ddd-examples/modulith-clinical-tool-jpa/)
 
 ## Klinical Tool - Modulith
+
+How to build a modular monolith for a "Clinical Tool" using <Orange>ZDL Domain Models</Orange>, one per module. Kotlin Version.
+
 
 <a href="/docs/examples/ddd-examples/modulith-klinical-tool-jpa/">
 <Image title="Klinical Tool - Modulith" src={klinicalToolModulith}  />

@@ -1,0 +1,296 @@
+---
+section: EDA Examples
+title: AsyncAPI Shopping Cart
+slug: /docs/examples/eda-examples/asyncapi-shopping-cart/
+---
+import { CodeGeneration, Image, Quote, QuoteAuthor, RemoteCode } from 'smooth-doc/components'
+import shoppingCartLight from './images/shopping-cart.excalidraw.svg';
+
+# AsyncAPI Shopping Cart
+Event-driven shopping cart application demonstrating AsyncAPI with Avro schemas and ZenWave SDK code generation.
+
+<Image style={{width: 725}} alt="AsyncAPI Shopping Cart"
+              src={shoppingCartLight}
+       />
+
+This is a complete example of an event-driven application built with AsyncAPI and Avro schemas, showcasing how ZenWave SDK generates production-ready Kafka producers and consumers. You can find the [Complete Source Code](https://github.com/ZenWave360/zenwave-playground/tree/main/examples/asyncapi-shopping-cart) at GitHub.
+
+## What You'll Learn
+- Define multi-message AsyncAPI contracts using Avro schemas
+- Generate complete Kafka producers and consumers using ZenWaveSDK
+- Implement event-driven architecture with Spring Boot and Kafka
+- Prevent API drift by sourcing versioned AsyncAPI definitions
+- Test event-driven applications with in-memory implementations
+
+We assume you have already read the [Getting Started](https://www.zenwave360.io/docs/getting-started/) section and installed ZenWave SDK CLI and are somewhat familiar with the concepts of Event-Driven Architecture and AsyncAPI.
+
+## What we will be building: An Event-Driven Shopping Cart
+
+We will be building a multi-module event-driven application that demonstrates how to use AsyncAPI with Avro schemas to implement a shopping cart system with Kafka messaging.
+
+The application is composed of three modules which in real-world scenarios would be in different repositories with independent lifecycles:
+
+- **`apis`** - Contains the AsyncAPI+Avro definition files which can be packaged and distributed as a Maven JAR artifact
+- **`shopping-cart`** - The provider application that exposes a REST API and produces events to a Kafka topic
+- **`client`** - A consumer application that consumes events from the Kafka topic and logs them
+
+This example showcases how you can send multiple Avro subjects to the same Kafka topic when you need strict ordering of events of different types. The sequence "ItemAdded, ItemUpdated, ItemRemoved" is fundamentally different from "ItemRemoved, ItemUpdated, ItemAdded", and this pattern ensures proper event ordering.
+
+### AsyncAPI Definition with Avro Schemas
+
+The AsyncAPI definition contains one channel `ShoppingCartChannel` with 5 messages in Avro format, and 5 different operations, each sending one particular message to the channel:
+
+<RemoteCode
+  title="AsyncAPI Definition for Shopping Cart Events"
+  language="yaml" collapsed={true}
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/asyncapi-shopping-cart/apis/asyncapi.yml" />
+
+The AsyncAPI definition references Avro schema files (*.avsc) that define the structure of each event message:
+
+<RemoteCode
+  title="ShoppingCartCreated.avsc - Event Schema"
+  language="json" collapsed={true}
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/asyncapi-shopping-cart/apis/avro/ShoppingCartCreated.avsc" />
+
+<RemoteCode
+  title="ShoppingCartItemAdded.avsc - Event Schema"
+  language="json" collapsed={true}
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/asyncapi-shopping-cart/apis/avro/ShoppingCartItemAdded.avsc" />
+
+<RemoteCode
+  title="Item.avsc - Supporting Schema"
+  language="json" collapsed={true}
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/asyncapi-shopping-cart/apis/avro/Item.avsc" />
+
+<RemoteCode
+  title="ShoppingCart.avsc - Supporting Schema"
+  language="json" collapsed={true}
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/asyncapi-shopping-cart/apis/avro/ShoppingCart.avsc" />
+
+## Building with ZenWave SDK and AsyncAPI
+
+The shopping cart application demonstrates how ZenWave SDK generates a complete event-driven architecture from AsyncAPI definitions. All generated code is recreated on each build, ensuring your implementation stays in sync with your API definitions.
+
+### Code Generation from AsyncAPI
+
+ZenWave SDK's AsyncAPI Generator creates a complete SDK for producing events to Kafka:
+
+- **Avro DTOs** for all messages defined in the AsyncAPI definition
+- **Producer Interface** (`ShoppingCartEventsProducer`) with one method per operation
+- **Spring Implementation** (`DefaultShoppingCartEventsProducer`) as a Spring `@Component`
+- **In-Memory Implementation** for unit testing purposes
+- **Test Context** (`EventsProducerInMemoryContext`) for easier testing
+
+All this code is generated as part of your Maven build and placed in `target/generated-sources/zenwave-sdk`. Because it's not part of the project source code, it's not versioned in Git. To modify the generated code, you change the AsyncAPI+Avro definition files first and then rebuild the project.
+
+### Maven Configuration for Code Generation
+
+The Maven configuration uses ZenWave SDK Maven Plugin to generate code from AsyncAPI definitions. The plugin can source AsyncAPI+Avro definitions from local files, classpath resources, or remote HTTP resources.
+
+<RemoteCode
+  title="Maven Plugin Configuration in pom.xml"
+  language="xml" collapsed={true} visibleRange="63,123"
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/asyncapi-shopping-cart/shopping-cart/pom.xml" />
+
+The key configuration properties are:
+
+<RemoteCode
+  title="Maven Properties for AsyncAPI Code Generation in pom.xml"
+  language="xml" collapsed={false} visibleRange="16,33"
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/asyncapi-shopping-cart/shopping-cart/pom.xml" />
+
+
+Or for remote HTTP resources:
+
+<RemoteCode
+  title="Maven Properties for AsyncAPI Code Generation from HTTP resources in pom.xml"
+  language="xml" collapsed={false} visibleRange="36,46"
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/asyncapi-shopping-cart/shopping-cart/pom.xml" />
+
+
+> **Note:** When using remote HTTP resources, `asyncapi.avro.imports` requires pointing to each avsc file individually because it is not possible to scan folders or packages from remote HTTP resources.
+
+> **Note:** You do not need to worry about ordering `asyncapi.avro.imports` even if you are using Avro prior to 1.12.0 because ZenWaveSDK will sort them for you.
+
+### Using Generated Code in Your Application
+
+The generated producer interface integrates seamlessly into your Spring Boot application. Here's how the generated code is used in the service implementation:
+
+```java
+@Service
+@lombok.AllArgsConstructor
+public class ShoppingCartServiceImpl implements ShoppingCartService {
+
+    // [...]
+    private final ShoppingCartEventsProducer eventsProducer; // <-- this is generated code
+
+    public ShoppingCart addItem(Long customerId, Item input) {
+        log.debug("Request addItem: {} {}", customerId, input);
+
+        var shoppingCart = loadShoppingCart(customerId);
+        shoppingCart.getItems().add(input);
+        shoppingCartRepository.save(shoppingCart);
+        // emit events
+        var shoppingCartItemAdded = eventsMapper.asShoppingCartItemAdded(shoppingCart, input);
+        eventsProducer.onShoppingCartItemAdded(shoppingCartItemAdded);
+        return shoppingCart;
+    }
+}
+```
+The service implementation receives the generated `ShoppingCartEventsProducer` via dependency injection and uses it to publish events after performing business operations. The producer interface provides type-safe methods for each operation defined in the AsyncAPI specification.
+
+### Unit Testing with In-Memory Event Producer
+
+ZenWave SDK generates an in-memory implementation of the events producer for unit testing purposes, allowing you to test your business logic without requiring a running Kafka instance:
+
+```java
+class ShoppingCartServiceTest {
+
+    ServicesInMemoryConfig context = new ServicesInMemoryConfig();
+    ShoppingCartServiceImpl shoppingCartService = context.shoppingCartService();
+
+    @BeforeEach void setUp() {
+        context.reloadTestData();
+    }
+
+    @Test void createShoppingCartTest() {
+        Long customerId = 0L;  // non existing shopping cart
+        var shoppingCart = shoppingCartService.loadShoppingCart(customerId);
+
+        Assertions.assertNotNull(shoppingCart);
+        var capturedMessages = context.getEventsProducerInMemoryContext().shoppingCartEventsProducer()
+                .getOnShoppingCartCreatedCapturedMessages();
+        Assertions.assertEquals(1, capturedMessages.size());
+    }
+}
+```
+
+The in-memory producer captures all published events, allowing you to verify that your service publishes the correct events with the expected payloads. This approach provides fast, reliable unit tests without external dependencies.
+
+## Shopping Cart Client Application
+
+The client application demonstrates how to consume events from Kafka using ZenWave SDK generated code. It uses the same AsyncAPI definition but with reversed roles.
+
+### Generating Consumer Code
+
+The client uses similar Maven configuration to generate all required code to consume events from the Kafka topic. The key difference is using `<role>client</role>` in the ZenWave SDK AsyncAPI Generator configuration, which reverses how code is generated: generating a consumer where the API defines a producer and vice versa.
+
+<RemoteCode
+  title="Client Maven Configuration in pom.xml"
+  language="xml" collapsed={true} visibleRange="57,116"
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/asyncapi-shopping-cart/client/pom.xml" />
+
+### Naming Convention for Operations
+
+Because the generator uses the same `operationIds` to generate Java code, we recommend following this naming convention for consistency between provider and client:
+
+- Use prefix `on*` for operations that produce event messages (e.g., `onShoppingCartItemAdded`)
+- Use prefix `do*` for operations that consume command messages (e.g., `doCheckoutShoppingCart`)
+
+### Implementing Event Consumers
+
+After code is generated, you can focus on your business logic by implementing the generated consumer interface:
+
+<RemoteCode
+  title="ShoppingCartChannelConsumerService.java - Event Consumer Implementation"
+  language="java" collapsed={false} visibleRange="8,16"
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/asyncapi-shopping-cart/client/src/main/java/io/example/asyncapi/shoppingcart/client/events/ShoppingCartChannelConsumerService.java" />
+
+The consumer service implements the generated interface, providing type-safe methods for handling each event type. Spring Cloud Streams handles all the Kafka consumer configuration, deserialization, and message routing automatically.
+
+## Running the Shopping Cart Application
+
+### Prerequisites
+
+* **JDK 25+**
+* **Maven 3.8+**
+* **Docker & Docker Compose** - If you don't have Docker Compose installed, we recommend [Rancher Desktop](https://rancherdesktop.io/) configured with `dockerd` engine (not `containerd`), which includes both `docker` and `docker-compose` commands.
+* **Your favorite IDE**
+
+### Quick Start
+
+Follow these steps to run the complete application:
+
+1. **Package AsyncAPI+Avro definition files:**
+
+   ZenWaveSDK AsyncAPI generator can source AsyncAPI+Avro definition files from local files, classpath resources, or remote HTTP resources. Build and install the `apis` module in your local Maven repository:
+
+   ```bash
+   mvn clean install -f apis/pom.xml
+   ```
+
+   Alternatively, you can append `-Pasyncapi-http-files` to the commands below to source the AsyncAPI+Avro definition files from GitHub HTTP URLs.
+
+2. **Start infrastructure services:**
+
+   ```bash
+   docker-compose -f shopping-cart/docker-compose.yml up -d
+   ```
+
+3. **Run the Shopping Cart Provider application:**
+
+   ```bash
+   mvn clean spring-boot:run -f shopping-cart/pom.xml
+   ```
+
+   > **Note:** Append `-Pasyncapi-http-files` to the previous command if you prefer to source the AsyncAPI+Avro definition files from remote HTTP resources.
+
+4. **Access the API:**
+
+   - Open [Swagger UI](http://localhost:8080/swagger-ui/index.html) in your browser
+   - Use **Basic Authentication**: username `admin`, password `password`
+
+5. **Test the endpoints:**
+
+   - Try creating a shopping cart and adding items
+   - Update item quantities
+   - Check out the shopping cart
+
+### Verifying Event Flow
+
+#### Logging Kafka Events
+
+You can verify that events are being published to Kafka by using the Kafka Avro console consumer:
+
+```bash
+docker-compose -f shopping-cart/docker-compose.yml \
+  exec -T schema-registry bash -c "kafka-avro-console-consumer --bootstrap-server kafka:19093 \
+  --topic shopping-cart \
+  --from-beginning \
+  --property schema.registry.url=http://schema-registry:8081"
+```
+
+You should see the events produced by the shopping cart provider application:
+
+```log
+{"customerId":7}
+{"customerId":7,"shoppingCart":{"id":2,"customerId":7,"items":[{"name":"Item Name","quantity":10}]},"item":{"name":"Item Name","quantity":10}}
+{"customerId":7,"shoppingCart":{"id":2,"customerId":7,"items":[{"name":"Item Name","quantity":10}]},"item":{"name":"Item Name","quantity":10},"previousItem":{"name":"Item Name","quantity":10}}
+```
+
+#### Running the Client Consumer
+
+Start the shopping cart client application to consume and process events:
+
+```bash
+mvn clean spring-boot:run -f client/pom.xml
+```
+
+You should see the client application logging the events as they are consumed:
+
+```log
+2025-11-22T11:58:29.112+01:00  INFO 10652 --- [ntainer#0-0-C-1] s.c.e.ShoppingCartChannelConsumerService : onShoppingCartCreated: {"customerId": 1}
+2025-11-22T11:58:29.116+01:00  INFO 10652 --- [ntainer#0-0-C-1] s.c.e.ShoppingCartChannelConsumerService : onShoppingCartItemAdded: {"customerId": 1, "shoppingCart": {"id": 1, "customerId": 1, "items": [{"name": "string", "quantity": 0}]}, "item": {"name": "string", "quantity": 0}}
+2025-11-22T11:58:29.124+01:00  INFO 10652 --- [ntainer#0-0-C-1] s.c.e.ShoppingCartChannelConsumerService : onShoppingCartCreated: {"customerId": 7}
+2025-11-22T11:58:29.126+01:00  INFO 10652 --- [ntainer#0-0-C-1] s.c.e.ShoppingCartChannelConsumerService : onShoppingCartItemAdded: {"customerId": 7, "shoppingCart": {"id": 2, "customerId": 7, "items": [{"name": "Item Name", "quantity": 10}]}, "item": {"name": "Item Name", "quantity": 10}}
+2025-11-22T11:58:29.128+01:00  INFO 10652 --- [ntainer#0-0-C-1] s.c.e.ShoppingCartChannelConsumerService : onShoppingCartItemUpdated: {"customerId": 7, "shoppingCart": {"id": 2, "customerId": 7, "items": [{"name": "Item Name", "quantity": 10}]}, "item": {"name": "Item Name", "quantity": 10}, "previousItem": {"name": "Item Name", "quantity": 10}}
+```
+
+### What's Running
+
+- **Kafka** (port 9092) - Event streaming platform
+- **Schema Registry** (port 8081) - Avro schema management
+- **Shopping Cart Provider** (port 8080) - REST API and event producer
+- **Shopping Cart Client** - Event consumer and processor
+
+Happy Coding! 🚀

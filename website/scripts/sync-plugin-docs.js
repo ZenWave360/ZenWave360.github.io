@@ -4,7 +4,7 @@ const path = require('path');
 const glob = require('glob');
 
 const PLUGINS_DIR = './pages/docs/Plugins';
-const GITHUB_BASE_URL = 'https://raw.githubusercontent.com/ZenWave360/zenwave-sdk/main';
+const GITHUB_BASE_URL = 'https://raw.githubusercontent.com/ZenWave360/zenwave-sdk/develop';
 
 /**
  * Sanitize markdown content for MDX compatibility.
