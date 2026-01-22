@@ -1,29 +1,23 @@
 ---
-title: ZDL Domain Language
-slug: /docs/event-driven-design/zenwave-domain-language/
+title: ZDL Domain Language 2
+slug: /docs/event-driven-design/zenwave-domain-language-2/
 order: 1
+hide: true
 ---
-
 import { x } from '@xstyled/styled-components'
 import { Image, Quote, QuoteAuthor, RemoteCode } from "smooth-doc/components"
 import zdlBlocks from './images/zdl-blocks.excalidraw.svg'
 import zdlBlocksLight from './images/zdl-blocks.light.png'
 import eventStormingZdlMapping from './../../../images/EventStorming-ZDL-Mapping.png'
-import dddFeedbackLoopDark from '../../../static/posts/ZenWave-360-Business-Domain-Modeling/ZenWave-360-DDD-Feedback-Loop-with-ZW-Products.dark.png'
-import dddFeedbackLoopLight from '../../../static/posts/ZenWave-360-Business-Domain-Modeling/ZenWave-360-DDD-Feedback-Loop-with-ZW-Products.light.png'
 
-# ZenWave Domain Language (ZDL)
-A domain specific language (DSL) for modeling Event-Driven microservices.
+
+# ZDL Domain Modeling Language
+ZDL is a domain specific language (DSL) for modeling Event-Driven microservices.
 
 <Quote>
     Among all approaches to software development, Domain-Driven Design is the only one that focused on language as the key tool for a deep understanding of a given domain’s complexity.
     <QuoteAuthor>- Alberto Brandolini in Event Storming</QuoteAuthor>
 </Quote>
-
-
-## Guide: How and Why to Use ZDL
-
-### What is ZenWave Domain Language
 
 Inspired by JHipster JDL, ZDL is a language for describing DDD Bounded Contexts, including domain entities and their relationships, services, commands, events and business policies... for Event-Driven Architectures.
 
@@ -31,157 +25,8 @@ It's designed to be compact, readable and expressive. Business friendly, develop
 
 ZDL works well as an Ubiquitous Language format.
 
-And because it is designed to be machine-friendly, it can be converted into multiple software artifacts propagating that Ubiquitous Language automatically and effortlessly.
 
 <Image alt="Event-Storming to ZDL Mapping" src={eventStormingZdlMapping} />
-
-### What Problems ZDL Solves
-
-- Thinking and talking about software in a compact and unambiguous way
-- Validating and aligning the mental model of business experts (upstream)
-- Communicating the software design clearly and consistently to developers (downstream)
-- Enabling a machine-readable domain language that can be automatically transformed into consistent backend code (APIs, events, models, tests)
-- Preventing Ubiquitous Language drift across APIs, events, models, documentation, and tests through DSL-driven code generation
-
-
-### How ZDL Fits into a Real Project
-
-- Design Level Event Storming captures the language and mental model of business experts
-- ZDL is a compact and unambiguous way to document that mental model
-- ZenWave SDK can generate a growing list of software artifacts from that model
-- This speeds up the feedback loop between business experts and developers while maintaining Ubiquitous Language coherence
-
-<Image alt="Domain Driven Design Feedback Loop" dark={dddFeedbackLoopDark} light={dddFeedbackLoopLight} style={{marginTop: '15px'}} />
-
-### Minimal Complete ZDL Example
-
-This example shows the smallest complete ZDL model that captures an aggregate, a command acting on it, and the domain event it emits.
-
-```zdl
-@aggregate
-entity Order {
-  id String
-  status OrderStatus
-}
-
-service OrderService for (Order) {
-  placeOrder(Order) Order withEvents OrderPlaced
-}
-
-event OrderPlaced {
-  id String
-  dateTime Instant
-}
-```
-
-### Building a Domain Model Incrementally with ZDL
-
-#### Entities
-
-Entities describe your domain model and form the core of your Bounded Context. They can be grouped into aggregates using either the `@aggregate` annotation on the aggregate root (recommended) or by defining rich domain aggregates with command handlers and domain events using `aggregate` objects.
-
-```zdl
-/**
- * Order aggregate root
- */
-@aggregate
-entity Order {
-    orderNumber String required unique maxlength(36)
-
-    /** Order lines stored as JSON for simplicity in the demo */
-    @json items OrderItem[] minlength(1) {
-        productId String required /** Product ID (SKU) */
-        quantity Integer required min(1)
-        unitPrice BigDecimal required
-    }
-}
-```
-
-#### Services (Commands)
-
-Services define commands and use cases that act on aggregates.
-
-```zdl
-service OrderService for (Order) {
-    placeOrder(PlaceOrderInput) Order withEvents OrderPlaced
-
-    shipOrder(id, ShipOrderInput) Order withEvents OrderShipped
-}
-```
-
-#### Events
-
-Events represent facts emitted by the domain when something happens.
-
-```zdl
-@copy(Order)
-@asyncapi({ channel: "OrdersPlacedChannel", topic: "orders.placed" })
-event OrderPlaced {
-    id Long
-    // All Order fields are copied here, except relationships
-}
-```
-
-#### Inputs and Outputs
-
-ZDL allows `services` and `commands` to be flexible in how they define inputs and outputs within the application core.
-
-Operations may work directly with `aggregates` or `entities`, or use dedicated `input` and `output` types that capture only the data required for a specific use case. External communication is always handled separately through `APIs`, which define their own `DTOs`, preserving clear boundaries and stability at the edges even when using aggregates and entities as inputs and outputs.
-
-```zdl
-input PlaceOrderInput {
-    items OrderItem[] minlength(1)
-    currency String required maxlength(3)
-}
-
-input ShipOrderInput {
-    trackingNumber String required
-}
-```
-
-#### Relationships
-
-Relationships describe mappings between entities in relational persistence (JPA). With document-oriented databases, such as MongoDB, relationships are not necessary and nested entities are enough. From a domain perspective, this does not change the Java model itself, only its persistence mapping.
-
-```zdl
-relationship OneToMany {
-    Order{items required minlength(1)} to OrderItem{order required}
-}
-```
-
-#### Policies
-
-Policies are business rules expressed in natural language. They can be associated with a particular aggregate and then referenced with the `@policy(policy_code)` annotation.
-
-```zdl
-policies (Order) {
-    orderNumberUnique "orderNumber must be unique"
-}
-
-policies {
-    shipedOrdersCanNotBeCancelled "Shipped orders can not be cancelled"
-}
-```
-
-#### Rich Domain Aggregates (Advanced)
-
-ZDL also supports modeling rich domain aggregates, where command handlers and domain events are defined directly on the aggregate.
-
-This approach is more expressive but also highly opinionated. It should not be used by default, and is recommended only when the complexity of the domain clearly justifies it. In most use cases, using `services` is sufficient.
-
-```zdl
-aggregate OrderAggregate (Order) {
-    placeOrder(PlaceOrderInput) withEvents OrderPlaced
-    shipOrder(ShipOrderInput) withEvents OrderShipped
-}
-```
-
----
-
-## Grammar & Reference
-
-The sections below describe the ZDL language in detail. They are intended as a reference for syntax and structure, not as a step-by-step guide.
-
 
 ## File Structure
 
