@@ -28,7 +28,7 @@ We assume you have already read the [Getting Started](https://www.zenwave360.io/
 We will be building a Kotlin/Spring Boot microservice that manages the complete order fulfillment lifecycle, from order placement through payment and shipping, exposing REST APIs and publishing Domain Events to Kafka.
 
 The `Order` entity is the root of the aggregate, managing the order lifecycle through distinct states:
-- **DRAFT** → **PLACED** → **PAID** → **SHIPPED** → **CANCELLED**
+- **PLACED** → **PAID** → **SHIPPED** → **CANCELLED**
 
 The Order aggregate contains:
 - Order metadata (orderNumber, status, totalAmount, currency)
@@ -42,37 +42,91 @@ The Order aggregate contains:
 
 ### Domain Model Diagram
 
-```mermaid
-classDiagram
-    class Order {
-        <<aggregate>>
-        +String orderNumber
-        +OrderStatus status
-        +BigDecimal totalAmount
-        +String currency
-        +String paymentReference
-        +String trackingNumber
-        +OrderItem[] items
-    }
+```plantuml
+@startuml
+class Order << aggregate >> {
+Order aggregate root
+--
+String orderNumber
+OrderStatus status
+BigDecimal totalAmount
+String currency
+String paymentReference
+String trackingNumber
+OrderItem[] items
+}
 
-    class OrderStatus {
-        <<enumeration>>
-        DRAFT : 1
-        PLACED : 2
-        PAID : 3
-        SHIPPED : 4
-        CANCELLED : 5
-    }
+    Order *--down- OrderStatus
+    Order *--down- OrderItem
+    enum OrderStatus {
+--
+PLACED (1)
+PAID (2)
+SHIPPED (3)
+CANCELLED (4)
+}
 
-    class OrderItem {
-        +String productId
-        +String productName
-        +Integer quantity
-        +BigDecimal unitPrice
-    }
+    class OrderItem  {
+Order lines stored as JSON for simplicity in the demo
+--
+String productId
+String productName
+Integer quantity
+BigDecimal unitPrice
+}
 
-    Order *-- "1..*" OrderItem : contains
-    Order --> OrderStatus : has
+@enduml
+```
+
+### State Machine transitions
+
+State transitions are defined in `OrdersService` service interface using `@transition` decorator, see [Domain Modeling](#domain-modeling) below.
+
+```plantuml
+@startuml
+title Order lifecycle (via OrderService)
+
+hide empty description
+skinparam shadowing false
+skinparam BackgroundColor white
+skinparam ArrowColor #4B5563
+skinparam StateBorderColor #1F2937
+skinparam StateFontColor #111827
+skinparam StateBackgroundColor #F9FAFB
+skinparam StateStartColor #111827
+skinparam StateEndColor #111827
+skinparam NoteBackgroundColor #FFFBEA
+skinparam NoteBorderColor #D6B656
+skinparam LegendBackgroundColor #F8FAFC
+skinparam LegendBorderColor #CBD5E1
+skinparam roundcorner 12
+
+state "PLACED" as PLACED
+state "PAID" as PAID
+state "SHIPPED" as SHIPPED <<terminal>>
+state "CANCELLED" as CANCELLED <<terminal>>
+
+[*] --> PLACED : initialState
+
+PLACED --> PAID : payOrder(id, input)\n/ OrderPaid
+PAID --> SHIPPED : shipOrder(id, input)\n/ OrderShipped
+PLACED --> CANCELLED : cancelOrder(id)\n/ OrderCancelled
+PAID --> CANCELLED : cancelOrder(id)\n/ OrderCancelled
+
+note right of PLACED
+Entity: Order
+Service: OrderService
+Status field: status
+Initial state: PLACED
+end note
+
+legend right
+  <b>Entity:</b> Order
+  <b>Service:</b> OrderService
+  <b>Label format:</b>
+  method(params) / emitted events
+endlegend
+@enduml
 ```
 
 ### REST API defined with OpenAPI
@@ -88,7 +142,7 @@ The application exposes REST endpoints for managing the order lifecycle:
 <RemoteCode
   title="OpenAPI Definition for Order Fulfillment Service"
   language="yaml" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/order-fulfillment-kotlin/src/main/resources/public/apis/openapi.yml" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260329/examples/order-fulfillment-kotlin/src/main/resources/public/apis/openapi.yml" />
 
 ### Domain Events with AsyncAPI
 
@@ -104,7 +158,7 @@ Events include CloudEvents headers and Kafka message keys for proper routing and
 <RemoteCode
   title="AsyncAPI Definition for Order Events"
   language="yaml" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/order-fulfillment-kotlin/src/main/resources/public/apis/asyncapi.yml" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260329/examples/order-fulfillment-kotlin/src/main/resources/public/apis/asyncapi.yml" />
 
 ## Building with ZenWave Domain Model and SDK
 
@@ -117,12 +171,12 @@ The full application we are building in this example was defined in the followin
 <RemoteCode
   title="`zenwave-model.zdl` for Order Fulfillment Service"
   language="zdl" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/order-fulfillment-kotlin/zenwave-model.zdl" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260329/examples/order-fulfillment-kotlin/zenwave-model.zdl" />
 
 <RemoteCode
   title="`zenwave-scripts.zw` for Order Fulfillment Service"
   language="zdl" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/order-fulfillment-kotlin/zenwave-scripts.zw" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260329/examples/order-fulfillment-kotlin/zenwave-scripts.zw" />
 
 > NOTE: You can name these files as you wish, just mind the file extension `.zdl` for the domain model and `.zw` for the scripts and in `.zw` pointing to the proper `zdlFile` file containing the domain model.
 
@@ -134,46 +188,55 @@ The Order aggregate is modeled with a natural ID (`orderNumber`) and includes or
 
 <RemoteCode
   title="Order Entity in ZDL"
-  language="zdl" collapsed={false} visibleRange="17,46"
-  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/order-fulfillment-kotlin/zenwave-model.zdl" />
+  language="zdl" collapsed={false} visibleRange="17,54"
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260329/examples/order-fulfillment-kotlin/zenwave-model.zdl" />
 
 This generates the following Kotlin entity:
 
 <RemoteCode
   title="Order.kt - Generated Kotlin Entity"
   language="kotlin" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/order-fulfillment-kotlin/src/main/kotlin/io/zenwave360/example/orderfulfillment/domain/Order.kt" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260329/examples/order-fulfillment-kotlin/src/main/kotlin/io/zenwave360/example/orderfulfillment/domain/Order.kt" />
 
 <RemoteCode
   title="OrderStatus.kt - Generated Kotlin Enum"
   language="kotlin" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/order-fulfillment-kotlin/src/main/kotlin/io/zenwave360/example/orderfulfillment/domain/OrderStatus.kt" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260329/examples/order-fulfillment-kotlin/src/main/kotlin/io/zenwave360/example/orderfulfillment/domain/OrderStatus.kt" />
 
 <RemoteCode
   title="OrderItem.kt - Generated Kotlin Value Object"
   language="kotlin" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/order-fulfillment-kotlin/src/main/kotlin/io/zenwave360/example/orderfulfillment/domain/OrderItem.kt" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260329/examples/order-fulfillment-kotlin/src/main/kotlin/io/zenwave360/example/orderfulfillment/domain/OrderItem.kt" />
 
 Aggregates will also get generated a Spring Data Repository interface and an InMemory implementation for testing purposes.
 
 <RemoteCode
   title="OrderRepository.kt - Generated Repository Interface"
   language="kotlin" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/order-fulfillment-kotlin/src/main/kotlin/io/zenwave360/example/orderfulfillment/OrderRepository.kt" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260329/examples/order-fulfillment-kotlin/src/main/kotlin/io/zenwave360/example/orderfulfillment/OrderRepository.kt" />
 
 ### Services
 
 Services are the entry point to the core domain, and are generated as Spring `@Service` classes. The Order service defines commands for each state transition in the order lifecycle.
 
+State transitions are defined by the combination of `@lifecycle` and `@transition` annotations in the ZDL model.
+
+<RemoteCode
+  title="OrdersService in ZDL with State Transitions annotations"
+  language="zdl" collapsed={false} visibleRange="75,101"
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260329/examples/order-fulfillment-kotlin/zenwave-model.zdl" />
+
+This ZDL service will generate the following Kotlin service interface and implementation:
+
 <RemoteCode
   title="OrderService.kt - Generated Service Interface"
   language="kotlin" collapsed={false}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/order-fulfillment-kotlin/src/main/kotlin/io/zenwave360/example/orderfulfillment/OrderService.kt" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260329/examples/order-fulfillment-kotlin/src/main/kotlin/io/zenwave360/example/orderfulfillment/OrderService.kt" />
 
 <RemoteCode
   title="OrderServiceImpl.kt - Generated Service Implementation"
   language="kotlin" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/order-fulfillment-kotlin/src/main/kotlin/io/zenwave360/example/orderfulfillment/OrderServiceImpl.kt" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260329/examples/order-fulfillment-kotlin/src/main/kotlin/io/zenwave360/example/orderfulfillment/OrderServiceImpl.kt" />
 
 ### Exposing REST APIs
 
@@ -182,12 +245,12 @@ The REST API is generated from the OpenAPI specification, creating Spring MVC co
 <RemoteCode
   title="OrderApiController.kt - Generated REST Controller"
   language="kotlin" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/order-fulfillment-kotlin/src/main/kotlin/io/zenwave360/example/orderfulfillment/OrderApiController.kt" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260329/examples/order-fulfillment-kotlin/src/main/kotlin/io/zenwave360/example/orderfulfillment/OrderApiController.kt" />
 
 <RemoteCode
   title="OrderDTOsMapper.kt - Generated DTO Mapper"
   language="kotlin" collapsed={true}
-  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/order-fulfillment-kotlin/src/main/kotlin/io/zenwave360/example/orderfulfillment/mappers/OrderDTOsMapper.kt" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260329/examples/order-fulfillment-kotlin/src/main/kotlin/io/zenwave360/example/orderfulfillment/mappers/OrderDTOsMapper.kt" />
 
 ### Publishing Domain Events
 
@@ -196,7 +259,7 @@ Service commands publish Domain Events as part of their operations. Events are d
 <RemoteCode
   title="OrderServiceImpl.kt - Using Generated Events Producer"
   language="kotlin" collapsed={true} visibleRange="17,45"
-  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/order-fulfillment-kotlin/src/main/kotlin/io/zenwave360/example/orderfulfillment/OrderServiceImpl.kt" />
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260329/examples/order-fulfillment-kotlin/src/main/kotlin/io/zenwave360/example/orderfulfillment/OrderServiceImpl.kt" />
 
 `OrderEventsProducer` is generated from the AsyncAPI definition using ZenWave SDK Maven Plugin.
 

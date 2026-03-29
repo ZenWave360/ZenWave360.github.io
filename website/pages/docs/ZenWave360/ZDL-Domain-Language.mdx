@@ -176,6 +176,32 @@ aggregate OrderAggregate (Order) {
 }
 ```
 
+#### Aggregate Lifecycle
+
+Aggregates can define a lifecycle block to model state machines:
+
+```
+entity Order { }
+
+@lifecycle(field: status, initial = DRAFT)
+aggregate OrderAggregate (Order) {
+    @transition(from: DRAFT, to: PLACED)
+    placeOrder(PlaceOrderInput) withEvents OrderPlaced
+    @transition(from: [DRAFT, PLACED, PAID], to: CANCELLED)
+    cancelOrder(CancelOrderInput) withEvents OrderCancelled
+}
+```
+
+**Lifecycle constraints:**
+- `@lifecycle` annotation can be placed in the aggregate or roor entity
+- Single status `field` per aggregate
+- States must be defined in an enum
+- Commands specify allowed source states (`from`) and target state (`to`)
+- Multiple source states are allowed: `from: [DRAFT, PLACED, PAID]`
+- Commands automatically validate current state before execution
+
+**Important note:** `@transition` annotations can also be placed on service commands, in case you are not using rich domain aggregates.
+
 ## Grammar & Reference
 
 The sections below describe the ZDL language in detail. They are intended as a reference for syntax and structure, not as a step-by-step guide.
@@ -202,7 +228,8 @@ Contains metadata and configuration used by ZenWave tooling:
 Contains the actual domain model declarations:
 - **`entities`** - Domain entities and aggregates
 - **`enums`** - Enumeration types
-- **`services`** - Business operations and commands
+- **`aggregates`** - Rich domain aggregates with optional lifecycle state machines
+- **`services`** - Business operations and commands, also supporting lifecycle state machines
 - **`inputs/outputs`** - Data transfer objects
 - **`events`** - Domain events
 - **`policies`** - Business rules and policies
