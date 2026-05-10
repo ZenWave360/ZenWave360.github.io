@@ -1,6 +1,6 @@
 ---
 section: SDK Plugins
-title: Backend Application Default
+title: AsyncAPI to Terraform
 slug: /zenwave-sdk/plugins/asyncapi-ops/
 order: 4
 ---
@@ -181,7 +181,7 @@ Run it once per service, passing both the provider spec and the client spec. The
 
 Channel bindings follow the standard [AsyncAPI Kafka binding](https://github.com/asyncapi/bindings/blob/master/kafka/README.md) with one addition: `x-env-server-overrides` for per-environment tuning. The generator also accepts `env-server-overrides` without the `x-` prefix.
 
-This extension was proposed in [AsyncAPI Bindings #292](https://github.com/asyncapi/bindings/issues/292).
+Standards status: this extension was proposed in [AsyncAPI Bindings #292](https://github.com/asyncapi/bindings/issues/292). The plugin supports both the extension form (`x-env-server-overrides`) and the proposed standard form (`env-server-overrides`) today, and will keep supporting both styles if the proposal is approved.
 
 ```yaml
 channels:
@@ -209,6 +209,9 @@ Pass `server=staging` to the generator and the staging overrides are deep-merged
 ACLs are derived from `x-principal` on operation bindings (`send` → Write, `receive` → Read).
 
 Retry and DLQ topics are provisioned from the `x-error-topics` extension on `receive` operations. The generator also accepts `error-topics` without the `x-` prefix.
+
+Standards status: this extension was proposed in [AsyncAPI Bindings #299](https://github.com/asyncapi/bindings/issues/299). The plugin supports both the extension form (`x-error-topics`) and the proposed standard form (`error-topics`) today, and will keep supporting both styles if the proposal is approved.
+
 The consumer group id is read from `x-groupId` (ZenWave extension, plain string). If `groupId` is present it takes precedence — note that in standard AsyncAPI Kafka bindings `groupId` is a schema object, not a plain string; using it as a plain string is a ZenWave-specific interpretation.
 
 ```yaml
