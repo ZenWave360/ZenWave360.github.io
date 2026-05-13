@@ -28,6 +28,7 @@ const SEOQuery = graphql`
         description
         siteUrl
         author
+        goatCounterURL
       }
     }
   }
@@ -102,6 +103,14 @@ export function SEO({ title, canonical }) {
           content: metaDescription,
         },
       ]}
-    />
+    >
+      {data.site.siteMetadata.goatCounterURL ? (
+        <script
+          data-goatcounter={data.site.siteMetadata.goatCounterURL}
+          async
+          src="//gc.zgo.at/count.js"
+        />
+      ) : null}
+    </Helmet>
   )
 }

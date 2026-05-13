@@ -537,6 +537,7 @@ const pluginOptionsSchema = (/** @type {{ Joi: import('joi') }} */ { Joi }) => {
     discordInvite: Joi.string(),
     author: Joi.string(),
     carbonAdsURL: Joi.string(),
+    goatCounterURL: Joi.string(),
     docSearch: Joi.object({
       apiKey: Joi.string().required(),
       indexName: Joi.string().required(),

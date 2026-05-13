@@ -11,6 +11,7 @@ module.exports = {
         siteUrl: "https://www.zenwave360.io/",
         githubRepositoryURL: "https://github.com/zenwave360",
         discordInvite: "https://discord.gg/TWyXEeV2Ae",
+        goatCounterURL: "https://zenwave360.goatcounter.com/count",
         sections: ['ZenWave 360º', 'ZenWave SDK', 'SDK Plugins', 'ZenWave & API-First', 'ZenWave & API Testing', 'Examples', 'DDD Examples', 'EDA Examples'],
         navItems: [
           { title: 'Documentation', url: '/docs/' },
@@ -18,13 +19,6 @@ module.exports = {
           { title: 'Plugin', url: '/plugin/' },
           { title: 'Blog', url: '/blog/' },
         ],
-      },
-    },
-    {
-      resolve: `gatsby-plugin-google-analytics`,
-      options: {
-        // The property ID; the tracking code won't be generated without it
-        trackingId: 'G-PWPE0ZF877',
       },
     },
     // {

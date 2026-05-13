@@ -37,6 +37,7 @@ function rehypeMetaAsAttributes() {
  * @param {string} [options.discordInvite]
  * @param {string} [options.author]
  * @param {string} [options.carbonAdsURL]
+ * @param {string} [options.goatCounterURL]
  * @param {{ apiKey: string, indexName: string, appId: string }} [options.docSearch]
  * @param {object} [options.sitemap]
  */
@@ -52,6 +53,7 @@ module.exports = function config(options) {
       sections: options.sections,
       navItems: options.navItems,
       carbonAdsURL: options.carbonAdsURL,
+      goatCounterURL: options.goatCounterURL,
       description: options.description,
       twitterAccount: options.twitterAccount,
       siteUrl,
