@@ -29,6 +29,23 @@ Prism.languages.insertBefore('zdl', 'function', {
   'zdl-validation': /\b(?:required|unique|max|min|maxlength|minlength|pattern)\b/,
 });
 
+Prism.languages.zfl = Prism.languages.extend('clike', {
+  'zfl-class-name': {
+    pattern: RegExp(/(\b(?:flow|start|service)\s+)/.source + identifier),
+    lookbehind: true,
+  },
+  'zfl-keyword': /\b(?:config|systems|flow|zdl|service|commands|events|start|when|do|call|on|emits|response|for|end|completed|suspended|cancelled|and)\b/,
+  'zfl-field': [
+    /^\s*([a-z][a-zA-Z_][a-zA-Z0-9_.]*)\s+/,
+    /^\s*([a-z][a-zA-Z_][a-zA-Z0-9_.]*)\s*:/,
+  ],
+});
+
+Prism.languages.insertBefore('zfl', 'function', {
+  'zfl-annotation': /(?:@\w+)/,
+  'zfl-validation': /\b(?:required|unique|max|min|maxlength|minlength|email|pattern)\b/,
+});
+
 Prism.languages.java = Prism.languages.extend('javascript', {});
 
 // Prism.languages.insertBefore('zdl', 'comment', {

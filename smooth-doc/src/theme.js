@@ -146,25 +146,25 @@ export const theme = {
         },
       },
       {
-        types: ['zdl-keyword', 'keyword'],
+        types: ['zdl-keyword', 'zfl-keyword', 'keyword'],
         style: {
           color: 'rgb(207, 142, 107)',
         },
       },
       {
-        types: ['zdl-annotation', 'zdl-validation'],
+        types: ['zdl-annotation', 'zdl-validation', 'zfl-annotation', 'zfl-validation'],
         style: {
           color: 'rgb(179, 174, 96)',
         },
       },
       {
-        types: ['zdl-class-name'],
+        types: ['zdl-class-name', 'zfl-class-name'],
         style: {
           color: 'rgb(102,127,209)',
         },
       },
       {
-        types: ['zdl-field'],
+        types: ['zdl-field', 'zfl-field'],
         style: {
           color: 'rgb(198, 120, 221)',
         },
