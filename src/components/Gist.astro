@@ -1,0 +1,29 @@
+---
+interface Props {
+  gist: string;
+  file?: string;
+}
+
+const { gist, file } = Astro.props;
+const source = `https://gist.github.com/${gist}.js${file ? `?file=${encodeURIComponent(file)}` : ''}`;
+const link = `https://gist.github.com/${gist}${file ? `#file-${file.toLowerCase().replaceAll('.', '-')}` : ''}`;
+---
+
+<figure class="gist-embed">
+  <figcaption>
+    <a href={link}>View gist{file ? `: ${file}` : ''}</a>
+  </figcaption>
+  <script src={source}></script>
+  <noscript><a href={link}>View gist{file ? `: ${file}` : ''}</a></noscript>
+</figure>
+
+<style>
+  .gist-embed {
+    margin: 1.5rem 0;
+  }
+
+  .gist-embed figcaption {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+</style>

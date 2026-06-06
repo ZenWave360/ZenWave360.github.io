@@ -1,0 +1,62 @@
+---
+import ZenHeader from '../components/ZenHeader.astro';
+import ZenThemeProvider from '../components/ZenThemeProvider.astro';
+import '../styles/zenwave.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} | ZenWave 360</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="icon" href="/images/logo-manifest.png" />
+    <ZenThemeProvider />
+  </head>
+  <body>
+    <header class="zen-topbar">
+      <ZenHeader />
+    </header>
+    <slot />
+  </body>
+</html>
+
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: var(--sl-color-bg, #111318);
+    --panel: #191d25;
+    --text: var(--sl-color-white, #f3f5f8);
+    --muted: var(--sl-color-gray-2, #b9c0ca);
+    --accent: var(--zen-highlight, #ffe04b);
+    --border: var(--sl-color-hairline, #303744);
+  }
+
+  :root[data-theme='light'] {
+    color-scheme: light;
+    --bg: #fffaf7;
+    --panel: #ffffff;
+    --text: #191713;
+    --muted: #5f6670;
+    --border: #e6ded8;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--text);
+    background: var(--bg);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  a {
+    color: inherit;
+  }
+</style>

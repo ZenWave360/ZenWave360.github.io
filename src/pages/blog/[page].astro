@@ -1,0 +1,155 @@
+---
+import { getCollection } from 'astro:content';
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+export async function getStaticPaths({ paginate }) {
+  const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+  );
+  return paginate(posts, { pageSize: 8 });
+}
+
+const { page } = Astro.props;
+
+function postHref(post) {
+  return `/${post.id}/`;
+}
+---
+
+<BlogLayout title="Blog" description="ZenWave 360 articles, release notes, and architecture notes.">
+  <main class="blog">
+    <header>
+      <h1>Blog</h1>
+      <p>ZenWave 360 articles, release notes, and architecture notes.</p>
+    </header>
+
+    <section class="posts" aria-label="Posts">
+      {page.data.map((post) => (
+        <article>
+          {post.data.image && (
+            <a class="post-image" href={postHref(post)} aria-label={post.data.title}>
+              <img src={post.data.image} alt={post.data.imageAlt || ''} loading="lazy" decoding="async" />
+            </a>
+          )}
+          <div>
+            <p class="meta">
+              <time datetime={post.data.date.toISOString()}>{post.data.date.toLocaleDateString('en', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+              <span>{Math.max(1, Math.round(post.body.split(/\s+/).length / 220))} min read</span>
+            </p>
+            <h2><a href={postHref(post)}>{post.data.title}</a></h2>
+            {(post.data.excerpt || post.data.description) && <p>{post.data.excerpt || post.data.description}</p>}
+            {post.data.tags.length > 0 && (
+              <ul>
+                {post.data.tags.map((tag) => <li><a href={`/tags/${tag.toLowerCase().replaceAll(' ', '-')}/`}>{tag}</a></li>)}
+              </ul>
+            )}
+          </div>
+        </article>
+      ))}
+    </section>
+
+    <nav class="pager" aria-label="Blog pagination">
+      {page.url.prev && <a href={page.url.prev}>Previous</a>}
+      <span>Page {page.currentPage} of {page.lastPage}</span>
+      {page.url.next && <a href={page.url.next}>Next</a>}
+    </nav>
+  </main>
+</BlogLayout>
+
+<style>
+  .blog {
+    width: min(1040px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: calc(var(--sl-nav-height, 4rem) + 3rem) 0 4rem;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2.5rem, 7vw, 5rem);
+  }
+
+  header p,
+  .meta,
+  article > p {
+    color: var(--muted);
+  }
+
+  .posts {
+    display: grid;
+    gap: 1rem;
+    margin-top: 3rem;
+  }
+
+  article {
+    display: grid;
+    grid-template-columns: minmax(10rem, 16rem) 1fr;
+    gap: 1.25rem;
+    align-items: start;
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background: var(--panel);
+  }
+
+  .post-image {
+    display: block;
+    overflow: hidden;
+    border-radius: 0.4rem;
+    background: #0b0c10;
+    aspect-ratio: 16 / 10;
+  }
+
+  .post-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    margin: 0 0 0.75rem;
+    font-size: 0.95rem;
+  }
+
+  h2 {
+    margin: 0;
+  }
+
+  h2 a {
+    text-decoration: none;
+  }
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0;
+    margin: 1rem 0 0;
+    list-style: none;
+  }
+
+  li a {
+    display: inline-flex;
+    padding: 0.18rem 0.55rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+
+  .pager {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 720px) {
+    article {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

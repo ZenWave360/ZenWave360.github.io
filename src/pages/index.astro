@@ -1,0 +1,255 @@
+---
+import ZenFooter from '../components/ZenFooter.astro';
+import ZenHeader from '../components/ZenHeader.astro';
+import ZenThemeProvider from '../components/ZenThemeProvider.astro';
+import '../styles/zenwave.css';
+
+const features = [
+  {
+    title: 'Domain Model Language',
+    image: '/logos/conceptual-model.svg',
+    text: 'Concise and complete DDD modeling language for Event-Driven Architectures.',
+  },
+  {
+    title: 'ZenWave SDK',
+    image: '/logos/zenwave-sdk-dark.png',
+    text: 'Generate Spring Boot, Spring Cloud, API definitions, tests, and infrastructure from your models.',
+  },
+  {
+    title: 'Domain Driven Design',
+    image: '/logos/ddd.svg',
+    text: 'Business, developer, and computer friendly Ubiquitous Language for your bounded contexts.',
+  },
+  {
+    title: 'Event-Driven Architectures',
+    image: '/images/event-driven-architectures-logo.svg',
+    text: 'Designed for Event-Driven Architectures, mapping Event Storming discoveries into models.',
+  },
+  {
+    title: 'API-First',
+    image: '/logos/openapi-logo.svg',
+    text: 'Leverage open standards like OpenAPI and AsyncAPI without losing domain language.',
+  },
+  {
+    title: 'API Testing',
+    image: '/logos/tdd.svg',
+    text: 'Testing as a first-class citizen, including generated test suites from models and APIs.',
+  },
+];
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ZenWave 360</title>
+    <meta name="description" content="DDD and API-First Modeling Tools for Modern Distributed Applications." />
+    <ZenThemeProvider />
+  </head>
+  <body>
+    <header class="zen-topbar">
+      <ZenHeader />
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero__body">
+          <h1>Create Software<br />Easy To Understand!</h1>
+          <p>DDD and API-First Modeling Tools for Modern Distributed Applications.</p>
+          <div class="actions">
+            <a class="button button--neutral" href="/docs/zenwave-sdk/">Browse Docs</a>
+            <a class="button" href="/docs/getting-started/">Getting Started</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="features" aria-label="ZenWave capabilities">
+        {features.map((feature) => (
+          <article>
+            <img src={feature.image} alt="" />
+            <h2>{feature.title}</h2>
+            <p>{feature.text}</p>
+          </article>
+        ))}
+      </section>
+
+      <section class="wide">
+        <article>
+          <img src="/images/home/spiral.svg" alt="Domain Driven Design is about business understanding" />
+          <div>
+            <h2>Maintainable Software</h2>
+            <p>It is not a matter of code, but a matter of understanding the business domain. Software well designed should be easy to understand by all.</p>
+          </div>
+        </article>
+        <article>
+          <img src="/images/home/common-language.svg" alt="Common language" />
+          <div>
+            <h2>Common Language (DSL)</h2>
+            <p>A common language closes the gap between domain experts, technical experts, working software, and tests.</p>
+          </div>
+        </article>
+        <article>
+          <img src="/images/home/laptop-gears.svg" alt="" />
+          <div>
+            <h2>ZenWave SDK</h2>
+            <p>Accelerate development by converting models into API definitions, Spring Boot applications, Spring Cloud integrations, and API tests.</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="screenshots">
+        <h2>A Domain Language Designed for Event-Driven Architectures</h2>
+        <img src="/images/EventStorming-ZDL-Mapping.png" alt="Event Storming to ZDL Mapping" />
+        <h2>... And Bounded Context Mapping</h2>
+        <img src="/images/home/bounded-context-mapping.svg" alt="Bounded Context Mapping with ZDL" />
+      </section>
+    </main>
+    <ZenFooter />
+  </body>
+</html>
+
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: var(--sl-color-bg, #111318);
+    --panel: #191d25;
+    --text: var(--sl-color-white, #f3f5f8);
+    --muted: var(--sl-color-gray-2, #b9c0ca);
+    --accent: var(--zen-highlight, #ffe04b);
+    --border: var(--sl-color-hairline, #303744);
+  }
+
+  :root[data-theme='light'] {
+    color-scheme: light;
+    --bg: #fffaf7;
+    --panel: #ffffff;
+    --text: #191713;
+    --muted: #5f6670;
+    --border: #e6ded8;
+  }
+
+  body {
+    margin: 0;
+    color: var(--text);
+    background: var(--bg);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  .hero {
+    min-height: 29rem;
+    display: grid;
+    align-items: center;
+    padding: calc(var(--sl-nav-height, 4rem) + clamp(2rem, 5vw, 5rem)) clamp(2rem, 5vw, 5rem) clamp(2rem, 5vw, 5rem);
+    background:
+      linear-gradient(90deg, rgba(17, 19, 24, 0.92), rgba(17, 19, 24, 0.4)),
+      url('/images/hero-background.png') center/cover no-repeat;
+  }
+
+  .hero__body {
+    max-width: 52rem;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    line-height: 0.95;
+  }
+
+  .hero p {
+    max-width: 42rem;
+    color: var(--muted);
+    font-size: clamp(1.1rem, 2vw, 1.5rem);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0 1rem;
+    border-radius: 0.4rem;
+    background: var(--accent);
+    color: #1b0d04;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .button--neutral {
+    background: #fff;
+    color: #15171c;
+  }
+
+  .features,
+  .wide,
+  .screenshots {
+    width: min(1120px, calc(100% - 2rem));
+    margin: 4rem auto;
+  }
+
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1rem;
+  }
+
+  .features article {
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background: var(--panel);
+  }
+
+  .features img {
+    height: 3rem;
+    max-width: 8rem;
+    object-fit: contain;
+  }
+
+  .features h2,
+  .wide h2,
+  .screenshots h2 {
+    margin-bottom: 0.5rem;
+  }
+
+  .features p,
+  .wide p {
+    color: var(--muted);
+  }
+
+  .wide {
+    display: grid;
+    gap: 2rem;
+  }
+
+  .wide article {
+    display: grid;
+    grid-template-columns: minmax(9rem, 18rem) 1fr;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .wide img,
+  .screenshots img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .screenshots {
+    text-align: center;
+  }
+
+  @media (max-width: 760px) {
+    .wide article {
+      display: block;
+    }
+  }
+</style>

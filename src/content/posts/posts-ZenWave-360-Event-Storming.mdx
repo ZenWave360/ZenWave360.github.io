@@ -1,0 +1,157 @@
+---
+title: "ZenWave 360º Event Storming"
+description: "Event Storming is a collaborative workshop technique used to explore complex business domains. Its primary goal is to create a shared understanding among stakeholders, including business experts and technical teams."
+slug: "/posts/ZenWave-360-Event-Storming/"
+date: "2023-09-30T07:00:00+01:00"
+author: "Ivan Garcia Sainz-Aja"
+excerpt: "Event Storming is a collaborative workshop technique used to explore complex business domains. Its primary goal is to create a shared understanding among stakeholders, including business experts and technical teams."
+image: "/posts/ZenWave-360-Event-Storming/EventStorming-ZDL-Mapping.png"
+tags:
+  - "DDD"
+  - "Event Storming"
+  - "Domain Modeling"
+  - "API-First"
+---
+
+import Image from '../../components/Image.astro';
+import Quote from '../../components/Quote.astro';
+
+# Event Storming
+
+Flexible workshop format for collaborative exploration of complex business domains
+
+<Quote>Event Storming provides a shared language that bridges the gap between business experts and technical teams.</Quote>
+
+<Image src="/posts/ZenWave-360-Event-Storming/DLES-Brandolini-transparent.png" alt="Event Storming" />
+
+## Event Storming
+
+It was created by Alberto Brandolini, and is described in his book [Introducing EventStorming](https://leanpub.com/introducing_eventstorming).
+
+Event Storming is a collaborative workshop technique used to explore complex business domains.
+
+Its primary goal is to create a shared understanding among stakeholders, including business experts and technical teams.
+
+It helps to make complex processes more tangible.
+
+Events represent significant occurrences in the domain that trigger changes or reactions.
+
+Commands and Policies are also used to represent actions and rules within the domain.
+
+Design Level Event Storming helps in identifying Aggregates and Entities within the domain. Aggregates are clusters of related objects that are treated as a single unit.
+
+## ZDL ~ A Domain Modeling Language for DDD and Event Storming
+
+ZenWave Domain Language ([ZDL](/docs/event-driven-design/zenwave-domain-language)) is a Domain Specific Language that maps Event Storming discoveries with DDD principles in mind into a developer friendly format.
+
+It works as an Ubiquitous Language, retaining the language of the domain and because is machine friendly it propagates automatically to documentation, code and tests.
+
+<Image alt="Event-Storming to ZDL Mapping" src="/posts/ZenWave-360-Event-Storming/EventStorming-ZDL-Mapping.png" />
+
+Jump to [Bounded Context Canvas](/docs/event-driven-design/bounded-context-canvas/) for details about how to map Event-Storming concepts into ZDL format.
+
+## From Vision To Detail
+
+<Image alt="Event Storming from Vision to Detail" src="/posts/ZenWave-360-Event-Storming/event-storming-from-vision-to-detail.png" />
+(Source: https://es.slideshare.net/ziobrando/50000-orange-stickies-later)
+
+
+## Big Picture EventStorming
+
+<Image alt="Big Picture EventStorming" src="/posts/ZenWave-360-Event-Storming/event-storming-timeline-narratives.png" />
+
+Big Picture EventStorming is ideal for Analysis of a whole Business Domain or Subdomain. Beyond silos, it requires the participation of business experts
+
+![Big Picture EventStorming](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*e1bMa2Q-hVumzGJO27jM5g.jpeg)
+(Source: https://medium.com/@springdo/a-facilitators-recipe-for-event-storming-941dcb38db0d)
+
+## Design Level EventStorming for Designing Event-Driven Systems for a Bonded Context
+
+<Image alt="Design Level EventStorming" src="/posts/ZenWave-360-Event-Storming/event-storming-design-canvas.png" />
+
+Design Level EventStorming is ideal for Designing Event-Driven Systems for a given Bonded Context and while it can be performed by the development team alone, it is recommended to request feedback and validation from domain experts.
+
+![Design Level EventStorming](https://mrpicky.dev/wp-content/uploads/2021/12/DLES-offer-1024x589.jpg)
+(Source: https://mrpicky.dev/design-level-event-storming-with-examples/)
+
+## Event Storming Elements
+
+### Events
+
+Events play a central role in Event Storming. They represent significant occurrences in the domain that trigger changes or reactions.
+
+<Image dark="/posts/ZenWave-360-Event-Storming/event-storming/event.dark.png" light="/posts/ZenWave-360-Event-Storming/event-storming/event.light.png" alt="Event Storming - Event" style={{maxWidth: '650px'}}/>
+
+### Commands and Policies
+
+Commands and Policies are used to represent actions and rules within the domain.
+
+<Image dark="/posts/ZenWave-360-Event-Storming/event-storming/command.dark.png" light="/posts/ZenWave-360-Event-Storming/event-storming/command.light.png" alt="Event Storming - Command" style={{maxWidth: '600px'}} />
+
+#### User Initiated Command Produces Event
+
+Commands can be initiated by users.
+
+<Image dark="/posts/ZenWave-360-Event-Storming/event-storming/user-command-event.dark.png" light="/posts/ZenWave-360-Event-Storming/event-storming/user-command-event.light.png" alt="Event Storming - User Initiated Command Produces Event" style={{maxWidth: '700px'}} />
+
+#### Policy Initiated Command
+
+Commands can also be initiated by policies. Rules triggering in the background, spanning for other systems events, temporal triggers, external systems, etc.
+
+<Image dark="/posts/ZenWave-360-Event-Storming/event-storming/policies.dark.png" light="/posts/ZenWave-360-Event-Storming/event-storming/policies.light.png" alt="Event Storming - Policy Initiated Command" style={{maxWidth: '800px'}} />
+
+### Command invoked on System produces Event
+
+Commands do not directly triggers events, but they are invoked on a system, which in turn produces events.
+
+<Image dark="/posts/ZenWave-360-Event-Storming/event-storming/command-system-event.dark.png" light="/posts/ZenWave-360-Event-Storming/event-storming/command-system-event.light.png" alt="Event Storming - Command invoked on System produces Event" style={{maxWidth: '800px'}} />
+
+### Command invoked on Aggregate produces Event
+
+DDD systems are comprised of Aggregates, which are clusters of related objects that are treated as a single unit. Commands are invoked on Aggregates, which in turn produces events.
+
+<Image dark="/posts/ZenWave-360-Event-Storming/event-storming/command-aggregate-event.dark.png" light="/posts/ZenWave-360-Event-Storming/event-storming/command-aggregate-event.light.png" alt="Event Storming - Command invoked on Aggregate produces Event" style={{maxWidth: '850px'}} />
+
+### Read Models in Commands and Events
+
+Read Models represents Value Objects associated to Commands and Events.
+
+<Image dark="/posts/ZenWave-360-Event-Storming/event-storming/read-model-command-aggregate-event.dark.png" light="/posts/ZenWave-360-Event-Storming/event-storming/read-model-command-aggregate-event.light.png" alt="Event Storming - Command invoked on Aggregate produces Event" style={{maxWidth: '850px'}} />
+
+## Event Storming Steps
+
+### Establish the Timeline
+
+First step is discover all relevant events that happened in the domain and sort them in a timeline from left to right.
+
+Find <strong class="orange">pivotal events</strong>: those events where the flow splits into different paths or joins back together. These pivotal events would be <strong class="orange">good candidates for Context boundaries</strong>.
+
+<Image src="/posts/ZenWave-360-Event-Storming/event-storming-timeline.png" alt="Event Storming Timeline" />
+
+### Join events with commands and policies
+
+Next join events (facts) with commands and policies (actions and rules).
+
+<Image src="/posts/ZenWave-360-Event-Storming/event-storming-with-commands-and-policies.png" alt="Event Storming with Commands and Policies" />
+
+### Identify Aggregates
+
+Identify Aggregates and Entities within the domain. Alternatively you can just identify Systems and leave Aggreate discovery for a posterior technical design phase.
+
+<Image src="/posts/ZenWave-360-Event-Storming/event-storming-with-aggregates.png" alt="Event Storming with Aggregates" />
+
+### Split into Bounded Contexts
+
+A Bounded Context is a self-contained entity with its own domain model and its own Ubiquitous Language that is not affected by the outside world.
+
+They help in organizing the domain into manageable parts and in defining the interactions between different parts of the system.
+
+<Image src="/posts/ZenWave-360-Event-Storming/event-storming-bounded-contexts.png" alt="Event Storming with Bounded Contexts" />
+
+### Describe the Bounded Contexts using Bounded Context Canvas and ZDL Model Language
+
+Use a Bounded Context Canvas to describe the inputs, outputs, aggregates and policies of  Bounded Context.
+
+You can describe the Bounded Context directly using the developer friendly and machine friendly ZDL Model Language.
+
+<Image src="/images/home/bounded-context-mapping.svg" alt="Bounded Context Mapping with ZDL" width="100%"/>

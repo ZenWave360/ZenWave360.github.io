@@ -1,0 +1,54 @@
+---
+import RemoteCode from './RemoteCode.astro';
+
+interface Props {
+  text1?: string;
+  sourceTitle?: string;
+  sourceUrl?: string;
+  sourceContent?: string;
+  sourceLanguage?: string;
+  sourceVisibleRange?: string;
+  sourceCollapsed?: boolean;
+  text2?: string;
+  outputTitle?: string;
+  outputUrl?: string;
+  outputContent?: string;
+  outputLanguage?: string;
+  outputVisibleRange?: string;
+  outputCollapsed?: boolean;
+  text3?: string;
+}
+
+const props = Astro.props;
+const isDev = import.meta.env.DEV;
+---
+
+<section class="code-generation">
+  {props.text1 && <p>{props.text1}</p>}
+  {(props.sourceUrl || props.sourceContent) && (
+    <RemoteCode
+      title={props.sourceTitle}
+      url={props.sourceUrl}
+      content={props.sourceContent}
+      language={props.sourceLanguage}
+      visibleRange={props.sourceVisibleRange}
+      collapsed={props.sourceCollapsed}
+      deferInDev={isDev}
+      showLegend={Boolean(props.sourceUrl)}
+    />
+  )}
+  {props.text2 && <p>{props.text2}</p>}
+  {(props.outputUrl || props.outputContent) && (
+    <RemoteCode
+      title={props.outputTitle}
+      url={props.outputUrl}
+      content={props.outputContent}
+      language={props.outputLanguage}
+      visibleRange={props.outputVisibleRange}
+      collapsed={props.outputCollapsed}
+      deferInDev={isDev}
+      showLegend={Boolean(props.outputUrl)}
+    />
+  )}
+  {props.text3 && <p>{props.text3}</p>}
+</section>

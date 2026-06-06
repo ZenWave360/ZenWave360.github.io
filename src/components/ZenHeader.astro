@@ -1,0 +1,119 @@
+---
+import config from 'virtual:starlight/user-config';
+import Search from 'virtual:starlight/components/Search';
+import SocialIcons from 'virtual:starlight/components/SocialIcons';
+import ThemeSelect from 'virtual:starlight/components/ThemeSelect';
+
+const shouldRenderSearch =
+  config.pagefind || config.components.Search !== '@astrojs/starlight/components/Search.astro';
+---
+
+<div class="zen-header">
+  <div class="zen-header__title">
+    <a class="zen-brand" href="/">
+      <img src="/images/zenwave-logo.svg" alt="" />
+      <span>ZenWave Platform</span>
+    </a>
+  </div>
+  <div class="zen-header__search print:hidden">
+    {shouldRenderSearch && <Search />}
+  </div>
+  <nav class="zen-header__nav" aria-label="Primary">
+    <a href="/docs/">Documentation</a>
+    <a href="/zenwave-sdk/">SDK</a>
+    <a href="/plugin/">Plugin</a>
+    <a href="/blog/">Blog</a>
+  </nav>
+  <div class="zen-header__tools sl-hidden md:sl-flex print:hidden">
+    <SocialIcons />
+    <ThemeSelect />
+  </div>
+</div>
+
+<style>
+  @layer starlight.core {
+    .zen-header {
+      height: 100%;
+      display: grid;
+      grid-template-columns: auto minmax(16rem, 1fr) auto auto;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .zen-header__title {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .zen-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      min-width: 0;
+      color: var(--sl-color-white);
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1;
+      text-decoration: none;
+    }
+
+    .zen-brand img {
+      max-height: 2.05rem;
+      width: auto;
+    }
+
+    .zen-header__nav {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 1.1rem;
+      white-space: nowrap;
+    }
+
+    .zen-header__nav a {
+      color: var(--sl-color-white);
+      font-size: var(--sl-text-base);
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .zen-header__nav a:hover {
+      color: var(--sl-color-text-accent);
+    }
+
+    .zen-header__search {
+      display: flex;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .zen-header__search :global(.pagefind-ui) {
+      width: min(32rem, 100%);
+    }
+
+    .zen-header__tools {
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .zen-header__tools :global(a),
+    .zen-header__tools :global(button) {
+      color: var(--sl-color-white);
+    }
+
+    @media (max-width: 68rem) {
+      .zen-header {
+        grid-template-columns: auto minmax(8rem, 1fr) auto;
+      }
+
+      .zen-header__nav {
+        display: none;
+      }
+
+      .zen-header__search {
+        justify-content: stretch;
+      }
+    }
+  }
+</style>

@@ -1,0 +1,69 @@
+---
+interface Props {
+  src?: string;
+  light?: string;
+  dark?: string;
+  alt?: string;
+  title?: string;
+  href?: string;
+  width?: string;
+  [key: string]: unknown;
+}
+
+const { src, light, dark, alt = '', title, href, width } = Astro.props;
+const themedVariantPattern = /\.(light|dark)\./i;
+const resolveVariant = (value: string, theme: 'light' | 'dark') =>
+  value.replace(themedVariantPattern, `.${theme}.`);
+const inferredLight = !light && src && themedVariantPattern.test(src) ? resolveVariant(src, 'light') : undefined;
+const inferredDark = !dark && src && themedVariantPattern.test(src) ? resolveVariant(src, 'dark') : undefined;
+const lightImage = light || inferredLight;
+const darkImage = dark || inferredDark;
+const image = lightImage || darkImage || src;
+const hasThemePair = Boolean(lightImage && darkImage && lightImage !== darkImage);
+---
+
+{image && (
+  <figure class="content-image" style={width ? `--image-width: ${width}` : undefined}>
+    {href ? (
+      <a href={href}>
+        <img
+          src={lightImage || image}
+          data-light={hasThemePair ? lightImage : undefined}
+          data-dark={hasThemePair ? darkImage : undefined}
+          class={hasThemePair ? 'content-image__themed' : undefined}
+          alt={alt}
+          loading="lazy"
+          decoding="async"
+        />
+      </a>
+    ) : (
+      <img
+        src={lightImage || image}
+        data-light={hasThemePair ? lightImage : undefined}
+        data-dark={hasThemePair ? darkImage : undefined}
+        class={hasThemePair ? 'content-image__themed' : undefined}
+        alt={alt}
+        loading="lazy"
+        decoding="async"
+      />
+    )}
+    {title && <figcaption>{title}</figcaption>}
+  </figure>
+)}
+
+<script>
+  function syncThemedImages() {
+    const theme = document.documentElement.dataset.theme ?? 'light';
+    document.querySelectorAll<HTMLImageElement>('img.content-image__themed').forEach((img) => {
+      const next = theme === 'dark' ? img.dataset.dark : img.dataset.light;
+      if (next && img.getAttribute('src') !== next) img.src = next;
+    });
+  }
+
+  syncThemedImages();
+
+  new MutationObserver(syncThemedImages).observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['data-theme'],
+  });
+</script>

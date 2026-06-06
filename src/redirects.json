@@ -1,0 +1,10 @@
+{
+  "/docs/": "/docs/zenwave-sdk/",
+  "/docs/examples/index/": "/docs/examples/eda-examples/",
+  "/Event-Driven-Architectures/API-First-with-AsyncAPI/": "/posts/API-First-with-AsyncAPI-And-ZenWave-SDK/",
+  "/Event-Driven-Architectures/AsyncAPI-Code-Generator/": "/posts/ZenWave-AsyncAPI-Code-Generator/",
+  "/Domain-Driven-Design/JDL-Domain-Language/JHipster-As-IDL-for-AsyncAPIv2/": "/posts/JHipster-As-IDL-for-AsyncAPIv2/",
+  "/Domain-Driven-Design/JDL-Domain-Language/JHipster-As-IDL-for-OpenAPIv3/": "/posts/JHipster-As-IDL-for-OpenAPIv3/",
+  "/zenwave-sdk/plugins/java-to-jdl/": "https://github.com/ZenWave360/zenwave-sdk/tree/main/plugins/java-to-jdl",
+  "/zenwave-sdk/plugins/jdl-to-asyncapi/": "https://github.com/ZenWave360/zenwave-sdk/tree/main/plugins/jdl-to-asyncapi"
+}

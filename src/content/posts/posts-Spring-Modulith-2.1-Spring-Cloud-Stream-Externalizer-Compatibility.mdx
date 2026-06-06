@@ -1,0 +1,71 @@
+---
+title: "Spring Modulith 2.1 Compatibility for the Spring Cloud Stream Externalizer"
+slug: "/posts/Spring-Modulith-2.1-Spring-Cloud-Stream-Externalizer-Compatibility/"
+image: "/posts/Spring-Modulith-Events-Spring-Cloud-Stream-Externalizer/spring-modulith-events-spring-cloud-stream.png"
+author: "Ivan Garcia Sainz-Aja"
+date: "2026-06-11T21:00:00+02:00"
+excerpt: "Spring Modulith 2.1 GA was released today. The ZenWave Spring Cloud Stream Event Externalizer library is already compatible and ready to use."
+tags:
+  - "ZenWave360"
+  - "Spring Cloud Stream"
+  - "Spring Modulith"
+  - "Spring Boot"
+---
+
+<div style={{ textAlign: 'center' }}>
+  <a href="https://github.com/ZenWave360/spring-modulith-events-spring-cloud-stream">
+    <img
+      src="/posts/Spring-Modulith-Events-Spring-Cloud-Stream-Externalizer/spring-modulith-events-spring-cloud-stream.png"
+      alt="Spring Modulith Events Spring Cloud Stream Externalizer"
+      width="80%"
+    />
+  </a>
+</div>
+
+# Spring Modulith 2.1 Compatibility for the Spring Cloud Stream Externalizer
+
+Spring Modulith 2.1 GA was released today alongside Spring Boot 4.1. We have already verified compatibility and published a new version of the [ZenWave Spring Cloud Stream Event Externalizer](https://github.com/ZenWave360/spring-modulith-events-spring-cloud-stream) library.
+
+## What is the Spring Cloud Stream Externalizer?
+
+If you are not familiar with this library, it allows you to externalize Spring Modulith application events to any message broker supported by Spring Cloud Stream: Kafka, RabbitMQ, and others, all from the same application.
+
+It gives you more control over message headers, supports both JSON and Avro serialization, and integrates well with the [ZenWave AsyncAPI Code Generator](/posts/Spring-Modulith-Events-Spring-Cloud-Stream-Externalizer/) for an API-First approach.
+
+## What Changed in Spring Modulith 2.1
+
+Spring Modulith 2.1 brings a few improvements worth knowing about:
+
+**JDBC schema is now created by default.** If you have this property in your configuration you can safely remove it, it is no longer needed:
+
+```yaml
+spring:
+  modulith:
+    events:
+      jdbc:
+        schema-initialization:
+          enabled: true
+```
+
+**Opt out of the Event Publication Registry per listener.** You can now exclude specific `@TransactionalEventListener` methods from being tracked in the outbox, giving you finer control over which events are persisted.
+
+**Events from all threads are visible in tests.** `PublishedEvents` and `Scenario` now see events published from any thread by default. If you have tests that assert an exact number of published events, review them to make sure concurrent events do not cause unexpected failures.
+
+## How to Upgrade
+
+Just bump the library version in your `pom.xml`:
+
+```xml
+<properties>
+    <zenwave-modulith-events-scs.version>1.2.0</zenwave-modulith-events-scs.version>
+</properties>
+```
+
+This version is compiled against Spring Modulith 2.1 and Spring Boot 4.1. No other changes are needed in your code. The `@EnableSpringCloudStreamEventExternalization` annotation, the `IncompleteEventPublications` API, and the generated producers from ZenWave SDK all continue to work as before.
+
+## Links
+
+- [Spring Modulith 2.1 release announcement](https://spring.io/blog/2026/06/11/spring-modulith-2-1-ga-2-0-7-and-1-4-12-released)
+- [ZenWave Spring Cloud Stream Externalizer on GitHub](https://github.com/ZenWave360/spring-modulith-events-spring-cloud-stream)
+- [Original blog post with full setup guide](/posts/Spring-Modulith-Events-Spring-Cloud-Stream-Externalizer/)
+- [Sample project](https://github.com/EDALearn/EDA-TransactionalOutbox-Modulith-JPA)

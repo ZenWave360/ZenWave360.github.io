@@ -1,0 +1,22 @@
+{
+  "name": "zenwave360-github-io-new",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev --port 4322",
+    "build": "astro build",
+    "preview": "astro preview",
+    "sync:remote-code": "node scripts/cache-remote-code.mjs",
+    "content:migrate": "node scripts/migrate-content.mjs",
+    "routes:old": "node scripts/inventory-old-routes.mjs",
+    "routes:compare": "node scripts/compare-routes.mjs"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4.3.8",
+    "@astrojs/sitemap": "^3.7.0",
+    "@astrojs/starlight": "^0.37.4",
+    "astro": "^5.17.1"
+  },
+  "devDependencies": {}
+}

@@ -1,0 +1,277 @@
+---
+title: "Entities with JPA"
+slug: "/docs/zenwave-sdk/jpa/"
+---
+
+# Backend Application with JPA
+Modeling your JPA entities following DDD Aggregates principles.
+
+ZenWave favors modeling JPA relationships following DDD Aggregate principles.
+
+So in this DDD context, preferred relationships are: `OneToMany` and `OneToOne` from the aggregate root to each dependent, but you can still use `ManyToOne` and `ManyToMany` to suit your specific needs.
+
+ZenWave also supports describing relationships between aggregates using `ManyToXXX` where an aggregate root references another aggregate root, yet those relationships will be mapped by *by-id* and providing a read-only and lazy-loading reference to the entity. This improves expressiveness and still following DDD principles. Checkout [Relationships Between Aggregates](#relationships-between-aggregates) section for more details.
+
+## Mapping Relationships
+
+
+### OneToMany
+
+Let’s start with a classic OneToMany relationship: an Owner and a Car. An owner can have many cars, and a car can have only one owner.
+
+You can map it bidirectionally with the following code:
+
+```zdl
+@aggregate
+entity Owner { }
+
+entity Car { }
+
+relationship OneToMany {
+  Owner{cars} to Car{owner}
+}
+```
+
+Or unidirectional as:
+
+```zdl
+relationship OneToMany {
+  Owner{cars} to Car
+}
+```
+
+### OneToOne
+
+```zdl
+@aggregate
+entity Customer { }
+
+entity Address { }
+
+relationship OneToOne {
+    Customer{address} to Address{customer}
+}
+```
+
+Will result in the following JPA mapping:
+
+```java
+@Entity
+@Table(name = "customer")
+public class Customer implements Serializable {
+    //...
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(unique = true)
+	private Address address;
+}
+
+@Entity
+@Table(name = "address")
+public class Address implements Serializable {
+    //...
+	@OneToOne(mappedBy = "address")
+	private Customer customer;
+}
+```
+
+### OneToOne between Aggregates
+
+If your use a `OneToOne` relationship between aggregates, ZenWave will map it by id, with a read-only reference to the entity.
+
+```zdl
+@aggregate
+entity Customer { }
+@aggregate
+entity Address { }
+
+relationship OneToOne {
+    Customer{address} to Address{customer}
+}
+```
+
+Will result in the following JPA mapping:
+
+```java
+@Entity
+@Table(name = "customer")
+public class Customer implements Serializable {
+    //...
+	@Column(name = "address_id")
+	private Long addressId;
+
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(unique = true)
+	private Address address;
+}
+
+@Entity
+@Table(name = "address")
+public class Address implements Serializable {
+    //...
+	@OneToOne(mappedBy = "address", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Customer customer;
+}
+```
+
+See [Relationships Between Aggregates](#relationships-between-aggregates) section for more details.
+
+### @MapsId with OneToOne
+
+You can use JPA Derived Identifiers (`@MapsId`) for one-to-one relationship
+
+```zdl
+@aggregate
+entity Customer { }
+
+entity Address { }
+
+relationship OneToOne {
+    Customer{address required} to @MapsId Address{customer}
+}
+```
+
+Will result in the following JPA mapping:
+
+```java
+public class Customer implements Serializable {
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@NotNull
+	@MapsId
+	@JoinColumn(name = "id")
+	private Address address;
+}
+
+public class Address implements Serializable {
+	@OneToOne(mappedBy = "address", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private Customer customer;
+}
+```
+
+
+### ManyToOne
+
+If your use an unidirectional `ManyToOne` relationship from an aggregate to another aggregate root, ZenWave will map it by id, with a read-only reference to the entity.
+
+```zdl
+@aggregate
+entity Customer { }
+@aggregate
+entity Address { }
+
+relationship ManyToOne {
+    Address{customer} to Customer
+}
+```
+
+Will result in the following JPA mapping:
+
+```java
+@Entity
+@Table(name = "address")
+public class Address implements Serializable {
+    //...
+	@Column(name = "customer_id")
+	private Long customerId;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "customer_id", updatable = false, insertable = false)
+	private Customer customer;
+
+}
+```
+
+See [Relationships Between Aggregates](#relationships-between-aggregates) section for more details.
+
+### ManyToMany
+
+ManyToMany relationships are not very common in DDD, but you can still use ZenWave ZDL to model them and get your JPA entities generated.
+
+```zdl
+entity Driver {}
+entity Car {}
+
+relationship ManyToMany {
+  Car{driver} to Driver{car}
+}
+```
+
+## Relationships Between Aggregates
+
+In Domain-Driven Design (DDD), because an aggregate is a cluster of domain objects that should be treated as a single unit. Relationships between aggregates are be mapped by their IDs rather than direct object references.
+
+```zdl
+@aggregate
+entity Customer {
+}
+
+@aggregate
+entity Address {
+  customerId Long
+}
+```
+
+This helps to maintain consistency and integrity of the data within the aggregate but is way less expressive because in terms of modelling.
+
+ZenWave SDK allows you to define `@ManyToNNN` relationships between aggregates, which are then mapped by their IDs this an extra a read-only and lazy-loading reference to the entity.
+
+
+```zdl
+@aggregate
+entity Customer { }
+
+@aggregate
+entity Address { }
+
+relationship ManyToOne {
+    // ManyToNNN relationships between @aggregates are mapped by id, with a read-only reference to the entity
+    Address{customer} to Customer
+}
+```
+
+The above ZDL model will generate the following JPA mapping:
+
+```java
+@Table(name = "address")
+public class Address implements Serializable {
+
+    // ...
+
+    @Column(name = "customer_id") // Mapped by id
+    private Long customerId;
+
+    @ManyToOne(fetch = FetchType.LAZY) // Read-only reference to the entity
+    @JoinColumn(name = "customer_id", updatable = false, insertable = false)
+    private Customer customer;
+}
+```
+
+And an `IntegrationTest` to validate your Aggregates relationships are working as expected:
+
+```java
+public class AddressRepositoryIntegrationTest extends BaseRepositoryIntegrationTest {
+
+	@Test
+	public void saveTest() {
+		Address address = new Address();
+		address.setStreet("");
+		address.setCity("");
+		address.setState("");
+		address.setZip("");
+		address.setType(AddressType.values()[0]);
+
+		// ManyToOne customer. owner: true
+		var customerId = 1L;
+		address.setCustomerId(customerId); // using id to write relationship
+
+		// Persist aggregate root
+		var created = addressRepository.save(address);
+
+		entityManager.refresh(created); // reloading to get relationships persisted by id
+		Assertions.assertTrue(created.getId() != null);
+		Assertions.assertTrue(created.getVersion() != null);
+
+        // loading and validating relationship
+		Assertions.assertTrue(address.getCustomer().getId() == customerId);
+	}
+}
+```

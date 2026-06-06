@@ -1,0 +1,89 @@
+<button class="zen-theme-toggle" type="button" aria-label="Switch to light theme" title="Switch to light theme">
+  <span class="zen-theme-toggle__icon" aria-hidden="true"></span>
+</button>
+
+<script>
+  type Theme = 'auto' | 'dark' | 'light';
+
+  const storageKey = 'starlight-theme';
+  const lightScheme = window.matchMedia('(prefers-color-scheme: light)');
+  const parseTheme = (theme: unknown): Theme =>
+    theme === 'auto' || theme === 'dark' || theme === 'light' ? theme : 'auto';
+  const loadTheme = (): Theme =>
+    parseTheme(typeof localStorage !== 'undefined' ? localStorage.getItem(storageKey) : null);
+  const getPreferredTheme = (): Exclude<Theme, 'auto'> => (lightScheme.matches ? 'light' : 'dark');
+  const getResolvedTheme = (theme: Theme = loadTheme()): Exclude<Theme, 'auto'> =>
+    theme === 'auto' ? getPreferredTheme() : theme;
+  const syncButtons = (theme: Theme = loadTheme()) => {
+    const resolvedTheme = getResolvedTheme(theme);
+    const nextTheme = resolvedTheme === 'dark' ? 'light' : 'dark';
+
+    document.querySelectorAll('.zen-theme-toggle').forEach((button) => {
+      if (!(button instanceof HTMLButtonElement)) return;
+      button.dataset.theme = resolvedTheme;
+      button.setAttribute('aria-label', `Switch to ${nextTheme} theme`);
+      button.title = `Switch to ${nextTheme} theme`;
+    });
+  };
+  const storeTheme = (theme: Theme) => {
+    if (typeof localStorage === 'undefined') return;
+    localStorage.setItem(storageKey, theme === 'auto' ? '' : theme);
+  };
+  const applyTheme = (theme: Theme) => {
+    const resolvedTheme = getResolvedTheme(theme);
+    document.documentElement.dataset.theme = resolvedTheme;
+    storeTheme(theme);
+    window.StarlightThemeProvider?.updatePickers?.(theme);
+    syncButtons(theme);
+  };
+  const bindButtons = () => {
+    syncButtons();
+
+    document.querySelectorAll('.zen-theme-toggle').forEach((button) => {
+      if (!(button instanceof HTMLButtonElement) || button.dataset.bound === 'true') return;
+      button.dataset.bound = 'true';
+      button.addEventListener('click', () => {
+        applyTheme(getResolvedTheme() === 'dark' ? 'light' : 'dark');
+      });
+    });
+  };
+
+  bindButtons();
+
+  lightScheme.addEventListener('change', () => {
+    if (loadTheme() === 'auto') {
+      document.documentElement.dataset.theme = getPreferredTheme();
+      syncButtons('auto');
+    }
+  });
+</script>
+
+<style>
+  .zen-theme-toggle {
+    width: 2.25rem;
+    height: 2.25rem;
+    display: inline-grid;
+    place-items: center;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--sl-color-white, var(--text, #f3f5f8));
+    cursor: pointer;
+  }
+
+  .zen-theme-toggle:hover {
+    background: color-mix(in srgb, currentColor 14%, transparent);
+  }
+
+  .zen-theme-toggle__icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    display: block;
+    background: currentColor;
+    mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='currentColor' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12Zm0 4a1 1 0 0 1-1-1v-1a1 1 0 1 1 2 0v1a1 1 0 0 1-1 1Zm0-18a1 1 0 0 1-1-1V2a1 1 0 1 1 2 0v1a1 1 0 0 1-1 1Zm10 8a1 1 0 0 1-1 1h-1a1 1 0 1 1 0-2h1a1 1 0 0 1 1 1ZM4 12a1 1 0 0 1-1 1H2a1 1 0 1 1 0-2h1a1 1 0 0 1 1 1Zm14.95 6.95a1 1 0 0 1-1.42 0l-.7-.71a1 1 0 0 1 1.41-1.41l.71.7a1 1 0 0 1 0 1.42ZM7.17 7.17a1 1 0 0 1-1.41 0l-.71-.7a1 1 0 0 1 1.42-1.42l.7.71a1 1 0 0 1 0 1.41Zm11.78-2.12a1 1 0 0 1 0 1.42l-.71.7a1 1 0 0 1-1.41-1.41l.7-.71a1 1 0 0 1 1.42 0ZM7.17 16.83a1 1 0 0 1 0 1.41l-.7.71a1 1 0 1 1-1.42-1.42l.71-.7a1 1 0 0 1 1.41 0Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  .zen-theme-toggle[data-theme='dark'] .zen-theme-toggle__icon {
+    mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='currentColor' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M21 14.3A8.7 8.7 0 0 1 9.7 3a.8.8 0 0 0-.9-1A10.5 10.5 0 1 0 22 15.2a.8.8 0 0 0-1-.9Z'/%3E%3C/svg%3E");
+  }
+</style>

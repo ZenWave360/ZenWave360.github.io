@@ -1,0 +1,86 @@
+---
+import cache from '../remote-code-cache.json';
+import {
+  customShikiLangAlias,
+  getRemoteCodeHighlighter,
+} from '../utils/code-highlighting';
+
+interface Props {
+  url?: string;
+  language?: string;
+  content?: string;
+  visibleRange?: string;
+  showLegend?: boolean;
+  title?: string;
+  summary?: string;
+  collapsed?: boolean;
+  deferInDev?: boolean;
+}
+
+const {
+  url,
+  language,
+  content = '',
+  visibleRange,
+  showLegend = true,
+  title,
+  summary,
+  collapsed = false,
+  deferInDev = false,
+} = Astro.props;
+
+function transformGitHubUrl(inputUrl?: string) {
+  if (!inputUrl) return inputUrl;
+  const match = inputUrl.match(/^https:\/\/github\.com\/([^/]+)\/([^/]+)\/blob\/([^/]+)\/(.+)$/);
+  if (!match) return inputUrl;
+  const [, user, repo, branch, filePath] = match;
+  return `https://raw.githubusercontent.com/${user}/${repo}/refs/heads/${branch}/${filePath}`;
+}
+
+function sourceUrl(inputUrl?: string) {
+  if (!inputUrl) return undefined;
+  if (!visibleRange) return inputUrl;
+  const [start, end] = visibleRange.split(',').map((part) => Number(part.trim()));
+  return `${inputUrl}#L${start}-L${end}`;
+}
+
+function resolveLanguage(requestedLanguage?: string, fallbackLanguage?: string) {
+  const configuredLanguage = requestedLanguage?.trim() || fallbackLanguage?.trim() || 'plaintext';
+  return customShikiLangAlias[configuredLanguage] || configuredLanguage;
+}
+
+const label = title || summary;
+const fetchUrl = transformGitHubUrl(url);
+const cacheKey = `${fetchUrl || ''}:${visibleRange || 'full'}`;
+const cachedEntry = (cache as Record<string, { content: string; language?: string }>)[cacheKey];
+const cached = cachedEntry?.content;
+const displayContent = content || cached || `Remote code snapshot missing for ${cacheKey}. Run npm run sync:remote-code.`;
+const resolvedLanguage = resolveLanguage(language, cachedEntry?.language);
+const isDev = import.meta.env.DEV;
+const isDeferredInDev = isDev && deferInDev;
+let highlightedCode: string | undefined;
+
+if (!isDev && !isDeferredInDev) {
+  highlightedCode = await (await getRemoteCodeHighlighter()).codeToHtml(displayContent, resolvedLanguage, {
+    attributes: {
+      class: `language-${resolvedLanguage}`,
+    },
+  });
+}
+---
+
+<div class="remote-code">
+  <details open={!collapsed && !isDeferredInDev}>
+    {label && <summary>{label}</summary>}
+    {isDeferredInDev ? (
+      <div class="remote-code__deferred">
+        Deferred in dev mode for faster page loads. Use preview/build to inspect the full generated snippet.
+      </div>
+    ) : isDev ? (
+      <pre class={`language-${resolvedLanguage}`}><code>{displayContent}</code></pre>
+    ) : (
+      <Fragment set:html={highlightedCode} />
+    )}
+  </details>
+  {showLegend && url && <p class="remote-code__source"><a href={sourceUrl(url)} target="_blank" rel="noreferrer">Navigate to source</a></p>}
+</div>

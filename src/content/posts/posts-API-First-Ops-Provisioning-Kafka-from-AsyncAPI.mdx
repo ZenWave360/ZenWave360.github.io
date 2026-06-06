@@ -1,0 +1,487 @@
+---
+title: "API First Ops: Provisioning Kafka Infrastructure from AsyncAPI"
+description: "API First Ops extends API First from code generation to infrastructure provisioning: use the same AsyncAPI spec to describe Kafka topics, schemas, ACLs, retry topics, and DLQs, then generate Terraform from it."
+slug: "/posts/API-First-Ops-Provisioning-Kafka-from-AsyncAPI/"
+date: "2026-05-10T09:00:00+02:00"
+author: "Ivan Garcia Sainz-Aja"
+excerpt: "API First Ops extends API First from code generation to infrastructure provisioning: use the same AsyncAPI spec to describe Kafka topics, schemas, ACLs, retry topics, and DLQs, then generate Terraform from it."
+image: "/posts/API-First-Ops-Provisioning-Kafka-from-AsyncAPI/api-first-ops-kafka-terraform-banner.png"
+tags:
+  - "API-First"
+  - "API First Ops"
+  - "AsyncAPI"
+  - "Kafka"
+  - "Terraform"
+  - "Infrastructure as Code"
+  - "ZenWave SDK"
+  - "DevOps"
+---
+
+import Image from '../../components/Image.astro';
+
+# API First Ops: Provisioning Kafka Infrastructure from AsyncAPI
+
+<Image src="api-first-ops-kafka-terraform-banner.png" alt="API First Ops: Provisioning Kafka Infrastructure from AsyncAPI" />
+
+API First is a familiar idea: design the API contract first, then generate or implement the code from that contract.
+
+In event-driven systems, however, the API contract is only half of the story. A Kafka topic is not only a name and a message schema. It also has partitions, replicas, retention, cleanup policy, ACLs, retry topics, dead-letter queues, and Schema Registry subjects.
+
+Those infrastructure decisions shape how producers publish, how consumers scale, how operations provision the platform, and how teams recover from failures.
+
+That is the idea behind **API First Ops**: use the same API specification that describes the event contract to also describe the operational infrastructure needed to run it.
+
+With AsyncAPI, ZenWave SDK can take that contract and generate Terraform HCL for Kafka infrastructure. The result is a technical workflow where the AsyncAPI document becomes the source of truth for both the application boundary and the platform resources behind it.
+
+## Why API Drift Also Happens in Operations
+
+Most API drift discussions focus on code:
+
+- The specification says one thing.
+- The producer sends something else.
+- The consumer expects something different.
+
+For Java and Spring applications, [ZenWave asyncapi-generator](/zenwave-sdk/plugins/asyncapi-generator/) tackles this kind of drift by generating non-editable producers, consumers, and DTOs from AsyncAPI at build time. If the contract changes, the code has to compile against the new contract.
+
+But there is a second form of drift in event-driven architectures: **operations drift**.
+
+This happens when the AsyncAPI document says the service publishes or consumes a Kafka channel, but the real Kafka infrastructure is managed somewhere else:
+
+- Terraform defines a different number of partitions.
+- The topic retention does not match the consumer's recovery assumptions.
+- Retry topics and DLQs are created manually, or not created at all.
+- ACLs are updated independently from the operations in the AsyncAPI file.
+- Schema Registry subjects are managed by another pipeline.
+
+At that point the AsyncAPI document is no longer the full source of truth. It still describes the messaging API, but not the infrastructure contract that makes that API usable.
+
+## Why Topic Configuration Is API-Relevant
+
+Topic configuration is often treated as a platform concern, and of course the platform team cares about it. But it also affects application design.
+
+For a producer, topic configuration influences how the application should publish messages. It matters whether the topic is compacted, how long messages are retained, what guarantees the platform expects, and which principal is allowed to write.
+
+For operations, the same information is required to provision the Kafka resources: topics, partitions, replicas, retention policies, schemas, ACLs, retry topics, and DLQs.
+
+For consumers, it directly changes application architecture:
+
+- A topic with 3 partitions and a topic with 12 partitions do not offer the same parallelism.
+- A consumer group cannot process more partitions in parallel than the number of partitions available.
+- A topic with 7 days of retention leads to different recovery assumptions than one with 1 year of retention.
+- Long retention allows replay-based state regeneration; short retention requires stricter state tracking.
+- Retry and DLQ retention determine how much time operations teams have to diagnose and recover failed messages.
+
+So partitions, replicas, retention, cleanup policy, retry topology, and ACLs are not just infrastructure details. They are part of the operational shape of the API.
+
+That is why they belong next to the channel, message, and schema definitions.
+
+## API First Ops in One Sentence
+
+**API First Ops extends API First by using the API contract to provision the infrastructure required by that API.**
+
+In this post, that means:
+
+1. Design your Kafka-facing API with AsyncAPI.
+2. Describe channels, messages, schemas, topic configuration, ACL intent, retry topics, and DLQs in that same specification.
+3. Generate Java/Spring code from the spec.
+4. Generate Terraform HCL from the spec.
+5. Apply the Terraform through your normal infrastructure pipeline.
+
+One source of truth. Two generated artifacts. Less room for drift.
+
+## The Technical Flow
+
+The complete workflow looks like this:
+
+```text
+AsyncAPI
+  |
+  |-- ZenWave asyncapi-generator
+  |     -> Java/Spring producers, consumers, DTOs
+  |
+  |-- ZenWave asyncapi-ops
+        -> Terraform HCL
+             -> Kafka topics
+             -> Schema Registry subjects
+             -> ACLs
+             -> retry topics
+             -> DLQs
+```
+
+The application build and the infrastructure pipeline derive their artifacts from the same document.
+
+If the topic changes from 3 partitions to 12, the change is made in AsyncAPI. The generated Terraform changes. The consumers can see the intended parallelism in the same contract they already use to understand the message API.
+
+If a consumer needs a DLQ with 1 year of retention, that requirement is declared in the consumer operation binding. The Terraform module creates it. The operations team does not have to reverse-engineer the retry topology from application code or deployment scripts.
+
+## Modeling Kafka Topics in AsyncAPI
+
+AsyncAPI channel bindings already provide a natural place to describe Kafka topic settings. The generator reads the Kafka binding from each owned channel:
+
+```yaml
+channels:
+  reserve-stock-command:
+    address: merchandising.inventory.inventory-adjustment.reserve-stock.command.avro.v0
+    messages:
+      ReserveStockCommand:
+        $ref: '#/components/messages/ReserveStockCommand'
+    bindings:
+      kafka:
+        partitions: 20
+        replicas: 3
+        topicConfiguration:
+          cleanup.policy: ["delete", "compact"]
+          retention.ms: 604800000
+```
+
+From an API First Ops point of view, this is not duplication of Terraform. It is the design of the topic as part of the API.
+
+Terraform is the generated provisioning artifact.
+
+## Environment-Specific Overrides
+
+Real environments rarely use the same topic sizing.
+
+Production may need 20 partitions and 3 replicas. Development may need 1 partition and 1 replica. Staging may be somewhere in between.
+
+The `x-env-server-overrides` extension lets the AsyncAPI document keep those differences close to the base topic definition:
+
+```yaml
+channels:
+  reserve-stock-command:
+    address: merchandising.inventory.inventory-adjustment.reserve-stock.command.avro.v0
+    bindings:
+      kafka:
+        partitions: 20
+        replicas: 3
+        topicConfiguration:
+          cleanup.policy: ["delete", "compact"]
+          retention.ms: 604800000
+        x-env-server-overrides:
+          dev:
+            partitions: 1
+            replicas: 1
+          staging:
+            partitions: 3
+            replicas: 2
+```
+
+When the generator runs with `server=staging`, the staging override is deep-merged into the base binding before rendering Terraform.
+
+This keeps the important rule visible: production sizing is the default design, but each environment can declare the differences that matter.
+
+This extension is also being proposed for official AsyncAPI Kafka binding support in [asyncapi/bindings#292](https://github.com/asyncapi/bindings/issues/292), so the same idea can become portable across tooling instead of remaining a ZenWave-specific convention.
+
+## ACLs from Operations
+
+AsyncAPI operations already describe who sends and who receives messages. API First Ops uses that same direction to generate ACLs using the extension property `x-principal`.
+
+In this example, a `receive` operation declares the Kafka principal and consumer group:
+
+```yaml
+operations:
+  doReserveStockCommand:
+    action: receive
+    channel:
+      $ref: '#/channels/reserve-stock-command'
+    bindings:
+      kafka:
+        x-principal: "merchandising.inventory.inventory-adjustment"
+```
+
+The generator maps operation direction to permissions:
+
+- `send` operations generate WRITE and DESCRIBE ACLs.
+- `receive` operations generate READ and DESCRIBE ACLs.
+
+This is important because ACLs are not an isolated platform configuration. They are a consequence of the API relationship between producers, consumers, and channels.
+
+## Retry Topics and DLQs
+
+Retry topics and dead-letter queues are usually invisible in API documentation, but they are critical infrastructure.
+
+They are also consumer-owned. Two consumers can read the same Kafka topic with different group IDs, different retry policies, and different DLQ retention requirements.
+
+That is why ZenWave models retry and DLQ provisioning at the operation binding level:
+
+```yaml
+operations:
+  doReserveStockCommand:
+    action: receive
+    channel:
+      $ref: '#/channels/reserve-stock-command'
+    bindings:
+      kafka:
+        x-principal: "merchandising.inventory.inventory-adjustment"
+        x-groupId: "merchandising.inventory.inventory-adjustment"
+        x-error-topics:
+          addressTemplate: "${groupId}.__.${channel.address}.${suffix}"
+          retryTopics: 3
+          retry:
+            partitions: 1
+            replicas: 2
+            topicConfiguration:
+              retention.ms: 259200000
+          dlq:
+            partitions: 1
+            replicas: 2
+            topicConfiguration:
+              retention.ms: 2592000000
+              cleanup.policy: ["delete"]
+```
+
+The template variables create deterministic topic names:
+
+```text
+merchandising.inventory.inventory-adjustment.__.merchandising.inventory.inventory-adjustment.reserve-stock.command.avro.v0.retry-0
+merchandising.inventory.inventory-adjustment.__.merchandising.inventory.inventory-adjustment.reserve-stock.command.avro.v0.retry-1
+merchandising.inventory.inventory-adjustment.__.merchandising.inventory.inventory-adjustment.reserve-stock.command.avro.v0.retry-2
+merchandising.inventory.inventory-adjustment.__.merchandising.inventory.inventory-adjustment.reserve-stock.command.avro.v0.dlq
+```
+
+The API contract now describes not only the happy path channel, but also the operational topology required to consume it safely.
+
+This operation-level `error-topics` model has also been proposed for the AsyncAPI Kafka binding in [asyncapi/bindings#299](https://github.com/asyncapi/bindings/issues/299). The important design choice is its placement: retry and DLQ topics belong to the consumer operation, not to the public channel contract.
+
+## Reusable Operational Presets
+
+Platform teams often want standard tiers instead of each service inventing retention policies.
+
+The retry and DLQ configuration can be extracted into a shared file and referenced from service specifications:
+
+```yaml
+# master/kafka-bindings.yml
+components:
+  x-error-topics:
+    retry:
+      silver:
+        partitions: 1
+        replicas: 2
+        topicConfiguration:
+          retention.ms: 259200000
+      gold:
+        partitions: 3
+        replicas: 3
+        topicConfiguration:
+          retention.ms: 604800000
+    dlq:
+      standard:
+        partitions: 1
+        replicas: 2
+        topicConfiguration:
+          retention.ms: 2592000000
+          cleanup.policy: ["delete"]
+      compliance:
+        partitions: 1
+        replicas: 3
+        topicConfiguration:
+          retention.ms: 31536000000
+          cleanup.policy: ["delete"]
+```
+
+Then a consumer operation can select approved plans:
+
+```yaml
+x-error-topics:
+  addressTemplate: "${groupId}.__.${channel.address}.${suffix}"
+  retryTopics: 3
+  retry:
+    $ref: 'master/kafka-bindings.yml#/components/x-error-topics/retry/silver'
+  dlq:
+    $ref: 'master/kafka-bindings.yml#/components/x-error-topics/dlq/compliance'
+```
+
+This gives platform teams governance without removing ownership from application teams.
+
+## Ownership Rules
+
+In a distributed system, not every service should provision every topic it references.
+
+The [asyncapi-ops plugin](/zenwave-sdk/plugins/asyncapi-ops/) uses a simple ownership rule:
+
+- **Owned channel**: declared inline with an `address`; generates topic and schema resources.
+- **External channel**: declared as a `$ref` to another service's spec; generates ACLs only.
+
+For example, a client spec can reference a channel owned by another service:
+
+```yaml
+channels:
+  replenish-stock-command:
+    $ref: '../stock-replenishment/asyncapi.yml#/channels/replenish-stock-command'
+```
+
+When both provider and client specs are passed to the generator, the service gets the ACLs it needs to consume or publish, but it does not provision a topic it does not own.
+
+That ownership rule is what makes the approach usable across many teams.
+
+## Generating Terraform
+
+Run the generator once per service, targeting the environment you want to provision:
+
+```shell
+jbang zw -p AsyncAPIOpsGeneratorPlugin \
+  apiFiles=asyncapi.yml,asyncapi-client.yml \
+  avroImports=src/main/asyncapi/avro \
+  templates=TerraformKafka
+  server=staging \
+  targetFolder=target/terraform
+```
+
+The output is a Terraform module:
+
+| File | Contents |
+|------|----------|
+| `topics.tf` | Kafka topic resources for owned channels, retry topics, and DLQs |
+| `schemas.tf` | Schema Registry resources for Avro messages on owned channels |
+| `acls.tf` | Kafka ACL resources derived from operation bindings |
+| `versions.tf` | Terraform provider version constraints |
+| `<api-name>/avro/...` | Fully inlined Avro schema files referenced from `schemas.tf` |
+
+For the Kafka OSS provider template, a generated topic looks like this:
+
+```hcl
+resource "kafka_topic" "merchandising_inventory_inventory_adjustment_reserve_stock_command_avro_v0" {
+  name               = "merchandising.inventory.inventory-adjustment.reserve-stock.command.avro.v0"
+  replication_factor = 3
+  partitions         = 20
+  config = {
+    "cleanup.policy" = "delete,compact"
+    "retention.ms"   = "604800000"
+  }
+}
+```
+
+Terraform resource names are derived from the full Kafka topic address, so they remain globally unique when many services share the same Terraform state or module structure.
+
+## Provider Targets
+
+The generator supports several Terraform provider targets:
+
+- `TerraformKafka`: OSS Kafka provider for topics and ACLs, plus standalone Schema Registry provider.
+- `TerraformConfluent`: Confluent provider for Kafka and Schema Registry resources.
+- `TerraformConfluentHybrid`: Confluent provider for Kafka resources, standalone Schema Registry provider for schemas.
+
+Template selection is a technical integration choice. Pick the template that matches how your platform provisions Kafka resources:
+
+```shell
+jbang zw -p AsyncAPIOpsGeneratorPlugin \
+  apiFile=asyncapi.yml \
+  templates=TerraformConfluent \
+  targetFolder=target/terraform
+```
+
+The full provider behavior and configuration options are documented in the [AsyncAPI to Terraform plugin reference](/zenwave-sdk/plugins/asyncapi-ops/).
+
+## CI/CD Integration
+
+API First Ops works best when generation is part of the delivery pipeline.
+
+The AsyncAPI file changes. The build regenerates code. The infrastructure pipeline regenerates Terraform. Terraform plan shows the operational impact of the API change before it is applied.
+
+For CI/CD pipelines, the preferred and most useful integration style is the JBang CLI. It keeps infrastructure generation independent from the application build, works well in shell scripts and GitHub Actions, and makes the pipeline easy to adapt to different Terraform backends and approval flows.
+
+```shell
+jbang zw -p AsyncAPIOpsGeneratorPlugin \
+  apiFiles=asyncapi.yml,asyncapi-client.yml \
+  avroImports=src/main/asyncapi/avro \
+  server=staging \
+  targetFolder=terraform/my-service
+```
+
+You can also use the Maven plugin, especially if you want Terraform generation to be part of a Maven-based project lifecycle:
+
+```xml
+<plugin>
+    <groupId>io.zenwave360.sdk</groupId>
+    <artifactId>zenwave-sdk-maven-plugin</artifactId>
+    <version>${zenwave.version}</version>
+    <executions>
+        <execution>
+            <id>generate-terraform</id>
+            <phase>generate-resources</phase>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+            <configuration>
+                <generatorName>AsyncAPIOpsGeneratorPlugin</generatorName>
+                <configOptions>
+                    <apiFiles>asyncapi.yml,asyncapi-client.yml</apiFiles>
+                    <avroImports>${project.basedir}/src/main/asyncapi/avro</avroImports>
+                    <server>staging</server>
+                    <targetFolder>target/terraform</targetFolder>
+                </configOptions>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+```
+
+The [Arcadia Editions catalog-products-api](https://github.com/arcadia-editions/catalog-products-api) repository shows one possible CI/CD implementation using the JBang CLI. Arcadia Editions is a fictional showcase company used to build these API First and API First Ops examples in public, so treat the workflow as inspiration, not as a reusable workflow you should depend on directly.
+
+There are two useful examples to copy and adapt to your own platform:
+
+- A local script: [`scripts/run-kafka-pipeline-local.sh`](https://github.com/arcadia-editions/catalog-products-api/blob/13475a41f472d895f4f6941bbaf3a1ff91ab1578/scripts/run-kafka-pipeline-local.sh)
+- A GitHub Actions workflow: [`.github/workflows/provision-kafka.yml`](https://github.com/arcadia-editions/catalog-products-api/blob/13475a41f472d895f4f6941bbaf3a1ff91ab1578/.github/workflows/provision-kafka.yml)
+
+The GitHub Actions example reuses another workflow inside the Arcadia Editions organization, but that is part of the showcase setup. In your own organization, copy the pattern and wire it to your own Terraform backend, secrets, provider configuration, review process, and apply policy.
+
+The important point is not the specific CI tool. The important point is the enforcement loop:
+
+```text
+change AsyncAPI
+  -> regenerate code
+  -> regenerate Terraform
+  -> review plan
+  -> apply infrastructure
+```
+
+## What This Prevents
+
+This workflow prevents a very specific class of drift:
+
+- A topic exists in Kafka but not in the API contract.
+- A topic is documented with one retention but provisioned with another.
+- A service consumes a topic but the READ ACL is missing.
+- A producer operation exists but the WRITE ACL was never granted.
+- A consumer has retry logic but the retry topics were not provisioned.
+- A DLQ retention policy is decided in code comments, runbooks, or tribal knowledge instead of the contract.
+
+It does not remove the need for platform governance. It makes governance executable.
+
+The platform can still define Terraform variables, provider configuration, naming policies, approved retry tiers, and review gates. The difference is that the service-level intent is declared in AsyncAPI and transformed into platform resources consistently.
+
+## Current Status
+
+The `asyncapi-ops` plugin is currently marked as beta. It is feature-complete enough for early adopters and real testing, but still evolving.
+
+Two of the extensions used by this workflow have been submitted as feature requests to the official AsyncAPI bindings repository:
+
+- [Kafka channel binding property for environment-specific overrides](https://github.com/asyncapi/bindings/issues/292)
+- [Kafka operation binding `error-topics` for retry and DLQ topic provisioning](https://github.com/asyncapi/bindings/issues/299)
+
+ZenWave SDK implements these ideas today as extensions while the standardization discussion evolves.
+
+It already supports:
+
+- Kafka topics
+- Schema Registry subjects
+- ACLs
+- environment overrides
+- retry topics
+- DLQs
+- reusable retry and DLQ presets
+- multiple Terraform provider targets
+
+Use it to explore the API First Ops workflow, adapt it to your provider conventions, and validate the generated Terraform in your own platform.
+
+## Closing the Loop
+
+API First gave us a way to make the API contract the starting point for application development.
+
+API First Ops applies the same principle to infrastructure.
+
+For event-driven systems, the contract is not complete if it only describes the message payload. The topic configuration, ownership, security, retry topology, and retention policy affect how systems are built and operated.
+
+AsyncAPI is already the right place to describe the event API. With API First Ops, it can also become the source of truth for the Kafka infrastructure that API needs to exist.
+
+Full reference documentation: [AsyncAPI to Terraform](/zenwave-sdk/plugins/asyncapi-ops/)

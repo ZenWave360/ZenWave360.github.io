@@ -1,0 +1,169 @@
+---
+import { getCollection, render } from 'astro:content';
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id.replace(/^posts\//, '').replace(/^\/+|\/+$/g, '').replace(/^posts\//, '') },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content, remarkPluginFrontmatter } = await render(post);
+const minutes = Math.max(1, Math.round((remarkPluginFrontmatter?.minutesRead || post.body.split(/\s+/).length / 220)));
+const headings = [...post.body.matchAll(/^##\s+(.+)$/gm)].map((match) => {
+  const text = match[1].replace(/[#*_`]/g, '').trim();
+  const slug = text
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s-]/gu, '')
+    .trim()
+    .replace(/\s+/g, '-');
+  return { text, slug };
+});
+---
+
+<BlogLayout title={post.data.title} description={post.data.excerpt || post.data.description}>
+  <main class="post">
+    <article>
+      <header>
+        <p class="meta">
+          <time datetime={post.data.date.toISOString()}>{post.data.date.toLocaleDateString('en', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+          <span>{minutes} min read</span>
+        </p>
+        <h1>{post.data.title}</h1>
+        {(post.data.excerpt || post.data.description) && <p class="excerpt">{post.data.excerpt || post.data.description}</p>}
+        {post.data.tags.length > 0 && (
+          <ul class="tags" aria-label="Tags">
+            {post.data.tags.map((tag) => <li><a href={`/tags/${tag.toLowerCase().replaceAll(' ', '-')}/`}>{tag}</a></li>)}
+          </ul>
+        )}
+      </header>
+      <div class="content">
+        <Content />
+      </div>
+    </article>
+    {headings.length > 0 && (
+      <aside class="post-toc" aria-label="On this page">
+        <h2>On this page</h2>
+        <nav>
+          {headings.map((heading) => <a href={`#${heading.slug}`}>{heading.text}</a>)}
+        </nav>
+      </aside>
+    )}
+  </main>
+</BlogLayout>
+
+<style>
+  .post {
+    width: min(1550px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: calc(var(--sl-nav-height, 4rem) + 3rem) 0 4rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1006px) 256px;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  .meta,
+  .excerpt {
+    color: var(--muted);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    margin: 0 0 1rem;
+    font-size: 0.95rem;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2.25rem, 6vw, 4rem);
+    line-height: 1;
+  }
+
+  .excerpt {
+    max-width: 44rem;
+    font-size: 1.15rem;
+    line-height: 1.6;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0;
+    margin: 1.25rem 0 0;
+    list-style: none;
+  }
+
+  .tags a {
+    display: inline-flex;
+    padding: 0.25rem 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .content {
+    margin-top: 3rem;
+    line-height: 1.75;
+  }
+
+  .content :global(img) {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .content :global(pre) {
+    overflow-x: auto;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background: var(--panel);
+  }
+
+  .post-toc {
+    position: sticky;
+    top: calc(var(--sl-nav-height, 4rem) + 1rem);
+    max-height: calc(100vh - var(--sl-nav-height, 4rem) - 2rem);
+    overflow: auto;
+    color: var(--muted);
+  }
+
+  .post-toc h2 {
+    margin: 0 0 0.75rem;
+    color: var(--text);
+    font-size: 0.95rem;
+  }
+
+  .post-toc nav {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .post-toc a {
+    color: inherit;
+    font-size: 0.9rem;
+    line-height: 1.3;
+    text-decoration: none;
+  }
+
+  .post-toc a:hover {
+    color: var(--accent);
+  }
+
+  @media (max-width: 980px) {
+    .post {
+      grid-template-columns: 1fr;
+    }
+
+    .post-toc {
+      display: none;
+    }
+  }
+</style>

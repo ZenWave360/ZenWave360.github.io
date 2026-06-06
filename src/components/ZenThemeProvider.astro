@@ -1,0 +1,33 @@
+<script is:inline>
+  (() => {
+    if (window.StarlightThemeProvider) return;
+
+    const storageKey = 'starlight-theme';
+    const getStoredTheme = () =>
+      typeof localStorage !== 'undefined' ? localStorage.getItem(storageKey) : null;
+    const getPreferredTheme = () =>
+      window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    const getResolvedTheme = (theme = getStoredTheme() || 'auto') =>
+      theme === 'light' || theme === 'dark' ? theme : getPreferredTheme();
+    const syncToggleState = (theme = getStoredTheme() || 'auto') => {
+      const resolvedTheme = getResolvedTheme(theme);
+      document.querySelectorAll('.zen-theme-toggle').forEach((button) => {
+        if (!(button instanceof HTMLButtonElement)) return;
+        const nextTheme = resolvedTheme === 'dark' ? 'light' : 'dark';
+        button.dataset.theme = resolvedTheme;
+        button.setAttribute('aria-label', `Switch to ${nextTheme} theme`);
+        button.title = `Switch to ${nextTheme} theme`;
+      });
+    };
+
+    document.documentElement.dataset.theme = getResolvedTheme();
+
+    window.StarlightThemeProvider = {
+      updatePickers(theme = getStoredTheme() || 'auto') {
+        syncToggleState(theme);
+      },
+    };
+
+    syncToggleState();
+  })();
+</script>
