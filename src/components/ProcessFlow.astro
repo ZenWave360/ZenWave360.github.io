@@ -1,0 +1,261 @@
+---
+const steps = [
+  {
+    number: '01',
+    title: 'Discover',
+    text: 'Event Storming, domain conversations, and business flows.',
+    tone: 'teal',
+  },
+  {
+    number: '02',
+    title: 'Shape',
+    text: 'Flows, bounded contexts, domain models, OpenAPI, AsyncAPI, schemas, and events.',
+    tone: 'blue',
+  },
+  {
+    number: '03',
+    title: 'Generate & Implement',
+    text: 'Spring Boot services, APIs, events, tests, adapters, and infrastructure.',
+    tone: 'amber',
+  },
+  {
+    number: '04',
+    title: 'Navigate',
+    text: 'Move across flows, contracts, schemas, services, and generated artifacts.',
+    tone: 'green',
+  },
+];
+---
+
+<section class="process-flow" aria-label="ZenWave architecture lifecycle">
+  <ol class="process-flow__steps">
+    {
+      steps.map((step, index) => (
+        <li class={`process-step process-step--${step.tone}`}>
+          <article>
+            <div class="process-step__topline">
+              <span class="process-step__number">{step.number}</span>
+              {step.title === 'Discover' && (
+                <svg class="process-icon" viewBox="0 0 64 64" aria-hidden="true">
+                  <rect class="process-icon__soft-fill" x="12" y="14" width="13" height="11" rx="2" />
+                  <rect class="process-icon__soft-fill" x="34" y="10" width="13" height="11" rx="2" />
+                  <rect class="process-icon__soft-fill" x="42" y="34" width="12" height="10" rx="2" />
+                  <path d="M22 25c9 4 15 4 22-4" />
+                  <path d="M45 34c-5-6-11-7-18-5" />
+                  <circle cx="27" cy="37" r="10" />
+                  <path d="m34.5 44.5 9 9" />
+                </svg>
+              )}
+              {step.title === 'Shape' && (
+                <svg class="process-icon" viewBox="0 0 64 64" aria-hidden="true">
+                  <rect x="9" y="10" width="46" height="44" rx="6" />
+                  <circle cx="23" cy="24" r="5" />
+                  <circle cx="42" cy="22" r="5" />
+                  <circle cx="33" cy="42" r="5" />
+                  <path d="M28 24h9" />
+                  <path d="m25.5 28 5.5 10" />
+                  <path d="m40 27-5 11" />
+                  <path d="M15 48h7" />
+                  <path d="M42 48h7" />
+                </svg>
+              )}
+              {step.title === 'Generate & Implement' && (
+                <svg class="process-icon" viewBox="0 0 64 64" aria-hidden="true">
+                  <path d="m23 18-11 14 11 14" />
+                  <path d="m41 18 11 14-11 14" />
+                  <path d="m36 15-8 34" />
+                  <rect x="30" y="34" width="22" height="18" rx="4" />
+                  <path d="m36 43 4 4 7-8" />
+                </svg>
+              )}
+              {step.title === 'Navigate' && (
+                <svg class="process-icon" viewBox="0 0 64 64" aria-hidden="true">
+                  <circle cx="32" cy="32" r="22" />
+                  <path d="m39 25-5 13-13 5 5-13 13-5Z" />
+                  <circle cx="18" cy="18" r="3" />
+                  <circle cx="48" cy="22" r="3" />
+                  <circle cx="45" cy="48" r="3" />
+                  <path d="M21 19c8-5 16-4 24 2" />
+                  <path d="M45 45c-3-6-6-9-12-11" />
+                </svg>
+              )}
+            </div>
+            <h3>{step.title}</h3>
+            <p>{step.text}</p>
+          </article>
+          {index < steps.length - 1 && (
+            <svg class="process-step__arrow" viewBox="0 0 72 24" aria-hidden="true">
+              <path d="M4 12h54" />
+              <path d="m50 5 9 7-9 7" />
+            </svg>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</section>
+
+<style>
+  .process-flow {
+    --process-bg: var(--home-panel, color-mix(in srgb, var(--sl-color-bg-nav, #151820), white 3%));
+    --process-border: var(--home-border, var(--sl-color-hairline, #303744));
+    --process-text: var(--home-text, var(--sl-color-white, #f3f5f8));
+    --process-muted: var(--home-muted, var(--sl-color-gray-2, #b9c0ca));
+    --process-shadow: 0 0.75rem 1.75rem rgb(0 0 0 / 0.14);
+    width: 100%;
+  }
+
+  :root[data-theme='light'] .process-flow {
+    --process-shadow: 0 0.75rem 1.75rem rgb(32 41 58 / 0.07);
+  }
+
+  .process-flow__steps {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .process-step {
+    position: relative;
+    min-width: 0;
+  }
+
+  .process-step article {
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    min-height: 15.5rem;
+    padding: 1rem;
+    border: 1px solid color-mix(in srgb, var(--step-accent), var(--process-border) 62%);
+    border-radius: 0.5rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--step-accent) 11%, transparent), transparent 54%),
+      var(--process-bg);
+    box-shadow: var(--process-shadow);
+  }
+
+  .process-step--teal {
+    --step-accent: #14a39a;
+  }
+
+  .process-step--blue {
+    --step-accent: #3b75d1;
+  }
+
+  .process-step--amber {
+    --step-accent: #d99100;
+  }
+
+  .process-step--green {
+    --step-accent: #55a447;
+  }
+
+  .process-step__topline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.85rem;
+    margin-bottom: 1rem;
+  }
+
+  .process-step__number {
+    color: color-mix(in srgb, var(--step-accent) 82%, var(--process-text));
+    font-size: 0.78rem;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .process-step h3 {
+    margin: 0 0 0.55rem;
+    color: var(--process-text);
+    font-size: 1.12rem;
+    line-height: 1.18;
+    letter-spacing: 0;
+  }
+
+  .process-step p {
+    margin: 0;
+    color: var(--process-muted);
+    font-size: 0.94rem;
+    line-height: 1.48;
+  }
+
+  .process-icon {
+    flex: 0 0 auto;
+    width: 3.15rem;
+    height: 3.15rem;
+    color: var(--step-accent);
+  }
+
+  .process-icon path,
+  .process-icon circle,
+  .process-icon rect,
+  .process-icon line {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .process-icon .process-icon__soft-fill {
+    fill: color-mix(in srgb, var(--step-accent) 18%, transparent);
+  }
+
+  .process-step__arrow {
+    position: absolute;
+    z-index: 2;
+    top: 2.55rem;
+    right: -2.6rem;
+    width: 4.25rem;
+    height: 1.5rem;
+    color: color-mix(in srgb, var(--step-accent), var(--process-text) 16%);
+    pointer-events: none;
+  }
+
+  .process-step__arrow path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.25;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  @media (max-width: 980px) {
+    .process-flow__steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .process-step article {
+      min-height: 13.75rem;
+    }
+
+    .process-step__arrow {
+      display: none;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .process-flow__steps {
+      grid-template-columns: 1fr;
+    }
+
+    .process-step article {
+      min-height: 0;
+      grid-template-columns: auto minmax(0, 1fr);
+      grid-template-rows: auto auto;
+      column-gap: 1rem;
+      padding: 1rem;
+    }
+
+    .process-step__topline {
+      grid-row: 1 / span 2;
+      flex-direction: column;
+      align-items: center;
+      justify-content: start;
+      margin-bottom: 0;
+    }
+  }
+</style>

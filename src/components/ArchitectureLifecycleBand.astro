@@ -1,0 +1,809 @@
+---
+const stages = [
+  {
+    title: 'Discover',
+    tone: 'teal',
+    legend: ['People', 'Process', 'Signals'],
+  },
+  {
+    title: 'Shape',
+    tone: 'blue',
+    legend: ['Bounded Contexts', 'Domain Model', 'OpenAPI', 'AsyncAPI'],
+  },
+  {
+    title: 'Generate / Implement',
+    tone: 'amber',
+    legend: ['Generate APIs & Events', 'Scaffold Services', 'Tests', 'Build & Deliver'],
+  },
+  {
+    title: 'Navigate',
+    tone: 'green',
+    legend: ['Humans Explore', 'Tools Connect', 'AI Understands'],
+  },
+];
+---
+
+<section class="architecture-band" aria-labelledby="architecture-band-title">
+  <div class="architecture-band__shell">
+    <h2 id="architecture-band-title" class="sr-only">ZenWave lifecycle from discovery to navigation</h2>
+
+    <ol class="architecture-band__stages">
+      {
+        stages.map((stage, index) => (
+          <li class={`architecture-stage architecture-stage--${stage.tone}`}>
+            <article>
+              <div class="architecture-stage__top">
+                <span class="architecture-stage__dot" aria-hidden="true">
+                  {stage.title === 'Discover' && (
+                    <svg viewBox="0 0 64 64">
+                      <circle cx="28" cy="28" r="15" />
+                      <path d="m39 39 11 11" />
+                      <path d="M22 28c0-4 3-7 7-7" />
+                    </svg>
+                  )}
+                  {stage.title === 'Shape' && (
+                    <svg viewBox="0 0 64 64">
+                      <circle cx="32" cy="14" r="6" />
+                      <circle cx="17" cy="42" r="6" />
+                      <circle cx="47" cy="42" r="6" />
+                      <path d="M29 19 20 37" />
+                      <path d="M35 19 44 37" />
+                      <path d="M23 42h18" />
+                    </svg>
+                  )}
+                  {stage.title === 'Generate / Implement' && (
+                    <svg viewBox="0 0 64 64">
+                      <path d="m25 20-12 12 12 12" />
+                      <path d="m39 20 12 12-12 12" />
+                      <path d="m36 16-8 32" />
+                    </svg>
+                  )}
+                  {stage.title === 'Navigate' && (
+                    <svg viewBox="0 0 64 64">
+                      <circle cx="32" cy="32" r="22" />
+                      <path d="m42 22-7 20-17 4 7-20 17-4Z" />
+                      <circle cx="32" cy="32" r="3" />
+                    </svg>
+                  )}
+                </span>
+                {index < stages.length - 1 && <span class="architecture-stage__arrow" aria-hidden="true" />}
+              </div>
+
+              <h3>{stage.title}</h3>
+
+              <div class="architecture-stage__visual" aria-hidden="true">
+                {stage.title === 'Discover' && (
+                  <svg viewBox="0 0 360 360" role="img">
+                    <rect class="window" x="18" y="34" width="324" height="260" rx="8" />
+                    <rect class="rail" x="18" y="34" width="324" height="13" rx="6" />
+                    <text x="180" y="72" text-anchor="middle">Business Events</text>
+                    <g class="lane-labels">
+                      <text x="52" y="98">Domain</text>
+                      <text x="120" y="98">Commands</text>
+                      <text x="184" y="98">Events</text>
+                      <text x="248" y="98">Policies</text>
+                      <text x="307" y="98">Read Models</text>
+                    </g>
+                    <path class="flow-line" d="M82 140 C122 118 137 184 174 160 S238 147 257 197 300 191 312 154" />
+                    <path class="flow-line" d="M96 214 C135 172 179 216 218 193 S270 135 305 223" />
+                    <path class="flow-line" d="M92 164 C126 184 115 231 163 233 S232 230 268 246" />
+                    <g class="notes">
+                      <rect class="note note--domain" x="34" y="86" width="46" height="24" rx="2" />
+                      <rect class="note note--teal" x="34" y="122" width="46" height="24" rx="2" />
+                      <rect class="note note--teal" x="34" y="160" width="46" height="24" rx="2" />
+                      <rect class="note note--teal" x="34" y="198" width="46" height="24" rx="2" />
+                      <rect class="note note--yellow" x="112" y="124" width="25" height="25" rx="2" />
+                      <rect class="note note--yellow" x="144" y="146" width="25" height="25" rx="2" />
+                      <rect class="note note--pink" x="113" y="204" width="25" height="25" rx="2" />
+                      <rect class="note note--teal" x="190" y="122" width="26" height="27" rx="2" />
+                      <rect class="note note--teal" x="192" y="167" width="26" height="27" rx="2" />
+                      <rect class="note note--yellow" x="228" y="202" width="26" height="27" rx="2" />
+                      <rect class="note note--yellow" x="245" y="159" width="26" height="27" rx="2" />
+                      <rect class="note note--yellow" x="282" y="214" width="26" height="27" rx="2" />
+                      <rect class="note note--pink" x="310" y="154" width="24" height="24" rx="2" />
+                    </g>
+                    <path class="person person--left" d="M44 296c4-39 18-66 45-66s43 28 48 66Z" />
+                    <circle class="skin" cx="82" cy="219" r="28" />
+                    <path class="hair" d="M53 222c2-31 25-48 54-36 8 14 4 33-11 44-14 11-32 10-43-8Z" />
+                    <path class="person person--middle" d="M128 296c5-48 31-77 70-77s62 31 69 77Z" />
+                    <circle class="skin" cx="195" cy="207" r="30" />
+                    <path class="hair hair--dark" d="M166 207c-3-30 20-50 48-40 13 11 16 30 7 44-15-7-35-7-55-4Z" />
+                    <path class="person person--right" d="M258 296c5-42 24-70 53-70s42 28 48 70Z" />
+                    <circle class="skin" cx="312" cy="214" r="25" />
+                    <path class="hair hair--dark" d="M291 215c-1-22 15-36 35-31 11 7 15 20 11 33-13-5-28-5-46-2Z" />
+                  </svg>
+                )}
+
+                {stage.title === 'Shape' && (
+                  <svg viewBox="0 0 360 360" role="img">
+                    <defs>
+                      <pattern id="shape-grid" width="18" height="18" patternUnits="userSpaceOnUse">
+                        <path d="M18 0H0v18" />
+                      </pattern>
+                    </defs>
+                    <rect class="grid-bg" x="0" y="0" width="360" height="360" fill="url(#shape-grid)" />
+                    <rect class="boundary boundary--top" x="99" y="20" width="132" height="72" rx="16" />
+                    <rect class="context" x="121" y="38" width="88" height="47" rx="8" />
+                    <text class="white-label" x="165" y="59" text-anchor="middle">Order</text>
+                    <text class="white-label" x="165" y="74" text-anchor="middle">Management</text>
+                    <rect class="domain-panel" x="118" y="142" width="124" height="100" rx="13" />
+                    <text x="180" y="166" text-anchor="middle">Domain Model</text>
+                    <rect class="model-block" x="155" y="183" width="56" height="17" rx="2" />
+                    <rect class="model-block" x="111" y="212" width="32" height="18" rx="2" />
+                    <rect class="model-block" x="149" y="248" width="35" height="18" rx="2" />
+                    <rect class="model-block" x="208" y="228" width="37" height="18" rx="2" />
+                    <path class="model-link" d="M143 221h18v-21" />
+                    <path class="model-link" d="M174 200v48" />
+                    <path class="model-link" d="M184 257h43v-11" />
+                    <g class="contexts">
+                      <rect x="16" y="88" width="82" height="54" rx="9" />
+                      <rect x="262" y="88" width="82" height="54" rx="9" />
+                      <rect x="16" y="245" width="82" height="54" rx="9" />
+                      <rect x="262" y="245" width="82" height="54" rx="9" />
+                    </g>
+                    <text x="57" y="120" text-anchor="middle">Customer</text>
+                    <text x="303" y="120" text-anchor="middle">Inventory</text>
+                    <text x="57" y="278" text-anchor="middle">Payment</text>
+                    <text x="303" y="278" text-anchor="middle">Shipping</text>
+                    <path class="shape-line" d="M98 115h164" />
+                    <path class="shape-line" d="M57 142v103" />
+                    <path class="shape-line" d="M303 142v103" />
+                    <path class="shape-line" d="M98 272h164" />
+                    <path class="shape-line dashed" d="M98 119 C136 166 87 210 118 219" />
+                    <path class="shape-line dashed" d="M242 221 C271 205 232 164 262 120" />
+                    <circle class="anchor" cx="180" cy="113" r="5" />
+                    <circle class="anchor" cx="57" cy="193" r="5" />
+                    <circle class="anchor" cx="303" cy="193" r="5" />
+                  </svg>
+                )}
+
+                {stage.title === 'Generate / Implement' && (
+                  <svg viewBox="0 0 360 360" role="img">
+                    <rect class="editor" x="10" y="24" width="340" height="246" rx="9" />
+                    <rect class="editor-top" x="10" y="24" width="340" height="24" rx="9" />
+                    <circle class="dot-red" cx="23" cy="36" r="4" />
+                    <circle class="dot-amber" cx="35" cy="36" r="4" />
+                    <circle class="dot-green" cx="47" cy="36" r="4" />
+                    <rect class="sidebar" x="10" y="48" width="105" height="222" />
+                    <g class="folder-list">
+                      <text x="32" y="74">services</text>
+                      <text x="43" y="98">order-service</text>
+                      <text x="43" y="121">customer-service</text>
+                      <text x="43" y="144">inventory-service</text>
+                      <text x="43" y="167">payment-service</text>
+                      <text x="43" y="190">shipping-service</text>
+                      <text x="32" y="225">libs</text>
+                      <text x="32" y="248">tests</text>
+                    </g>
+                    <g class="code">
+                      <text x="137" y="74">@SpringBootApplication</text>
+                      <text x="137" y="96">public class OrderServiceApplication {'{'}</text>
+                      <text x="151" y="118">public static void main(String[] args) {'{'}</text>
+                      <text x="166" y="140">SpringApplication.run(</text>
+                      <text x="178" y="162">OrderServiceApplication.class, args);</text>
+                      <text x="151" y="184">{'}'}</text>
+                      <text x="137" y="207">{'}'}</text>
+                      <text x="137" y="242">@RestController</text>
+                      <text x="137" y="264">class OrderController {'{'}</text>
+                    </g>
+                    <rect class="pipeline-bg" x="10" y="294" width="340" height="52" rx="8" />
+                    <g class="pipeline">
+                      <circle cx="50" cy="320" r="19" />
+                      <path d="M42 309h13l7 7v15H42Z" />
+                      <path d="M54 310v8h8" />
+                      <circle cx="140" cy="320" r="19" />
+                      <path d="M140 308v24" />
+                      <path d="M131 316a13 13 0 1 0 18 0" />
+                      <circle cx="230" cy="320" r="19" />
+                      <path d="m219 319 8 8 15-17" />
+                      <circle cx="320" cy="320" r="19" />
+                      <path d="m320 306 14 8v15l-14 8-14-8v-15Z" />
+                      <path d="M306 314 320 322l14-8" />
+                      <path d="M320 322v15" />
+                      <path class="pipeline-arrow" d="M75 320h40" />
+                      <path class="pipeline-arrow" d="M165 320h40" />
+                      <path class="pipeline-arrow" d="M255 320h40" />
+                    </g>
+                  </svg>
+                )}
+
+                {stage.title === 'Navigate' && (
+                  <svg viewBox="0 0 360 360" role="img">
+                    <rect class="app-window" x="13" y="28" width="334" height="250" rx="10" />
+                    <rect class="app-top" x="13" y="28" width="334" height="22" rx="10" />
+                    <circle class="dot-red" cx="25" cy="39" r="4" />
+                    <circle class="dot-amber" cx="37" cy="39" r="4" />
+                    <circle class="dot-green" cx="49" cy="39" r="4" />
+                    <rect class="nav-rail" x="13" y="50" width="31" height="228" />
+                    <rect class="nav-panel" x="44" y="50" width="89" height="228" />
+                    <text class="app-label" x="58" y="79">Architecture</text>
+                    <rect class="search" x="58" y="92" width="62" height="20" rx="3" />
+                    <text class="muted-label" x="58" y="139">Services</text>
+                    <rect class="selected-row" x="55" y="149" width="73" height="21" rx="3" />
+                    <text class="row-label" x="62" y="164">Order Service</text>
+                    <text class="row-label" x="62" y="187">Customer Service</text>
+                    <text class="row-label" x="62" y="210">Inventory Service</text>
+                    <text class="row-label" x="62" y="233">Payment Service</text>
+                    <text class="row-label" x="62" y="256">Shipping Service</text>
+                    <g class="service-map">
+                      <rect class="service service--blue" x="170" y="77" width="55" height="43" rx="8" />
+                      <rect class="service service--blue" x="282" y="77" width="55" height="43" rx="8" />
+                      <rect class="service service--purple" x="282" y="184" width="55" height="43" rx="8" />
+                      <rect class="service service--blue" x="168" y="229" width="55" height="43" rx="8" />
+                      <rect class="service service--core" x="231" y="154" width="45" height="45" rx="8" />
+                      <text x="198" y="101" text-anchor="middle">Customer</text>
+                      <text x="198" y="115" text-anchor="middle">Service</text>
+                      <text x="310" y="101" text-anchor="middle">Inventory</text>
+                      <text x="310" y="115" text-anchor="middle">Service</text>
+                      <text x="310" y="208" text-anchor="middle">Shipping</text>
+                      <text x="310" y="222" text-anchor="middle">Service</text>
+                      <text x="196" y="253" text-anchor="middle">Payment</text>
+                      <text x="196" y="267" text-anchor="middle">Service</text>
+                      <text x="254" y="213" text-anchor="middle">Order</text>
+                      <text x="254" y="228" text-anchor="middle">Service</text>
+                      <path class="map-link" d="M225 105 C246 124 241 139 253 154" />
+                      <path class="map-link" d="M282 104 C266 127 268 139 260 154" />
+                      <path class="map-link" d="M276 178 C294 181 304 180 310 184" />
+                      <path class="map-link" d="M224 246 C244 233 246 214 253 199" />
+                      <path class="map-link" d="M170 105 C153 134 157 171 231 176" />
+                    </g>
+                  </svg>
+                )}
+              </div>
+
+              <ul class="architecture-stage__legend" aria-label={`${stage.title} artifacts`}>
+                {stage.legend.map((item) => <li>{item}</li>)}
+              </ul>
+            </article>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .architecture-band {
+    --band-bg: var(--home-bg, #111318);
+    --band-panel: var(--home-panel, #151820);
+    --band-panel-strong: var(--home-panel-strong, #191d25);
+    --band-text: var(--home-text, #f3f5f8);
+    --band-muted: var(--home-muted, #b9c0ca);
+    --band-border: var(--home-border, #303744);
+    --band-shadow: 0 1.1rem 2.2rem rgb(0 0 0 / 0.2);
+    padding: clamp(2.75rem, 6vw, 5rem) 0;
+    border-top: 1px solid color-mix(in srgb, var(--band-border), transparent 30%);
+    border-bottom: 1px solid color-mix(in srgb, var(--band-border), transparent 30%);
+    background:
+      linear-gradient(90deg, color-mix(in srgb, #14a39a 7%, transparent), transparent 40%),
+      linear-gradient(270deg, color-mix(in srgb, #55a447 7%, transparent), transparent 42%),
+      color-mix(in srgb, var(--band-panel), transparent 30%);
+  }
+
+  :root[data-theme='light'] .architecture-band {
+    --band-shadow: 0 1rem 2rem rgb(32 41 58 / 0.1);
+  }
+
+  .architecture-band__shell {
+    width: min(var(--home-shell-width, 1320px), calc(100% - clamp(2rem, 5vw, 4rem)));
+    margin-inline: auto;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .architecture-band__stages {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .architecture-stage {
+    --stage-accent: #14a39a;
+    position: relative;
+    min-width: 0;
+  }
+
+  .architecture-stage--teal {
+    --stage-accent: #14a39a;
+  }
+
+  .architecture-stage--blue {
+    --stage-accent: #3b75d1;
+  }
+
+  .architecture-stage--amber {
+    --stage-accent: #d99100;
+  }
+
+  .architecture-stage--green {
+    --stage-accent: #55a447;
+  }
+
+  .architecture-stage article {
+    display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    min-height: 36rem;
+    padding: 0 0.8rem 0.8rem;
+    border: 1px solid color-mix(in srgb, var(--band-border), transparent 10%);
+    border-left-width: 0;
+    background: color-mix(in srgb, var(--band-panel), transparent 8%);
+    box-shadow: var(--band-shadow);
+  }
+
+  .architecture-stage:first-child article {
+    border-left-width: 1px;
+    border-radius: 8px 0 0 8px;
+  }
+
+  .architecture-stage:last-child article {
+    border-radius: 0 8px 8px 0;
+  }
+
+  .architecture-stage__top {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 5.15rem;
+  }
+
+  .architecture-stage__top::before,
+  .architecture-stage__top::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    height: 4px;
+    transform: translateY(-50%);
+    background: var(--stage-accent);
+    opacity: 0.95;
+  }
+
+  .architecture-stage__top::before {
+    left: 0;
+    width: calc(50% - 2.55rem);
+  }
+
+  .architecture-stage__top::after {
+    right: 0;
+    width: calc(50% - 2.55rem);
+  }
+
+  .architecture-stage:first-child .architecture-stage__top::before,
+  .architecture-stage:last-child .architecture-stage__top::after {
+    background: color-mix(in srgb, var(--band-border), transparent 15%);
+    width: calc(50% - 2.8rem);
+  }
+
+  .architecture-stage__dot {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 5rem;
+    aspect-ratio: 1;
+    border: 4px solid color-mix(in srgb, white 82%, var(--stage-accent));
+    border-radius: 999px;
+    background:
+      radial-gradient(circle at 38% 34%, color-mix(in srgb, white 22%, transparent), transparent 42%),
+      var(--stage-accent);
+    box-shadow:
+      0 0.4rem 1rem color-mix(in srgb, var(--stage-accent), transparent 55%),
+      0 0 0 0.45rem color-mix(in srgb, var(--stage-accent) 16%, transparent);
+  }
+
+  .architecture-stage__dot svg {
+    width: 2.6rem;
+    height: 2.6rem;
+    color: #fff;
+  }
+
+  .architecture-stage__dot :where(path, circle) {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .architecture-stage__arrow {
+    position: absolute;
+    top: 50%;
+    right: -1rem;
+    z-index: 3;
+    width: 0;
+    height: 0;
+    border-top: 0.55rem solid transparent;
+    border-bottom: 0.55rem solid transparent;
+    border-left: 1rem solid var(--stage-accent);
+    transform: translateY(-50%);
+  }
+
+  .architecture-stage h3 {
+    min-height: 4.2rem;
+    margin: 0;
+    color: var(--band-text);
+    font-size: clamp(1.55rem, 2.3vw, 2.15rem);
+    line-height: 1;
+    text-align: center;
+    letter-spacing: 0;
+  }
+
+  .architecture-stage__visual {
+    display: grid;
+    min-height: 22rem;
+    overflow: hidden;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--band-bg), var(--band-panel) 45%);
+  }
+
+  .architecture-stage__visual svg {
+    width: 100%;
+    height: 100%;
+    min-height: 22rem;
+  }
+
+  .architecture-stage__visual text {
+    fill: var(--band-text);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .architecture-stage__visual .muted-label,
+  .architecture-stage__visual .lane-labels text,
+  .architecture-stage__visual .folder-list text,
+  .architecture-stage__visual .row-label {
+    fill: var(--band-muted);
+    font-size: 8px;
+    font-weight: 600;
+  }
+
+  .window,
+  .domain-panel,
+  .app-window {
+    fill: color-mix(in srgb, var(--band-panel), white 3%);
+    stroke: color-mix(in srgb, var(--band-border), white 10%);
+  }
+
+  .rail,
+  .editor-top,
+  .app-top {
+    fill: color-mix(in srgb, var(--band-border), white 16%);
+  }
+
+  .flow-line,
+  .shape-line,
+  .map-link,
+  .model-link {
+    fill: none;
+    stroke: color-mix(in srgb, #8ab9df, var(--band-text) 25%);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .dashed,
+  .map-link {
+    stroke-dasharray: 6 5;
+  }
+
+  .note {
+    stroke: color-mix(in srgb, #000, transparent 82%);
+  }
+
+  .note--domain,
+  .note--yellow {
+    fill: #ffd65a;
+  }
+
+  .note--teal {
+    fill: #8bd8d0;
+  }
+
+  .note--pink {
+    fill: #ff9ea8;
+  }
+
+  .skin {
+    fill: #c99063;
+  }
+
+  .hair {
+    fill: #3b2b24;
+  }
+
+  .hair--dark {
+    fill: #222830;
+  }
+
+  .person--left,
+  .person--right {
+    fill: #1d9389;
+  }
+
+  .person--middle {
+    fill: #252b31;
+  }
+
+  .grid-bg path {
+    fill: none;
+    stroke: color-mix(in srgb, var(--band-border), transparent 70%);
+    stroke-width: 1;
+  }
+
+  .boundary {
+    fill: none;
+    stroke: #14a39a;
+    stroke-width: 1.7;
+    stroke-dasharray: 7 5;
+  }
+
+  .context,
+  .service--core {
+    fill: #14a39a;
+    stroke: color-mix(in srgb, #14a39a, white 28%);
+  }
+
+  .white-label {
+    fill: #fff !important;
+  }
+
+  .domain-panel {
+    filter: drop-shadow(0 8px 12px rgb(0 0 0 / 0.15));
+  }
+
+  .model-block {
+    fill: #a9d59d;
+    stroke: #6aa45e;
+  }
+
+  .contexts rect,
+  .service--blue {
+    fill: #dbeeff;
+    stroke: #5f9dea;
+  }
+
+  .contexts text,
+  .service-map text {
+    fill: #0d1420;
+  }
+
+  .anchor {
+    fill: color-mix(in srgb, var(--band-panel), white 22%);
+    stroke: color-mix(in srgb, #3b75d1, white 20%);
+    stroke-width: 1.5;
+  }
+
+  .editor {
+    fill: #111923;
+    stroke: #2d3846;
+  }
+
+  .sidebar,
+  .nav-rail {
+    fill: #17212c;
+  }
+
+  .dot-red {
+    fill: #ef6a61;
+  }
+
+  .dot-amber {
+    fill: #f5b642;
+  }
+
+  .dot-green {
+    fill: #72c96a;
+  }
+
+  .folder-list text {
+    fill: #d9e3ed !important;
+  }
+
+  .code text {
+    fill: #e8edf4;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 9px;
+    font-weight: 500;
+  }
+
+  .code text:nth-child(1),
+  .code text:nth-child(8) {
+    fill: #80d7c9;
+  }
+
+  .pipeline-bg {
+    fill: color-mix(in srgb, #fff7e5, var(--band-panel) 15%);
+  }
+
+  :root:not([data-theme='light']) .pipeline-bg {
+    fill: color-mix(in srgb, #614a16, var(--band-panel) 65%);
+  }
+
+  .pipeline circle {
+    fill: #55a447;
+    stroke: #f0f7ed;
+    stroke-width: 3;
+  }
+
+  .pipeline path {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .pipeline .pipeline-arrow {
+    stroke: color-mix(in srgb, var(--band-muted), #1f2b36 35%);
+    stroke-width: 2;
+  }
+
+  .app-window {
+    fill: #f8fafc;
+  }
+
+  :root:not([data-theme='light']) .app-window {
+    fill: #e9eef3;
+  }
+
+  .nav-panel {
+    fill: #f2f6f8;
+  }
+
+  .app-label,
+  .row-label,
+  .muted-label {
+    fill: #111827 !important;
+  }
+
+  .search {
+    fill: #ffffff;
+    stroke: #d4dce3;
+  }
+
+  .selected-row {
+    fill: #c8eee9;
+  }
+
+  .service {
+    filter: drop-shadow(0 5px 9px rgb(0 0 0 / 0.18));
+  }
+
+  .service--purple {
+    fill: #dfdbff;
+    stroke: #8c84e8;
+  }
+
+  .architecture-stage__legend {
+    display: grid;
+    grid-template-columns: repeat(var(--legend-count, 3), minmax(0, 1fr));
+    gap: 1px;
+    min-height: 5.1rem;
+    margin: 0.8rem 0 0;
+    padding: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--stage-accent) 18%, var(--band-panel));
+    list-style: none;
+  }
+
+  .architecture-stage--blue .architecture-stage__legend,
+  .architecture-stage--amber .architecture-stage__legend {
+    --legend-count: 4;
+  }
+
+  .architecture-stage__legend li {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    padding: 0.55rem 0.35rem;
+    border-left: 1px solid color-mix(in srgb, var(--band-border), transparent 35%);
+    color: var(--band-text);
+    font-size: 0.88rem;
+    font-weight: 700;
+    line-height: 1.15;
+    text-align: center;
+  }
+
+  .architecture-stage__legend li:first-child {
+    border-left: 0;
+  }
+
+  .architecture-stage__legend li::before {
+    content: '';
+    flex: 0 0 auto;
+    width: 1.65rem;
+    height: 1.65rem;
+    margin-right: 0.4rem;
+    background: var(--stage-accent);
+    mask: radial-gradient(circle at 50% 50%, #000 36%, transparent 38%);
+    opacity: 0.95;
+  }
+
+  .architecture-stage__legend li:nth-child(2)::before {
+    mask:
+      linear-gradient(#000 0 0) center / 70% 18% no-repeat,
+      linear-gradient(#000 0 0) center / 18% 70% no-repeat;
+  }
+
+  .architecture-stage__legend li:nth-child(3)::before {
+    mask:
+      linear-gradient(#000 0 0) left 0 bottom 0 / 18% 45% no-repeat,
+      linear-gradient(#000 0 0) center bottom / 18% 70% no-repeat,
+      linear-gradient(#000 0 0) right 0 bottom 0 / 18% 92% no-repeat;
+  }
+
+  .architecture-stage__legend li:nth-child(4)::before {
+    mask:
+      linear-gradient(#000 0 0) left 0 center / 40% 16% no-repeat,
+      linear-gradient(#000 0 0) right 0 center / 40% 16% no-repeat,
+      radial-gradient(circle at 50% 50%, transparent 36%, #000 38% 54%, transparent 56%);
+  }
+
+  @media (max-width: 1180px) {
+    .architecture-band__stages {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .architecture-stage article,
+    .architecture-stage:first-child article,
+    .architecture-stage:last-child article {
+      border-width: 1px;
+      border-radius: 8px;
+    }
+
+    .architecture-stage__arrow {
+      display: none;
+    }
+  }
+
+  @media (max-width: 660px) {
+    .architecture-band__shell {
+      width: min(var(--home-shell-width, 1320px), calc(100% - 1rem));
+    }
+
+    .architecture-band__stages {
+      grid-template-columns: 1fr;
+    }
+
+    .architecture-stage article {
+      min-height: 0;
+      padding-inline: 0.65rem;
+    }
+
+    .architecture-stage h3 {
+      min-height: 0;
+      margin-bottom: 0.9rem;
+      font-size: 1.75rem;
+    }
+
+    .architecture-stage__visual,
+    .architecture-stage__visual svg {
+      min-height: 18rem;
+    }
+
+    .architecture-stage__legend,
+    .architecture-stage--blue .architecture-stage__legend,
+    .architecture-stage--amber .architecture-stage__legend {
+      --legend-count: 2;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .architecture-stage__legend li {
+      min-height: 3rem;
+      font-size: 0.82rem;
+    }
+  }
+</style>

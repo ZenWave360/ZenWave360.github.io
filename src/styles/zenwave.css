@@ -1,4 +1,25 @@
 :root {
+  --sl-color-white: hsl(0, 0%, 100%);
+  --sl-color-gray-1: hsl(224, 20%, 94%);
+  --sl-color-gray-2: hsl(224, 6%, 77%);
+  --sl-color-gray-3: hsl(224, 6%, 56%);
+  --sl-color-gray-4: hsl(224, 7%, 36%);
+  --sl-color-gray-5: hsl(224, 10%, 23%);
+  --sl-color-gray-6: hsl(224, 14%, 16%);
+  --sl-color-gray-7: hsl(224, 19%, 97%);
+  --sl-color-black: hsl(224, 10%, 10%);
+  --sl-color-text: var(--sl-color-gray-2);
+  --sl-color-bg: var(--sl-color-black);
+  --sl-color-hairline: var(--sl-color-gray-6);
+  --sl-color-hairline-shade: var(--sl-color-black);
+  --sl-text-base: 1rem;
+  --sl-content-pad-x: 1rem;
+  --sl-nav-height: 3.5rem;
+  --sl-nav-pad-x: 1rem;
+  --sl-nav-pad-y: 0.75rem;
+  --sl-nav-gap: var(--sl-content-pad-x);
+  --sl-menu-button-size: 2rem;
+  --sl-z-index-navbar: 10;
   --zen-orange: #f36f21;
   --zen-highlight: #ffe04b;
   --zen-link: #2f81f7;
@@ -17,6 +38,19 @@
 }
 
 :root[data-theme='light'] {
+  --sl-color-white: hsl(224, 10%, 10%);
+  --sl-color-gray-1: hsl(224, 14%, 16%);
+  --sl-color-gray-2: hsl(224, 10%, 23%);
+  --sl-color-gray-3: hsl(224, 7%, 36%);
+  --sl-color-gray-4: hsl(224, 6%, 56%);
+  --sl-color-gray-5: hsl(224, 6%, 77%);
+  --sl-color-gray-6: hsl(224, 20%, 94%);
+  --sl-color-gray-7: hsl(224, 19%, 97%);
+  --sl-color-black: hsl(0, 0%, 100%);
+  --sl-color-text: var(--sl-color-gray-2);
+  --sl-color-bg: var(--sl-color-black);
+  --sl-color-hairline: var(--sl-color-gray-6);
+  --sl-color-hairline-shade: var(--sl-color-gray-6);
   --zen-link: #0969da;
   --sl-color-accent-low: #ffe0cb;
   --sl-color-accent: var(--zen-highlight);
@@ -24,9 +58,42 @@
   --sl-color-text-accent: var(--zen-highlight);
 }
 
+@media (min-width: 50rem) {
+  :root {
+    --sl-nav-height: 4rem;
+    --sl-nav-pad-x: 1.5rem;
+  }
+}
+
+.sl-hidden {
+  display: none;
+}
+
+.sl-flex {
+  display: flex;
+}
+
+@media (min-width: 50rem) {
+  .md\:sl-hidden {
+    display: none;
+  }
+
+  .md\:sl-flex {
+    display: flex;
+  }
+}
+
 html,
 body {
   background: var(--sl-color-bg);
+}
+
+html {
+  scroll-padding-top: calc(var(--sl-nav-height, 4rem) + 1rem);
+}
+
+:where([id]) {
+  scroll-margin-top: calc(var(--sl-nav-height, 4rem) + 1rem);
 }
 
 .page,
@@ -41,8 +108,8 @@ body {
 }
 
 .header {
-  border-bottom-color: var(--sl-color-hairline);
-  background: var(--sl-color-bg);
+  border-bottom-color: var(--sl-color-hairline-shade);
+  background-color: var(--sl-color-bg-nav);
 }
 
 .zen-topbar {
@@ -50,11 +117,13 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 2;
-  height: var(--sl-nav-height, 4rem);
-  padding: var(--sl-nav-pad-y, 0.75rem) max(var(--sl-nav-pad-x, 1rem), var(--zen-shell-offset, 1rem));
-  border-bottom: 1px solid var(--border, var(--sl-color-hairline));
-  background: var(--bg, var(--sl-color-bg));
+  z-index: var(--sl-z-index-navbar);
+  width: 100%;
+  height: var(--sl-nav-height);
+  padding: var(--sl-nav-pad-y) max(var(--sl-nav-pad-x), var(--zen-shell-offset, 1rem));
+  padding-inline-end: max(var(--sl-nav-pad-x), var(--zen-shell-offset, 1rem));
+  border-bottom: 1px solid var(--sl-color-hairline-shade);
+  background-color: var(--sl-color-bg-nav);
 }
 
 .content-panel + .content-panel {
@@ -68,7 +137,16 @@ body {
 
 .content-panel > .sl-container {
   box-sizing: border-box;
-  padding-inline: 20px;
+  width: min(100%, var(--zen-content-max-width));
+  margin-inline: auto;
+  padding-inline: 0;
+}
+
+@media (max-width: 72rem) {
+  .content-panel > .sl-container {
+    width: 100%;
+    padding-inline: 20px;
+  }
 }
 
 .main-pane main > .content-panel {
