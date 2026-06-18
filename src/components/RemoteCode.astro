@@ -2,8 +2,8 @@
 import cache from '../remote-code-cache.json';
 import {
   customShikiLangAlias,
-  getRemoteCodeHighlighter,
 } from '../utils/code-highlighting';
+import { renderExpressiveCode } from '../utils/expressive-code';
 
 interface Props {
   url?: string;
@@ -49,38 +49,63 @@ function resolveLanguage(requestedLanguage?: string, fallbackLanguage?: string) 
   return customShikiLangAlias[configuredLanguage] || configuredLanguage;
 }
 
+function trimBlankEdgeLines(value: string) {
+  return value
+    .replace(/^(?:[ \t]*\r?\n)+/, '')
+    .replace(/(?:\r?\n[ \t]*)+$/, '');
+}
+
 const label = title || summary;
 const fetchUrl = transformGitHubUrl(url);
 const cacheKey = `${fetchUrl || ''}:${visibleRange || 'full'}`;
 const cachedEntry = (cache as Record<string, { content: string; language?: string }>)[cacheKey];
 const cached = cachedEntry?.content;
-const displayContent = content || cached || `Remote code snapshot missing for ${cacheKey}. Run npm run sync:remote-code.`;
+const rawDisplayContent = content || cached || `Remote code snapshot missing for ${cacheKey}. Run npm run sync:remote-code.`;
+const displayContent = trimBlankEdgeLines(rawDisplayContent);
 const resolvedLanguage = resolveLanguage(language, cachedEntry?.language);
 const isDev = import.meta.env.DEV;
 const isDeferredInDev = isDev && deferInDev;
 let highlightedCode: string | undefined;
+let sharedStyles: string | undefined;
+let blockStyles: string | undefined;
+let blockScripts: string | undefined;
 
-if (!isDev && !isDeferredInDev) {
-  highlightedCode = await (await getRemoteCodeHighlighter()).codeToHtml(displayContent, resolvedLanguage, {
-    attributes: {
-      class: `language-${resolvedLanguage}`,
-    },
+if (!isDeferredInDev) {
+  const rendered = await renderExpressiveCode({
+    code: displayContent,
+    language: resolvedLanguage,
+    title: collapsed ? undefined : label,
   });
+  highlightedCode = rendered.html;
+  blockStyles = rendered.blockStyles;
+
+  const locals = Astro.locals as Record<string, unknown>;
+  if (!locals.__ecStylesEmitted) {
+    locals.__ecStylesEmitted = true;
+    sharedStyles = rendered.sharedStyles;
+    blockScripts = rendered.scripts;
+  }
 }
 ---
 
 <div class="remote-code">
-  <details open={!collapsed && !isDeferredInDev}>
-    {label && <summary>{label}</summary>}
-    {isDeferredInDev ? (
+  {sharedStyles && <style is:inline set:html={sharedStyles} />}
+  {blockScripts && <script type="module" is:inline set:html={blockScripts} />}
+  {blockStyles && <style is:inline set:html={blockStyles} />}
+  {isDeferredInDev ? (
+    <details>
+      {label && <summary>{label}</summary>}
       <div class="remote-code__deferred">
         Deferred in dev mode for faster page loads. Use preview/build to inspect the full generated snippet.
       </div>
-    ) : isDev ? (
-      <pre class={`language-${resolvedLanguage}`}><code>{displayContent}</code></pre>
-    ) : (
+    </details>
+  ) : collapsed ? (
+    <details>
+      {label && <summary>{label}</summary>}
       <Fragment set:html={highlightedCode} />
-    )}
-  </details>
+    </details>
+  ) : (
+    <Fragment set:html={highlightedCode} />
+  )}
   {showLegend && url && <p class="remote-code__source"><a href={sourceUrl(url)} target="_blank" rel="noreferrer">Navigate to source</a></p>}
 </div>

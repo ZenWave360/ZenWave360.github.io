@@ -1,14 +1,8 @@
-import { readFileSync } from 'node:fs';
 import { createShikiHighlighter } from '@astrojs/markdown-remark';
 import githubDarkTheme from '@shikijs/themes/github-dark';
 import githubLightTheme from '@shikijs/themes/github-light';
-
-const zdlGrammar = JSON.parse(
-  readFileSync(new URL('../syntaxes/zdl.tmLanguage.json', import.meta.url), 'utf-8'),
-);
-const zflGrammar = JSON.parse(
-  readFileSync(new URL('../syntaxes/zfl.tmLanguage.json', import.meta.url), 'utf-8'),
-);
+import zdlGrammar from '../syntaxes/zdl.tmLanguage.json';
+import zflGrammar from '../syntaxes/zfl.tmLanguage.json';
 
 export const zenWaveDarkCodeTheme = {
   ...githubDarkTheme,
@@ -65,16 +59,16 @@ export const zenWaveLightCodeTheme = {
 
 export const customShikiLanguages = [
   {
+    ...zdlGrammar,
     id: 'zdl',
-    scopeName: 'source.zdl',
-    aliases: ['zdl', 'zw'],
-    grammar: zdlGrammar,
+    name: 'zdl',
+    aliases: ['zw'],
   },
   {
+    ...zflGrammar,
     id: 'zfl',
-    scopeName: 'source.zfl',
-    aliases: ['zfl'],
-    grammar: zflGrammar,
+    name: 'zfl',
+    aliases: [],
   },
 ];
 

@@ -1,5 +1,6 @@
 ---
 import ArchitectureLifecycleBand from '../components/ArchitectureLifecycleBand.astro';
+import ImageCarousel from '../components/ImageCarousel.astro';
 import ZenFooter from '../components/ZenFooter.astro';
 import ZenThemeProvider from '../components/ZenThemeProvider.astro';
 import ZenTopBar from '../components/ZenTopBar.astro';
@@ -70,8 +71,8 @@ const featuredCapabilities = [
     text: 'An ever-growing set of plugins that generate Spring Boot services, APIs, tests, event adapters, and infrastructure from connected architecture artifacts.',
     ctas: [
       {
-        href: '/docs/getting-started/',
-        label: 'Get started',
+        href: '/docs/zenwave-sdk/',
+        label: 'ZenWave SDK',
       },
       {
         href: '/zenwave-sdk/',
@@ -89,6 +90,7 @@ const platformCapabilityCards = [
     imageWidth: 280,
     imageHeight: 280,
     text: 'Generates strongly typed Spring Kafka and Spring Cloud Stream producers and consumers from AsyncAPI specifications.',
+    href: '/zenwave-sdk/plugins/asyncapi-generator/',
   },
   {
     title: 'ZDL Modeling Language',
@@ -97,6 +99,7 @@ const platformCapabilityCards = [
     imageWidth: 286,
     imageHeight: 188,
     text: 'Model bounded contexts, entities, aggregates, commands, events, and services as structured domain artifacts.',
+    href: '/docs/event-driven-design/zenwave-domain-language/',
   },
   {
     title: 'ZFL Flow Language',
@@ -105,6 +108,7 @@ const platformCapabilityCards = [
     imageWidth: 464,
     imageHeight: 336,
     text: 'Model business flows as policies that connect commands and events, then link them to APIs, schemas, and domain models.',
+    href: '/docs/event-driven-design/zenwave-flow-language/',
   },
   {
     title: 'ZenWave IDE & MCP',
@@ -112,7 +116,8 @@ const platformCapabilityCards = [
     image: '/images/platform/icons/zenwave-logo.svg',
     imageWidth: 756,
     imageHeight: 674,
-    text: 'Architecture-aware navigation and context for IDEs and AI agents. Powered by a Kotlin Multiplatform LSP server, with IntelliJ first, VS Code next, and MCP support for agent workflows.',
+    text: 'Architecture navigation and context for IDEs and AI agents. Powered by a Kotlin Multiplatform LSP server, with IntelliJ first, VS Code next, and MCP support for agent workflows.',
+    href: '/plugin/',
   },
 ];
 
@@ -156,18 +161,21 @@ const supportingCapabilityCards = [
     badge: 'Beta',
     icon: 'strategy',
     text: 'Provision Kafka topics, ACLs, and Schema Registry infrastructure from AsyncAPI contracts.',
+    href: '/zenwave-sdk/plugins/asyncapi-ops/',
   },
   {
     title: 'Spring Modulith Events',
     badge: 'Production ready',
     icon: 'paper-plane',
     text: 'Externalize Spring Modulith domain events through Spring Cloud Stream. Used by the AsyncAPI Generator for Transactional Outbox integration.',
+    href: 'https://github.com/ZenWave360/spring-modulith-events-spring-cloud-stream',
   },
   {
     title: 'JSON Schema Parser',
     badge: 'Supporting OSS',
     icon: 'schema',
     text: 'Standalone JSON Schema reference parsers for JVM and Kotlin Multiplatform, used across ZenWave SDK, the IntelliJ plugin, and other tooling.',
+    href: 'https://github.com/ZenWave360/json-schema-ref-parser-kmp',
   },
 ];
 
@@ -264,7 +272,7 @@ const referenceCards = [
               navigable for your team, your tools, and your AI agents.
             </p>
             <div class="actions">
-              <a class="button button--secondary" href="/docs/">Explore the docs</a>
+              <a class="button button--secondary" href="/docs/getting-started/">Get Started</a>
               <a class="button" href="#reference-title">See it in action</a>
             </div>
             <p class="status-line">Grounded in open standards. Built in public.</p>
@@ -333,7 +341,7 @@ const referenceCards = [
               </svg>
             </div>
 
-            <a class="delivery-card" href="/zenwave-sdk/" aria-label="Explore ZenWave SDK">
+            <a class="delivery-card" href="/docs/getting-started/" aria-label="Get started with ZenWave SDK">
               <img
                 src="/images/laptop-buddha-transparent.png"
                 alt=""
@@ -366,27 +374,16 @@ const referenceCards = [
             </p>
           </div>
 
-          <div class="platform-carousel-wrap">
-            <button class="carousel-control carousel-control--prev" type="button" aria-label="Previous screenshot" data-platform-carousel-prev>
-              <span aria-hidden="true">&#8592;</span>
-            </button>
-            <div class="platform-carousel" aria-label="ZenWave platform screenshots" data-platform-carousel>
-              {platformScreenshots.map((screenshot, index) => (
-                <figure class="platform-slide">
-                  <img
-                    src={`/images/platform/screenshots/${screenshot.file}`}
-                    alt={screenshot.caption}
-                    loading={index === 0 ? 'eager' : 'lazy'}
-                    decoding="async"
-                  />
-                  <figcaption>{screenshot.caption}</figcaption>
-                </figure>
-              ))}
-            </div>
-            <button class="carousel-control carousel-control--next" type="button" aria-label="Next screenshot" data-platform-carousel-next>
-              <span aria-hidden="true">&#8594;</span>
-            </button>
-          </div>
+          <ImageCarousel
+            ariaLabel="ZenWave platform screenshots"
+            slides={platformScreenshots.map((screenshot) => ({
+              src: `/images/platform/screenshots/${screenshot.file}`,
+              caption: screenshot.caption,
+              alt: screenshot.caption,
+              width: screenshot.width,
+              height: screenshot.height,
+            }))}
+          />
 
           <div class="featured-capabilities">
             {featuredCapabilities.map((card) => (
@@ -462,7 +459,7 @@ const referenceCards = [
             <h3>Platform Capabilities</h3>
             <div class="capability-grid" role="list" aria-label="ZenWave platform capabilities">
               {platformCapabilityCards.map((card) => (
-                <article class="capability-card" role="listitem">
+                <a class="capability-card capability-card--link" href={card.href} role="listitem">
                   <span class={`maturity-badge ${maturityBadgeClass(card.badge)}`}>{card.badge}</span>
                   <div class="capability-card__icon" aria-hidden="true">
                     {card.image && <img src={card.image} alt="" loading="lazy" decoding="async" width={card.imageWidth} height={card.imageHeight} />}
@@ -471,7 +468,7 @@ const referenceCards = [
                     <h3>{card.title}</h3>
                     <p>{card.text}</p>
                   </div>
-                </article>
+                </a>
               ))}
             </div>
           </div>
@@ -480,16 +477,29 @@ const referenceCards = [
             <h3>Supporting OSS</h3>
             <div class="capability-grid" role="list" aria-label="ZenWave supporting open source capabilities">
               {supportingCapabilityCards.map((card) => (
-                <article class="capability-card" role="listitem">
-                  <span class={`maturity-badge ${maturityBadgeClass(card.badge)}`}>{card.badge}</span>
-                  <div class="capability-card__icon" aria-hidden="true">
-                    <Fragment set:html={supportingCapabilityIcons[card.icon]} />
-                  </div>
-                  <div class="capability-card__body">
-                    <h3>{card.title}</h3>
-                    <p>{card.text}</p>
-                  </div>
-                </article>
+                card.href ? (
+                  <a class="capability-card capability-card--link" href={card.href} role="listitem">
+                    <span class={`maturity-badge ${maturityBadgeClass(card.badge)}`}>{card.badge}</span>
+                    <div class="capability-card__icon" aria-hidden="true">
+                      <Fragment set:html={supportingCapabilityIcons[card.icon]} />
+                    </div>
+                    <div class="capability-card__body">
+                      <h3>{card.title}</h3>
+                      <p>{card.text}</p>
+                    </div>
+                  </a>
+                ) : (
+                  <article class="capability-card" role="listitem">
+                    <span class={`maturity-badge ${maturityBadgeClass(card.badge)}`}>{card.badge}</span>
+                    <div class="capability-card__icon" aria-hidden="true">
+                      <Fragment set:html={supportingCapabilityIcons[card.icon]} />
+                    </div>
+                    <div class="capability-card__body">
+                      <h3>{card.title}</h3>
+                      <p>{card.text}</p>
+                    </div>
+                  </article>
+                )
               ))}
             </div>
           </div>
@@ -522,7 +532,7 @@ const referenceCards = [
                 to ZFL flows, contracts, services, events, and AI-assisted delivery.
               </p>
               <div class="actions">
-                <a class="button" href="https://ivangsa.com/articles/arcadia/004-from-event-storming-to-zfl/">Read the series</a>
+                <a class="button" href="https://ivangsa.com/articles/arcadia/">Read the series</a>
                 <a class="button button--secondary" href="https://github.com/arcadia-editions">View the code</a>
               </div>
             </div>
@@ -867,87 +877,6 @@ const referenceCards = [
     max-width: 58rem;
   }
 
-  .platform-carousel-wrap {
-    position: relative;
-    margin-top: 1.2rem;
-  }
-
-  .platform-carousel {
-    display: grid;
-    grid-auto-columns: minmax(100%, 1fr);
-    grid-auto-flow: column;
-    gap: 1rem;
-    overflow-x: auto;
-    overscroll-behavior-inline: contain;
-    scroll-behavior: smooth;
-    scroll-snap-type: inline mandatory;
-    scrollbar-color: var(--home-highlight) transparent;
-    padding-bottom: 0.35rem;
-    cursor: pointer;
-    user-select: none;
-  }
-
-  .platform-slide {
-    position: relative;
-    min-width: 0;
-    margin: 0;
-    overflow: hidden;
-    scroll-snap-align: start;
-    border: 1px solid var(--home-border);
-    border-radius: 0.5rem;
-    background: var(--home-panel);
-  }
-
-  .platform-slide img {
-    display: block;
-    width: 100%;
-    aspect-ratio: 16 / 8.4;
-    object-fit: contain;
-    background: #0d1118;
-  }
-
-  .platform-slide figcaption {
-    position: absolute;
-    inset-inline: 0;
-    inset-block-end: 0;
-    padding: 1.8rem 1.1rem 0.85rem;
-    color: #fff8e5;
-    background: linear-gradient(180deg, transparent, rgb(0 0 0 / 0.82));
-    font-size: clamp(0.95rem, 1.6vw, 1.12rem);
-    font-weight: 700;
-    line-height: 1.25;
-    text-shadow: 0 1px 2px rgb(0 0 0 / 0.72);
-  }
-
-  .carousel-control {
-    position: absolute;
-    top: 50%;
-    z-index: 3;
-    display: grid;
-    place-items: center;
-    width: 2.55rem;
-    aspect-ratio: 1;
-    border: 1px solid color-mix(in srgb, var(--home-highlight), var(--home-border) 35%);
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--home-panel-strong), transparent 8%);
-    color: var(--home-highlight);
-    font: inherit;
-    font-size: 1.2rem;
-    font-weight: 800;
-    line-height: 1;
-    box-shadow: 0 0.8rem 1.4rem rgb(0 0 0 / 0.26);
-    transform: translateY(-50%);
-    cursor: pointer;
-  }
-
-  .carousel-control--prev {
-    left: 0.75rem;
-  }
-
-  .carousel-control--next {
-    right: 0.75rem;
-  }
-
   .featured-capabilities {
     display: grid;
     grid-template-columns: minmax(0, 1.5fr) minmax(22rem, 1fr);
@@ -984,6 +913,23 @@ const referenceCards = [
     border-radius: 0.5rem;
     background: color-mix(in srgb, var(--home-panel), var(--home-panel-strong) 44%);
     box-shadow: 0 0.8rem 1.5rem rgb(0 0 0 / 0.12);
+  }
+
+  .capability-card--link {
+    color: inherit;
+    text-decoration: none;
+    transition:
+      border-color 160ms ease,
+      transform 160ms ease,
+      box-shadow 160ms ease;
+  }
+
+  .capability-card--link:hover,
+  .capability-card--link:focus-visible {
+    border-color: color-mix(in srgb, var(--home-highlight), var(--home-border) 30%);
+    transform: translateY(-1px);
+    box-shadow: 0 1rem 2rem rgb(0 0 0 / 0.16);
+    outline: none;
   }
 
   .capability-card > .maturity-badge {
@@ -1406,40 +1352,5 @@ const referenceCards = [
       min-height: 8rem;
     }
 
-    .carousel-control {
-      width: 2.25rem;
-    }
-
   }
 </style>
-
-<script is:inline>
-  document.querySelectorAll('[data-platform-carousel]').forEach((carousel) => {
-    const root = carousel.parentElement;
-    const previous = root?.querySelector('[data-platform-carousel-prev]');
-    const next = root?.querySelector('[data-platform-carousel-next]');
-
-    const scrollBySlide = (direction) => {
-      carousel.scrollBy({
-        left: direction * carousel.clientWidth,
-        behavior: 'smooth',
-      });
-    };
-
-    carousel.addEventListener('click', (event) => {
-      const bounds = carousel.getBoundingClientRect();
-      const direction = event.clientX < bounds.left + bounds.width / 2 ? -1 : 1;
-      scrollBySlide(direction);
-    });
-
-    previous?.addEventListener('click', (event) => {
-      event.stopPropagation();
-      scrollBySlide(-1);
-    });
-
-    next?.addEventListener('click', (event) => {
-      event.stopPropagation();
-      scrollBySlide(1);
-    });
-  });
-</script>

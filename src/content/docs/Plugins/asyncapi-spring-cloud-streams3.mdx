@@ -179,6 +179,7 @@ If you want to generate the consumer side of an existing API, you can use the `c
 </execution>
 ```
 
+
 Because APIs mediated by a broker are inherently **reciprocal** it's difficult to establish the roles of client/server: what represents a `publish` operation from one side will be a `subscribe` operation seen from the other side. Also, a given service can act as a publisher and subscriber on the same API.
 
 For these reasons, to avoid defining the same API operations multiple times from each perspective, we propose to define de API only once from the perspective of the provider of the functionality, which may be a producer, a consumer or both. 
@@ -190,6 +191,7 @@ Some definitions:
 - CLIENT/s: The service/s that makes use of the functionality of the API. It may be requesting asynchronous commands or subscribing to business domain events.
 - PRODUCER: A service that writes a given message.
 - CONSUMER: A service that reads a given message.
+
 
 Use the table to understand which section of AsyncAPI (publish or subscribe) to use for each topic, and which role (provider or client) to use on the plugin configuration.
 
@@ -243,15 +245,16 @@ jbang zw -p io.zenwave360.sdk.plugins.SpringCloudStreams3Plugin --help
 | `skipFormatting`                  | Skip java sources output formatting                                                                                                                                                                                        | boolean                 | false                |                               |
 | `haltOnFailFormatting`            | Halt on formatting errors                                                                                                                                                                                                  | boolean                 | true                 |                               |
 
+
 ## Advanced Features
 
 ### Transactional Outbox Pattern
 
 ZenWave SDK supports sending messages transactionaly using the [Transactional Outbox Pattern](https://microservices.io/patterns/data/transactional-outbox.html).
 
-![Transactional Outbox with AsyncAPI and Spring Modulith](/page-assets/docs/TransactionalOutBoxWithAsyncAPIAndSpringModulith-light.png)
+![Transactional Outbox with AsyncAPI and Spring Modulith](https://raw.githubusercontent.com/ZenWave360/zenwave-sdk/refs/heads/main/docs/TransactionalOutBoxWithAsyncAPIAndSpringModulith-light.png)
 
-See [Implementing a Transactional OutBox With AsyncAPI, SpringModulith and ZenWaveSDK](https://www.zenwave360.io/posts/TransactionalOutBoxWithAsyncAPIAndSpringModulith/) for complete details.
+See [Implementing a Transactional OutBox With AsyncAPI, SpringModulith and ZenWaveSDK](/posts/TransactionalOutBoxWithAsyncAPIAndSpringModulith/) for complete details.
 
 ### Populating Headers at Runtime Automatically
 
@@ -347,6 +350,7 @@ public class ProducerInMemoryContext {
 
     public static final ProducerInMemoryContext INSTANCE = new ProducerInMemoryContext();
 
+
     private CustomerEventsProducerCaptor customerEventsProducerCaptor = new CustomerEventsProducerCaptor();
 
     public <T extends ICustomerEventsProducer> T customerEventsProducer() {
@@ -384,6 +388,7 @@ spring:
 ```shell
 jbang zw -p io.zenwave360.sdk.plugins.SpringCloudStreams3AdaptersPlugin --help
 ```
+
 
 ```shell
 jbang zw -p io.zenwave360.sdk.plugins.SpringCloudStreams3AdaptersPlugin \
@@ -442,6 +447,7 @@ public class DoCustomerRequestConsumerServiceIT extends BaseConsumerTest {
   }
 }
 ```
+
 
 ### Options for Consumer Adapters
 

@@ -24,7 +24,7 @@ Because writing YAML by hand is now fun...
 
 You can use `ZenWave Domain Language` models as IDL to generate OpenAPI v3 with ZenWave SDK.
 
-Imagine being able to quickly define an API in a more concise and readable way, without losing the rigor of an OpenAPI specification. This article explores how you can leverage [ZenWave Domain Language (ZDL)](https://www.zenwave360.io/docs/event-driven-design/zenwave-domain-language), a compact developer-friendly DSL, to generate OpenAPI definitions, simplifying the process of creating API documentation, reducing errors, and improving developer productivity. Whether you're managing an extensive API or just getting started, a DSL might be the key to making your API workflow more efficient.
+Imagine being able to quickly define an API in a more concise and readable way, without losing the rigor of an OpenAPI specification. This article explores how you can leverage [ZenWave Domain Language (ZDL)](/docs/event-driven-design/zenwave-domain-language/), a compact developer-friendly DSL, to generate OpenAPI definitions, simplifying the process of creating API documentation, reducing errors, and improving developer productivity. Whether you're managing an extensive API or just getting started, a DSL might be the key to making your API workflow more efficient.
 
 This is how it looks ZenWave ZDL as OpenAPI IDL (fragment):
 
@@ -38,7 +38,7 @@ It's designed to be compact, readable and expressive. Developer friendly, and ma
 
 It can also be used as an IDL for authoring OpenAPI (and AsyncAPI) definition files.
 
-<img src="https://www.zenwave360.io/static/EventStorming-ZDL-Mapping-cb9c987d5d0aff110c5890481034ae20.png" />
+<img src="/images/EventStorming-ZDL-Mapping.png" />
 
 ## Creating a ZDL for authoring an OpenAPI definition
 
@@ -69,7 +69,7 @@ service PaymentsService for (PaymentMethod) {
 
 NOTE: service method only accept two kind of parameters: `id` and command payload (that will map to the request body), but you can use `@inline` to expand fields as request path parameters (see below).
 
-Checkout the [ZDL documentation](https://www.zenwave360.io/docs/event-driven-design/zenwave-domain-language#services-and-commands) for more details about command methods.
+Checkout the [ZDL documentation](/docs/event-driven-design/zenwave-domain-language/#services-and-commands) for more details about command methods.
 
 ## Install ZenWave SDK Using JBang
 
@@ -78,7 +78,7 @@ Install an evergreen self updating ZenWave SDK CLI using JBang:
 ```shell
 jbang alias add --force --fresh --name=zw release@zenwave360/zenwave-sdk
 ```
-Following these instructions for complete details about JBang and IntelliJ Editor: https://www.zenwave360.io/docs/getting-started/
+Following these instructions for complete details about JBang and IntelliJ Editor: /docs/getting-started/
 
 Now you can use jbang zw to generate a complete OpenAPI definition file from your ZDL model.
 

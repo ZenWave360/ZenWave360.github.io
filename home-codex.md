@@ -225,7 +225,7 @@ Badge: Building in public
 
 [Card] ZenWave IDE & MCP
 Icon: zenwave-logo.svg
-Architecture-aware navigation and context for IDEs and AI agents, powered by a
+Architecture navigation and context for IDEs and AI agents, powered by a
 Kotlin Multiplatform LSP server. IntelliJ first, VS Code next, with MCP support
 for agent workflows.
 Badge: Building in public

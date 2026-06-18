@@ -333,7 +333,11 @@ html {
 }
 
 .remote-code {
-  margin: 1.15rem 0;
+  margin: 1rem 0;
+}
+
+.remote-code :where(.expressive-code) {
+  margin-block: 0;
 }
 
 .remote-code details {
@@ -352,18 +356,6 @@ html {
   font-weight: 600;
   line-height: 1.35;
   list-style-position: outside;
-}
-
-.remote-code pre {
-  margin: 0;
-  border-radius: 0;
-  max-height: 34rem;
-  overflow: auto;
-  border: 0;
-}
-
-.remote-code code {
-  font-family: var(--__sl-font-mono, var(--sl-font-mono));
 }
 
 .remote-code__deferred {

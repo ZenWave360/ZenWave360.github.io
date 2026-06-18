@@ -98,7 +98,7 @@ In this way, domain knowledge propagates consistently throughout the entire deve
 
 ZenWave Domain Model Language (ZDL) is a modeling language that allows describing the content of backend services based on DDD principles and API-First for Event-Driven Architectures.
 
-ZDL is a compact, readable, and expressive language. It also works well as a Ubiquitous Language format, and thanks to the set of [ZenWave SDK Plugins](https://www.zenwave360.io/zenwave-sdk/), it can be converted into different software artifacts and documentation, thus propagating the common language throughout the entire development process.
+ZDL is a compact, readable, and expressive language. It also works well as a Ubiquitous Language format, and thanks to the set of [ZenWave SDK Plugins](/zenwave-sdk/), it can be converted into different software artifacts and documentation, thus propagating the common language throughout the entire development process.
 
 Initially inspired by [JHipster Domain Language (JDL)](https://www.jhipster.tech/jdl/intro) and borrowing its syntax, ZDL extends JDL beyond the definition of entities and their relationships for CRUD applications. It adds support for defining services, commands, and domain events, as well as integration with API-First specifications like OpenAPI, AsyncAPI, and AVRO.
 
@@ -152,7 +152,7 @@ This section is for the most impatient. If you want to test ZenWave 360's capabi
 
 1. **Clone the base project**: Download the [base project](https://github.com/ZenWave360/zenwave-playground/tree/main/zenwave-jpa-baseline). Alternatively, you can create a Maven project from https://start.spring.io/, although you'll need to manually configure the OpenAPI Maven Generator and the ZenWave SDK Maven Plugin for AsyncAPI. Any single-module Spring-Boot Maven project will be compatible, as ZenWave only generates business code.
 
-2. **Install the necessary tools**: Follow the instructions in [Getting Started](https://www.zenwave360.io/docs/getting-started/) to install ZenWave SDK CLI and the [ZenWave Domain Model Editor for ZDL for IntelliJ](https://plugins.jetbrains.com/plugin/22858-zenwave-domain-model-editor-for-zdl).
+2. **Install the necessary tools**: Follow the instructions in [Getting Started](/docs/getting-started/) to install ZenWave SDK CLI and the [ZenWave Domain Model Editor for ZDL for IntelliJ](https://plugins.jetbrains.com/plugin/22858-zenwave-domain-model-editor-for-zdl).
 
 3. **Execute the plugins**: In IntelliJ, open the `zenwave-scripts.zw` file and execute each plugin individually. Use the green `Play` button that appears in the left margin next to each plugin.
 
@@ -284,9 +284,9 @@ These annotations serve not only to document how our service communicates with t
 
 The ZDL format has evolved as an IDL language to define both OpenAPI and AsyncAPI type APIs almost completely:
 
-- [Exposing a REST API](https://www.zenwave360.io/docs/zenwave-sdk/exposing-a-rest-api/)
-- [Producing Domain Events](https://www.zenwave360.io/docs/zenwave-sdk/producing-domain-events/)
-- [Consuming Async Commands](https://www.zenwave360.io/docs/zenwave-sdk/consuming-async-commands/)
+- [Exposing a REST API](/docs/zenwave-sdk/exposing-a-rest-api/)
+- [Producing Domain Events](/docs/zenwave-sdk/producing-domain-events/)
+- [Consuming Async Commands](/docs/zenwave-sdk/consuming-async-commands/)
 
 #### Converting ZDL to OpenAPI
 
@@ -345,7 +345,7 @@ service CustomerService for (Customer) {
   outputUrl="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/src/main/resources/public/apis/openapi.yml"
 />
 
-For more details on how to define REST APIs in ZDL, see the documentation on [Exposing a REST API](https://www.zenwave360.io/docs/zenwave-sdk/exposing-a-rest-api/).
+For more details on how to define REST APIs in ZDL, see the documentation on [Exposing a REST API](/docs/zenwave-sdk/exposing-a-rest-api/).
 
 #### Converting ZDL to AsyncAPI
 

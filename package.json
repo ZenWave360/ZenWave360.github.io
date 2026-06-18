@@ -8,6 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "sync:remote-code": "node scripts/cache-remote-code.mjs",
+    "sync:plugins": "node scripts/sync-plugin-docs.mjs",
     "content:migrate": "node scripts/migrate-content.mjs",
     "routes:old": "node scripts/inventory-old-routes.mjs",
     "routes:compare": "node scripts/compare-routes.mjs"

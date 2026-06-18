@@ -3,31 +3,54 @@ title: "Getting Started"
 slug: "/docs/getting-started/"
 ---
 
-import Image from '../../../components/Image.astro';
+import ImageCarousel from '../../../components/ImageCarousel.astro';
+
+export const zdlModelingSlides = [
+  {
+    src: '/page-assets/docs/ZenWave360/images/getting-started/zdl-config.png',
+    caption: 'ZDL config section with SDK plugins',
+  },
+  {
+    src: '/page-assets/docs/ZenWave360/images/getting-started/zdl-entities.png',
+    caption: 'ZDL entities with nested entities for MongoDB',
+  },
+  {
+    src: '/page-assets/docs/ZenWave360/images/getting-started/zdl-entities-jpa.png',
+    caption: 'ZDL entities with relationships for JPA',
+  },
+  {
+    src: '/page-assets/docs/ZenWave360/images/getting-started/zdl-service.png',
+    caption: 'ZDL service with annotations for REST API',
+  },
+  {
+    src: '/page-assets/docs/ZenWave360/images/getting-started/zdl-events.png',
+    caption: 'ZDL events with annotations for AsyncAPI',
+  },
+];
 
 <div class="getting-started-page">
 
-# Getting Started with ZenWave 360Âº
+# Getting Started with ZenWave 360
 
 ## Installation
 
 <div class="getting-started-intro">
 
-We recommend using [SDKMAN!](https://sdkman.io/) to install ZenWave SDK requirements: [Java 17+](https://sdkman.io/jdks), [Maven](https://sdkman.io/sdks#maven) and [JBang](https://sdkman.io/sdks#jbang).
+We recommend using [SDKMAN!](https://sdkman.io/) to install ZenWave SDK requirements: [Java 17+](https://sdkman.io/jdks), [Maven](https://sdkman.io/sdks#maven), and [JBang](https://sdkman.io/sdks#jbang).
 
-NOTE: Temurin (Eclipse) is a good option for Java JDK as it is high performance, enterprise-caliber and open-sourced licensed.
+NOTE: Temurin (Eclipse) is a good option for Java JDK because it is high performance, enterprise-caliber, and open-source licensed.
 
 </div>
 
 ## ZenWave SDK Installation
 
-Use JBang to install an _evergreen_ self updating CLI for the ZenWave SDK.
+Use JBang to install an _evergreen_ self-updating CLI for the ZenWave SDK.
 
 ```bash
 jbang alias add --force --fresh --name=zw release@zenwave360/zenwave-sdk
 ```
 
-**NOTE:** You can install ZenWave versions from different channel: `release` for latest stable version, `snapshots` for development versions. They can be installed side by side (using different `--name=<alias>`) or independently.
+**NOTE:** You can install ZenWave versions from different channels: `release` for the latest stable version and `snapshots` for development versions. They can be installed side by side using different `--name=<alias>` values, or independently.
 
 ## Install ZenWave Editor IntelliJ Plugin
 
@@ -37,22 +60,22 @@ Install ZenWave Editor IntelliJ Plugin from JetBrains Marketplace:
 
 <iframe width="384px" height="319px" src="https://plugins.jetbrains.com/embeddable/card/22858"></iframe>
 
-For rendering class diagrams in markdown preview, install [PlantUML Integration](https://plugins.jetbrains.com/plugin/7017-plantuml-integration) plugin.
+For rendering class diagrams in markdown preview, install the [PlantUML Integration](https://plugins.jetbrains.com/plugin/7017-plantuml-integration) plugin.
 
-**NOTE:** ZenWave Editor will use `jbang zw` command to execute plugins. So you need JBang available in the PATH of the console configured by default in IntelliJ.
+**NOTE:** ZenWave Editor will use the `jbang zw` command to execute plugins, so you need JBang available in the PATH of the console configured by default in IntelliJ.
 
 </div>
 
-## Spring-Boot base Project
+## Spring Boot Base Project
 
-ZenWave SDK only generates business logic code and tests. It is expected to work with any compatible Spring-Boot project. Default backend generator is based ona maven single module project.
+ZenWave SDK only generates business logic code and tests. It is expected to work with any compatible Spring Boot project. The default backend generator is based on a Maven single-module project.
 
-We expect most companies and teams to have their own starter base project. If you don't have one you can create one from https://start.spring.io or clone one of the ZenWave 360 base projects from our GitHub playground repository.
+We expect most companies and teams to have their own starter base project. If you do not have one, you can create one from https://start.spring.io or clone one of the ZenWave 360 base projects from our GitHub playground repository.
 
 <div class="getting-started-starters">
   <a class="getting-started-starters__card" href="https://github.com/ZenWave360/zenwave-playground/tree/main/zenwave-jpa-baseline">
     <strong>Starter Project for JPA</strong>
-    <span>Spring-Boot baseline for relational persistence and ZenWave SDK generation.</span>
+    <span>Spring Boot baseline for relational persistence and ZenWave SDK generation.</span>
   </a>
   <a class="getting-started-starters__card" href="https://github.com/ZenWave360/zenwave-playground/tree/main/zenwave-mongodb-baseline">
     <strong>Starter Project for MongoDB</strong>
@@ -60,71 +83,47 @@ We expect most companies and teams to have their own starter base project. If yo
   </a>
 </div>
 
-> NOTE: These baseline projects come with OpenAPI Generator and ZenWave SDK Maven plugins already configured, so you don't have to.
+> NOTE: These baseline projects come with OpenAPI Generator and ZenWave SDK Maven plugins already configured, so you do not have to.
 
-ZenWave SDK generated code was tested with Spring-Boot up to 3.5.0, Hibernate 6.x, MongoDB 5 and Spring-Cloud 2024.0.0, but because it only generates business code without any exotic dependency it should work with any compatible version.
+ZenWave SDK generated code was tested with Spring Boot up to 3.5.0, Hibernate 6.x, MongoDB 5, and Spring Cloud 2024.0.0. Because it only generates business code without any exotic dependency, it should work with any compatible version.
 
-Once you have installed ZenWave SDK CLI and IntelliJ Plugin you are ready to start modeling your domain and generating code.
+Once you have installed ZenWave SDK CLI and IntelliJ Plugin, you are ready to start modeling your domain and generating code.
 
 ## Examples & Tutorials
 
 <div class="getting-started-highlight">
 
-You can chek out [DDD Examples](/docs/examples/ddd-examples/) and [EDA Examples](/docs/examples/eda-examples/) in particular this ðŸ’¡[Customer Address JPA Service](/docs/examples/ddd-examples/customer-address-jpa/)ðŸ’¡ a canonical ZenWave example of a DDD Aggregate with JPA persistence and Externalized Domain Events. It will provide you a complete explanation of how to use ZenWave ZDL + SDK and what generated code looks like and what you can expect from it.
+You can check out [DDD Examples](/docs/examples/ddd-examples/) and [EDA Examples](/docs/examples/eda-examples/), in particular [Customer Address JPA Service](/docs/examples/ddd-examples/customer-address-jpa/), a canonical ZenWave example of a DDD aggregate with JPA persistence and externalized domain events. It will provide you a complete explanation of how to use ZenWave ZDL + SDK, what generated code looks like, and what you can expect from it.
 
-You can also follow this tutorial for a dive into ZenWave Modeling and Code Generation: [DDD In Practice: From Ubiquitous Language DSL to Complete Spring-Boot Kotlin Project](/posts/DDD-In-Practice_From_DSL_to_Complete_Spring-Boot_Kotlin/)
+You can also follow this tutorial for a dive into ZenWave modeling and code generation: [DDD In Practice: From Ubiquitous Language DSL to Complete Spring Boot Kotlin Project](/posts/DDD-In-Practice_From_DSL_to_Complete_Spring-Boot_Kotlin/)
 
 </div>
 
 ## ZDL Modeling and Code Generation
 
-Scroll left/right for a quick overview of how ZDL modeling looks like, with an example. And then follow the instructions below.
+Scroll left/right for a quick overview of how ZDL modeling looks with an example. Then follow the instructions below.
 
-<div class="legacy-carousel">
-    <div class="legacy-carousel__slides">
-        <section class="legacy-carousel__slide">
-            <h3>ðŸ‘‡ ZDL Config Section with SDK Plugins <button class="legacy-carousel__button" type="button">ðŸ‘‰</button></h3>
-            <Image src="/page-assets/docs/ZenWave360/images/getting-started/zdl-config.png" />
-        </section>
-        <section class="legacy-carousel__slide">
-            <h3><button class="legacy-carousel__button" type="button">ðŸ‘ˆ</button> ðŸ‘‡ ZDL Entities (with Nested Entities for MongoDB) <button class="legacy-carousel__button" type="button">ðŸ‘‰</button></h3>
-            <Image src="/page-assets/docs/ZenWave360/images/getting-started/zdl-entities.png" />
-        </section>
-        <section class="legacy-carousel__slide">
-            <h3><button class="legacy-carousel__button" type="button">ðŸ‘ˆ</button> ðŸ‘‡ ZDL Entities (with Relationships for JPA) <button class="legacy-carousel__button" type="button">ðŸ‘‰</button></h3>
-            <Image src="/page-assets/docs/ZenWave360/images/getting-started/zdl-entities-jpa.png" />
-        </section>
-        <section class="legacy-carousel__slide">
-            <h3><button class="legacy-carousel__button" type="button">ðŸ‘ˆ</button> ðŸ‘‡ ZDL Service (with @annotations for REST API) <button class="legacy-carousel__button" type="button">ðŸ‘‰</button></h3>
-            <Image src="/page-assets/docs/ZenWave360/images/getting-started/zdl-service.png" />
-        </section>
-        <section class="legacy-carousel__slide">
-            <h3><button class="legacy-carousel__button" type="button">ðŸ‘ˆ</button> ðŸ‘‡ ZDL Events (with @annotations for AsyncAPI)</h3>
-            <Image src="/page-assets/docs/ZenWave360/images/getting-started/zdl-events.png" />
-        </section>
-    </div>
-    <button class="legacy-carousel__button" type="button">ðŸ‘ˆ</button><button class="legacy-carousel__button" type="button">ðŸ‘‰</button>
-</div>
+<ImageCarousel ariaLabel="ZDL modeling and code generation screenshots" slides={zdlModelingSlides} />
 
-Create a new ZDL model or use one of ZDL examples as base:
+Create a new ZDL model or use one of the ZDL examples as a base:
 
 <div class="getting-started-steps">
 
-1. Create a new file with `.zdl` extension
-2. Model your Bounded Context adding some entities, services, inputs and events...
-3. Add ZenWave SDK Plugins to ZDL `config` section. You can use IntelliJ live templates provided for this task.
+1. Create a new file with the `.zdl` extension.
+2. Model your bounded context by adding entities, services, inputs, and events.
+3. Add ZenWave SDK plugins to the ZDL `config` section. You can use IntelliJ live templates for this task.
 4. Follow these steps to generate code and tests from your model:
-    1. Generate API definitions from your model: OpenAPI and AsyncAPI v2/v3 are supported.
-    2. Customize your API definitions. They are the source of truth for outbound/inbound communications.
-    3. Configure API-First generators in `pom.xml` for OpenAPI and AsyncAPI.
-    4. Generate your Core Backed code and tests. ZenWave SDK can generate CRUD implementation for your services.
-    5. Customize generated code implementing non-CRUD service commands and customize generated tests.
-    6. Implement Adapters code (web, event) connecting API-First generated code with your Core Backend. ZenWave SDK can generate Stub implementation for some adapters.
+    1. Generate API definitions from your model. OpenAPI and AsyncAPI v2/v3 are supported.
+    2. Customize your API definitions. They are the source of truth for outbound and inbound communications.
+    3. Configure API-first generators in `pom.xml` for OpenAPI and AsyncAPI.
+    4. Generate your core backend code and tests. ZenWave SDK can generate CRUD implementation for your services.
+    5. Customize generated code by implementing non-CRUD service commands, and customize generated tests.
+    6. Implement adapter code for web and events, connecting API-first generated code with your core backend. ZenWave SDK can generate stub implementations for some adapters.
 5. Run your tests and start your application.
 
 </div>
 
-## Generating a complete Spring-Boot Application with ZenWave SDK
+## Generating a Complete Spring Boot Application with ZenWave SDK
 
 <iframe width="1050" height="591" src="https://www.youtube.com/embed/G93Mkf1xaXQ?si=XVghVSdbiy8yQA3j" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen></iframe>
 
