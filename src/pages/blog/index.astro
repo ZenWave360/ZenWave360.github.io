@@ -20,11 +20,10 @@ function postHref(post) {
 }
 ---
 
-<BlogLayout title="Blog" description="ZenWave 360 articles, release notes, and architecture notes.">
+<BlogLayout title="Blog" description="Tutorials and practical guides for building with ZenWave.">
   <main class="blog">
     <header>
-      <h1>Blog</h1>
-      <p>ZenWave 360 articles, release notes, and architecture notes.</p>
+      <h1 class="blog-intro">Tutorials and practical guides for building with ZenWave.</h1>
     </header>
 
     <section class="posts" aria-label="Posts">
@@ -66,9 +65,13 @@ function postHref(post) {
     padding: calc(var(--sl-nav-height, 4rem) + 3rem) 0 4rem;
   }
 
-  h1 {
+  .blog-intro {
     margin: 0;
-    font-size: clamp(2.5rem, 7vw, 5rem);
+    max-width: 48rem;
+    color: var(--muted);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.6;
   }
 
   header p,

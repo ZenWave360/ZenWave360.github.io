@@ -1,6 +1,7 @@
 ---
-import ZenHeader from '../components/ZenHeader.astro';
 import ZenThemeProvider from '../components/ZenThemeProvider.astro';
+import ZenFooter from '../components/ZenFooter.astro';
+import ZenTopBar from '../components/ZenTopBar.astro';
 import '../styles/zenwave.css';
 
 interface Props {
@@ -17,14 +18,13 @@ const { title, description } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title} | ZenWave 360</title>
     {description && <meta name="description" content={description} />}
-    <link rel="icon" href="/images/logo-manifest.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <ZenThemeProvider />
   </head>
   <body>
-    <header class="header zen-topbar">
-      <ZenHeader />
-    </header>
+    <ZenTopBar />
     <slot />
+    <ZenFooter />
   </body>
 </html>
 

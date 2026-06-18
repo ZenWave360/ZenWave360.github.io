@@ -1,8 +1,9 @@
 <footer class="zen-footer">
   <div class="zen-footer__inner">
-    <a class="zen-footer__brand" href="/">
-      <img src="/images/logo-nav.svg" alt="ZenWave 360" loading="lazy" decoding="async" />
+    <a class="zen-footer__brand" href="/" aria-label="ZenWave Platform">
+      <img src="/images/logo-nav.svg" alt="" loading="lazy" decoding="async" />
     </a>
+    <p>DDD and API First Modeling Tools for Modern Distributed Applications.</p>
     <nav aria-label="Footer">
       <a href="/docs/">Documentation</a>
       <a href="/zenwave-sdk/">SDK</a>
@@ -11,7 +12,6 @@
       <a href="https://github.com/ZenWave360">GitHub</a>
       <a href="https://discord.gg/TWyXEeV2Ae">Discord</a>
     </nav>
-    <p>DDD and API-First Modeling Tools for Modern Distributed Applications.</p>
   </div>
 </footer>
 
@@ -23,22 +23,35 @@
   }
 
   .zen-footer__inner {
-    width: min(1120px, calc(100% - 2rem));
+    width: min(1320px, calc(100% - 2rem));
     margin: 0 auto;
-    padding: 2rem 0;
-    display: grid;
-    gap: 1rem;
+    padding: 1.15rem 0;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: nowrap;
+  }
+
+  .zen-footer__brand {
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    color: var(--sl-color-white, #fff);
+    font-weight: 800;
   }
 
   .zen-footer__brand img {
-    height: 2rem;
+    height: 1.6rem;
     width: auto;
   }
 
   .zen-footer nav {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem 1.25rem;
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    gap: 1.1rem;
+    margin-left: auto;
+    white-space: nowrap;
   }
 
   .zen-footer a {
@@ -52,7 +65,30 @@
 
   .zen-footer p {
     margin: 0;
-    max-width: 42rem;
-    font-size: 0.95rem;
+    color: var(--sl-color-gray-2, #d5dbe4);
+    font-size: 0.9rem;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 900px) {
+    .zen-footer__inner {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .zen-footer nav {
+      margin-left: 0;
+      flex-wrap: wrap;
+      white-space: normal;
+    }
+
+    .zen-footer p {
+      white-space: normal;
+      overflow: visible;
+    }
   }
 </style>

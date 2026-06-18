@@ -108,11 +108,13 @@ html {
 }
 
 .header {
+  box-sizing: border-box;
   border-bottom-color: var(--sl-color-hairline-shade);
   background-color: var(--sl-color-bg-nav);
 }
 
 .zen-topbar {
+  box-sizing: border-box;
   position: fixed;
   top: 0;
   left: 0;
@@ -120,8 +122,8 @@ html {
   z-index: var(--sl-z-index-navbar);
   width: 100%;
   height: var(--sl-nav-height);
-  padding: var(--sl-nav-pad-y) max(var(--sl-nav-pad-x), var(--zen-shell-offset, 1rem));
-  padding-inline-end: max(var(--sl-nav-pad-x), var(--zen-shell-offset, 1rem));
+  padding: var(--sl-nav-pad-y) var(--sl-nav-pad-x);
+  padding-inline-end: var(--sl-nav-pad-x);
   border-bottom: 1px solid var(--sl-color-hairline-shade);
   background-color: var(--sl-color-bg-nav);
 }

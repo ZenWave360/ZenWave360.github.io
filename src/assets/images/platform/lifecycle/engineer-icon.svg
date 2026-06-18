@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80" role="img" aria-label="Engineer gear head icon">
+  <title>Engineer</title>
+  <g fill="none" stroke="#14a39a" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Head outline facing left -->
+    <path stroke-width="5.5" d="M63 74V63c0-7 2-12 5-17 4-6 7-13 7-20 0-14-13-21-29-21-15 0-27 8-31 22l-2 8-7 11c-1 2-1 4 1 5l8 4v9c0 8 7 13 17 13h8v-9"/>
+
+    <!-- Gear -->
+    <g stroke-width="4.2">
+      <circle cx="40" cy="32" r="9"/>
+      <path d="M40 16v-5"/>
+      <path d="M40 53v-5"/>
+      <path d="M24 32h-5"/>
+      <path d="M61 32h-5"/>
+      <path d="M28.5 20.5l-3.6-3.6"/>
+      <path d="M55.1 47.1l-3.6-3.6"/>
+      <path d="M51.5 20.5l3.6-3.6"/>
+      <path d="M24.9 47.1l3.6-3.6"/>
+      <path d="M33.5 17.8l-1.9-4.6"/>
+      <path d="M48.4 50.8l-1.9-4.6"/>
+      <path d="M54.2 25.5l4.6-1.9"/>
+      <path d="M21.2 40.4l4.6-1.9"/>
+      <path d="M46.5 17.8l1.9-4.6"/>
+      <path d="M31.6 50.8l1.9-4.6"/>
+      <path d="M54.2 38.5l4.6 1.9"/>
+      <path d="M21.2 23.6l4.6 1.9"/>
+    </g>
+  </g>
+</svg>

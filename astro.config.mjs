@@ -28,7 +28,7 @@ export default defineConfig({
         alt: 'ZenWave Platform',
         replacesTitle: true,
       },
-      favicon: '/images/logo-manifest.png',
+      favicon: '/favicon.svg',
       customCss: ['./src/styles/zenwave.css'],
       credits: false,
       expressiveCode: {

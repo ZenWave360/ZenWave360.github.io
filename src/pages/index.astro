@@ -1,82 +1,234 @@
 ---
 import ArchitectureLifecycleBand from '../components/ArchitectureLifecycleBand.astro';
 import ZenFooter from '../components/ZenFooter.astro';
-import ZenHeader from '../components/ZenHeader.astro';
 import ZenThemeProvider from '../components/ZenThemeProvider.astro';
+import ZenTopBar from '../components/ZenTopBar.astro';
 import '../styles/zenwave.css';
 
-const platformCards = [
+const platformScreenshots = [
   {
-    title: 'Architecture World Model',
-    text: 'Connect your company\'s existing APIs and events, including OpenAPI and AsyncAPI, and enrich them with ZenWave ZDL and ZFL for deeper domain and workflow context.',
+    file: 'zfl-flow.png',
+    caption: 'Business flow modeled from Event Storming sessions',
+    width: 1920,
+    height: 1032,
   },
   {
-    title: 'Domain Modeling Languages',
-    text: 'ZDL and ZFL model workflows and bounded contexts. Grounded in Event Storming and DDD, they make ubiquitous language structured, versioned, and executable.',
+    file: 'zfl-systems.png',
+    caption: 'Systems map generated from a business flow',
+    width: 1920,
+    height: 1032,
   },
   {
-    title: 'SDK And Generators',
-    text: 'Generate Spring Boot backend applications from architecture artifacts: APIs, client SDKs, event producer SDKs, schemas, tests, end-to-end tests, and Kafka infrastructure.',
+    file: 'zfl-flowchart-diagram.png',
+    caption: 'Flowchart visualization generated from ZFL',
+    width: 1920,
+    height: 1032,
+  },
+  {
+    file: 'zfl-sequence-diagram.png',
+    caption: 'Sequence diagrams derived from business flows',
+    width: 1920,
+    height: 1032,
+  },
+  {
+    file: 'zdl-domain-model-with-preview.png',
+    caption: 'Domain model with aggregates, entities and lifecycle states',
+    width: 1920,
+    height: 1032,
+  },
+  {
+    file: 'zdl-openapi.png',
+    caption: 'OpenAPI contracts derived from annotated service commands',
+    width: 1920,
+    height: 1032,
+  },
+  {
+    file: 'zdl-asyncapi-plugin.png',
+    caption: 'AsyncAPI contracts generated from domain events',
+    width: 1920,
+    height: 1032,
   },
 ];
 
-const humanToolAiPoints = [
+const featuredCapabilities = [
   {
-    title: 'Humans Explore',
-    text: 'Move from workflows to APIs, events, schemas, services, tests, and source code without losing architectural context.',
+    variant: 'world-model',
+    title: 'ZenWave Platform: Architecture World Model',
+    badge: 'Building in public',
+    text: 'An IDE experience for designing, navigating, and connecting domain models, business flows, APIs, source code, local folders, Git repositories, and schema registries with Apicurio.',
+    note: 'The big picture of your software made explicit, connected, and navigable.',
+    visual: 'world-model',
   },
   {
-    title: 'Tools Connect',
-    text: 'Keep open standards, ZenWave models, generated assets, and implementation code linked as the system evolves.',
-  },
-  {
-    title: 'AI Understands',
-    text: 'Give AI assistants a connected architecture model so generated help starts from system context instead of isolated prompts.',
+    variant: 'sdk',
+    title: 'ZenWave SDK',
+    badge: 'Production ready, evolving',
+    image: '/images/laptop-buddha-transparent.png',
+    imageAlt: '',
+    imageWidth: 958,
+    imageHeight: 1045,
+    text: 'An ever-growing set of plugins that generate Spring Boot services, APIs, tests, event adapters, and infrastructure from connected architecture artifacts.',
+    ctas: [
+      {
+        href: '/docs/getting-started/',
+        label: 'Get started',
+      },
+      {
+        href: '/zenwave-sdk/',
+        label: 'Explore plugins',
+      },
+    ],
   },
 ];
 
-const arcadiaCards = [
+const platformCapabilityCards = [
   {
-    title: 'Why Arcadia exists',
-    text: 'A fictional publisher with real product, catalog, order, event, and integration pressure.',
+    title: 'AsyncAPI and Avro Generator',
+    badge: 'Production ready',
+    image: '/logos/asyncapi-logo.png',
+    imageWidth: 280,
+    imageHeight: 280,
+    text: 'Generates strongly typed Spring Kafka and Spring Cloud Stream producers and consumers from AsyncAPI specifications.',
   },
   {
-    title: 'From Event Storming to ZFL',
-    text: 'Discovery work becomes connected flows that can be discussed, versioned, and evolved.',
+    title: 'ZDL Modeling Language',
+    badge: 'Production ready',
+    image: '/images/platform/icons/zdl-icon.png',
+    imageWidth: 286,
+    imageHeight: 188,
+    text: 'Model bounded contexts, entities, aggregates, commands, events, and services as structured domain artifacts.',
   },
   {
-    title: 'From flow to service scaffolding',
-    text: 'AI can help start the work, while ZenWave keeps the architecture understandable as delivery continues.',
+    title: 'ZFL Flow Language',
+    badge: 'Building in public',
+    image: '/images/platform/icons/zfl-icon.png',
+    imageWidth: 464,
+    imageHeight: 336,
+    text: 'Model business flows as policies that connect commands and events, then link them to APIs, schemas, and domain models.',
+  },
+  {
+    title: 'ZenWave IDE & MCP',
+    badge: 'Building in public',
+    image: '/images/platform/icons/zenwave-logo.svg',
+    imageWidth: 756,
+    imageHeight: 674,
+    text: 'Architecture-aware navigation and context for IDEs and AI agents. Powered by a Kotlin Multiplatform LSP server, with IntelliJ first, VS Code next, and MCP support for agent workflows.',
   },
 ];
 
-const sdkCapabilities = [
-  'Spring Boot generation',
-  'OpenAPI / AsyncAPI',
-  'Tests',
-  'Infrastructure support',
+const supportingCapabilityIcons: Record<string, string> = {
+  list: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 15h24" />
+    <path d="M14 24h24" />
+    <path d="M14 33h24" />
+    <path d="M8 15h.01" />
+    <path d="M8 24h.01" />
+    <path d="M8 33h.01" />
+  </svg>`,
+  strategy: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="6" y="8" width="10" height="10" rx="2" />
+    <rect x="32" y="8" width="10" height="10" rx="2" />
+    <rect x="19" y="30" width="10" height="10" rx="2" />
+    <path d="M16 13h16" />
+    <path d="M24 18v12" />
+    <path d="M11 18v8c0 4 3 7 8 7" />
+    <path d="M37 18v8c0 4-3 7-8 7" />
+  </svg>`,
+  'paper-plane': `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M42 7 6 23l15 5 5 15L42 7Z" />
+    <path d="m21 28 9-9" />
+  </svg>`,
+  schema: `<svg viewBox="0 0 48 48" class="schema-mark" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 12c-5 0-7 3-7 7v3c0 2-1 3-3 3 2 0 3 1 3 3v3c0 4 2 7 7 7" />
+    <path d="M30 12c5 0 7 3 7 7v3c0 2 1 3 3 3-2 0-3 1-3 3v3c0 4-2 7-7 7" />
+  </svg>`,
+};
+
+const supportingCapabilityCards = [
+  {
+    title: 'EventCatalog Generator',
+    badge: 'Coming soon',
+    icon: 'list',
+    text: 'Export OpenAPI, AsyncAPI, and ZenWave models to EventCatalog, or import existing EventCatalog documentation back into the ZenWave world model.',
+  },
+  {
+    title: 'Terraform / asyncapi-ops',
+    badge: 'Beta',
+    icon: 'strategy',
+    text: 'Provision Kafka topics, ACLs, and Schema Registry infrastructure from AsyncAPI contracts.',
+  },
+  {
+    title: 'Spring Modulith Events',
+    badge: 'Production ready',
+    icon: 'paper-plane',
+    text: 'Externalize Spring Modulith domain events through Spring Cloud Stream. Used by the AsyncAPI Generator for Transactional Outbox integration.',
+  },
+  {
+    title: 'JSON Schema Parser',
+    badge: 'Supporting OSS',
+    icon: 'schema',
+    text: 'Standalone JSON Schema reference parsers for JVM and Kotlin Multiplatform, used across ZenWave SDK, the IntelliJ plugin, and other tooling.',
+  },
 ];
 
-const maturityRows = [
+const maturityBadgeClass = (badge: string) => {
+  const label = badge.toLowerCase();
+
+  if (label.startsWith('production ready')) {
+    return 'maturity-badge--production';
+  }
+
+  if (label === 'building in public') {
+    return 'maturity-badge--building';
+  }
+
+  if (label === 'beta' || label === 'coming soon') {
+    return 'maturity-badge--emerging';
+  }
+
+  if (label === 'supporting oss') {
+    return 'maturity-badge--supporting';
+  }
+
+  return '';
+};
+
+const referenceCards = [
   {
-    capability: 'AsyncAPI Generator',
-    maturity: 'Production-proven',
-    signal: '4+ years of production-ready source code.',
+    title: 'AsyncAPI Shopping Cart',
+    image: '/images/reference-architectures/ShoppingCartAsyncAPI.png',
+    imageWidth: 260,
+    imageHeight: 147,
+    text: 'Define AsyncAPI and Avro contracts, then derive Kafka producers and consumers for a multi-module event-driven application.',
+    href: '/docs/examples/eda-examples/asyncapi-shopping-cart/',
+    cta: 'Follow the tutorial',
   },
   {
-    capability: 'ZenWave SDK + ZDL',
-    maturity: 'Production-used, actively evolving',
-    signal: 'Used in production projects for years. ZDL is stable; the SDK continues adding capabilities around ZDL, APIs, events, tests, and infrastructure.',
+    title: 'Order Fulfillment Kotlin',
+    image: '/images/reference-architectures/OrderFulfillmentKotlin.png',
+    imageWidth: 260,
+    imageHeight: 139,
+    text: 'Capture ubiquitous language in ZDL and derive a Kotlin Spring Boot service with REST APIs, domain events, and generated implementation.',
+    href: '/docs/examples/ddd-examples/order-fullillment-kotlin/',
+    cta: 'Follow the tutorial',
   },
   {
-    capability: 'ZFL',
-    maturity: 'Building in public',
-    signal: 'Work in progress, shaped through Arcadia and real flow-modeling examples.',
+    title: 'Transactional Outbox',
+    image: '/images/reference-architectures/TransactionalOutBoxWithAsyncAPIAndSpringModulith.png',
+    imageWidth: 1620,
+    imageHeight: 1165,
+    text: 'Implement the transactional outbox pattern with AsyncAPI, Spring Cloud Stream, Spring Modulith, and ZenWave SDK generation.',
+    href: '/posts/TransactionalOutBoxWithAsyncAPIAndSpringModulith/',
+    cta: 'Follow the tutorial',
   },
   {
-    capability: 'Architecture World Model / Platform',
-    maturity: 'Building in public',
-    signal: 'The integrated platform experience is being assembled from mature components and new modeling/navigation layers.',
+    title: 'Clinical Tool Modulith',
+    image: '/images/reference-architectures/ClinicalToolModulith.png',
+    imageWidth: 260,
+    imageHeight: 129,
+    text: 'Model multiple bounded contexts and derive a modular monolith where domain boundaries, APIs, and persistence stay aligned.',
+    href: '/docs/examples/ddd-examples/modulith-clinical-tool-jpa/',
+    cta: 'Follow the tutorial',
   },
 ];
 
@@ -94,9 +246,7 @@ const maturityRows = [
     <ZenThemeProvider />
   </head>
   <body>
-    <header class="header zen-topbar">
-      <ZenHeader />
-    </header>
+    <ZenTopBar />
 
     <main>
       <section class="home-hero" aria-labelledby="hero-title">
@@ -115,7 +265,7 @@ const maturityRows = [
             </p>
             <div class="actions">
               <a class="button button--secondary" href="/docs/">Explore the docs</a>
-              <a class="button" href="#arcadia-title">See it in action</a>
+              <a class="button" href="#reference-title">See it in action</a>
             </div>
             <p class="status-line">Grounded in open standards. Built in public.</p>
           </div>
@@ -126,69 +276,78 @@ const maturityRows = [
                 <span>Architecture model</span>
                 <span>Human + tools + AI</span>
               </div>
-              <svg class="model-map__lines" viewBox="0 0 620 380" aria-hidden="true">
-                <path d="M130 85 C210 60 260 150 330 118 S465 100 515 160" />
-                <path d="M125 250 C210 205 290 275 370 230 S480 215 525 285" />
-                <path d="M148 92 L155 245" />
-                <path d="M335 122 L373 226" />
-                <path d="M512 164 L524 280" />
-                <path d="M155 245 C225 290 285 68 335 122" />
+              <svg class="model-map__graph" viewBox="0 0 660 360" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                <path d="M190,66 L248,146" />
+                <path d="M330,78 L330,146" />
+                <path d="M470,66 L412,146" />
+                <path d="M190,178 L248,178" />
+                <path d="M470,178 L412,178" />
+                <path d="M190,294 L248,216" />
+                <path d="M330,282 L330,216" />
+                <path d="M470,294 L412,216" />
+                <g class="map-node map-node--world">
+                  <rect x="248" y="146" width="164" height="70" rx="8" />
+                  <text x="330" y="173" class="node-type" text-anchor="middle">Architecture</text>
+                  <text x="330" y="195" class="node-name" text-anchor="middle">World Model</text>
+                </g>
+                <g class="map-node map-node--flow">
+                  <rect x="40" y="38" width="150" height="56" rx="6" />
+                  <text x="52" y="61" class="node-type">Business flows</text>
+                  <text x="52" y="82" class="node-name">ZFL</text>
+                </g>
+                <g class="map-node map-node--domain">
+                  <rect x="255" y="22" width="150" height="56" rx="6" />
+                  <text x="267" y="45" class="node-type">Domain model</text>
+                  <text x="267" y="66" class="node-name">ZDL</text>
+                </g>
+                <g class="map-node map-node--api">
+                  <rect x="470" y="38" width="150" height="56" rx="6" />
+                  <text x="482" y="61" class="node-type">API contracts</text>
+                  <text x="482" y="82" class="node-name">OpenAPI</text>
+                </g>
+                <g class="map-node map-node--event">
+                  <rect x="40" y="150" width="150" height="56" rx="6" />
+                  <text x="52" y="173" class="node-type">Event contracts</text>
+                  <text x="52" y="194" class="node-name">AsyncAPI + Avro</text>
+                </g>
+                <g class="map-node map-node--vista">
+                  <rect x="40" y="266" width="150" height="56" rx="6" />
+                  <text x="52" y="289" class="node-type">ZenWave Vistas</text>
+                  <text x="52" y="310" class="node-name">EventCatalog</text>
+                </g>
+                <g class="map-node map-node--service">
+                  <rect x="470" y="150" width="150" height="56" rx="6" />
+                  <text x="482" y="173" class="node-type">Source code</text>
+                  <text x="482" y="194" class="node-name">Spring Boot</text>
+                </g>
+                <g class="map-node map-node--repo">
+                  <rect x="255" y="266" width="150" height="56" rx="6" />
+                  <text x="267" y="289" class="node-type">Repositories</text>
+                  <text x="267" y="310" class="node-name">Git + folders</text>
+                </g>
+                <g class="map-node map-node--registry">
+                  <rect x="470" y="266" width="150" height="56" rx="6" />
+                  <text x="482" y="289" class="node-type">Schema registry</text>
+                  <text x="482" y="310" class="node-name">Apicurio</text>
+                </g>
               </svg>
-              <div class="map-node map-node--flow">
-                <span>Business flow</span>
-                <strong>Place order</strong>
-              </div>
-              <div class="map-node map-node--context">
-                <span>Bounded context</span>
-                <strong>Catalog</strong>
-              </div>
-              <div class="map-node map-node--api">
-                <span>Open standard</span>
-                <strong>OpenAPI</strong>
-              </div>
-              <div class="map-node map-node--event">
-                <span>Event stream</span>
-                <strong>AsyncAPI</strong>
-              </div>
-              <div class="map-node map-node--schema">
-                <span>Schema</span>
-                <strong>OrderPlaced</strong>
-              </div>
-              <div class="map-node map-node--service">
-                <span>Service</span>
-                <strong>Spring Boot</strong>
-              </div>
             </div>
 
-            <aside class="delivery-card" aria-label="ZenWave SDK model to code">
-              <img src="/images/laptop-buddha-transparent.png" alt="" loading="eager" decoding="async" />
+            <a class="delivery-card" href="/zenwave-sdk/" aria-label="Explore ZenWave SDK">
+              <img
+                src="/images/laptop-buddha-transparent.png"
+                alt=""
+                loading="eager"
+                decoding="async"
+                fetchpriority="high"
+                width="958"
+                height="1045"
+              />
               <div>
                 <span>ZenWave SDK</span>
-                <strong>Model to Code</strong>
-                <p>Services, APIs, events, tests, adapters, and infrastructure from connected architecture artifacts.</p>
+                <p>Generate Spring Boot services, APIs, event adapters, tests, and infrastructure from connected architecture artifacts.</p>
               </div>
-            </aside>
-          </div>
-        </div>
-      </section>
-
-      <section class="home-section human-tools-ai-section" aria-labelledby="human-tools-ai-title">
-        <div class="home-shell">
-          <div class="section-heading">
-            <p class="eyebrow">Architecture context</p>
-            <h2 id="human-tools-ai-title">Humans Explore, Tools Connect, AI Understands</h2>
-            <p>
-              ZenWave makes architecture readable by people, traversable by tools, and usable as
-              context for AI-assisted delivery.
-            </p>
-          </div>
-          <div class="card-grid card-grid--three">
-            {humanToolAiPoints.map((point) => (
-              <article class="info-card info-card--accent">
-                <h3>{point.title}</h3>
-                <p>{point.text}</p>
-              </article>
-            ))}
+            </a>
           </div>
         </div>
       </section>
@@ -198,103 +357,188 @@ const maturityRows = [
       <section class="home-section" aria-labelledby="platform-title">
         <div class="home-shell">
           <div class="section-heading">
-            <p class="eyebrow">What</p>
+            <p class="eyebrow">ZenWave Platform</p>
             <h2 id="platform-title">What ZenWave Platform Is</h2>
             <p>
-              ZenWave Platform builds an architecture world model from the artifacts your system
-              already has, then enriches it with ZenWave modeling languages, IDE navigation, and
-              generation capabilities.
+              ZenWave Platform is a set of connected capabilities for making the big picture of
+              your software explicit, connected, and navigable, from discovery and modeling to
+              generation and navigation.
             </p>
           </div>
-          <div class="card-grid card-grid--three">
-            {platformCards.map((card) => (
-              <article class="info-card">
-                <h3>{card.title}</h3>
-                <p>{card.text}</p>
+
+          <div class="platform-carousel-wrap">
+            <button class="carousel-control carousel-control--prev" type="button" aria-label="Previous screenshot" data-platform-carousel-prev>
+              <span aria-hidden="true">&#8592;</span>
+            </button>
+            <div class="platform-carousel" aria-label="ZenWave platform screenshots" data-platform-carousel>
+              {platformScreenshots.map((screenshot, index) => (
+                <figure class="platform-slide">
+                  <img
+                    src={`/images/platform/screenshots/${screenshot.file}`}
+                    alt={screenshot.caption}
+                    loading={index === 0 ? 'eager' : 'lazy'}
+                    decoding="async"
+                  />
+                  <figcaption>{screenshot.caption}</figcaption>
+                </figure>
+              ))}
+            </div>
+            <button class="carousel-control carousel-control--next" type="button" aria-label="Next screenshot" data-platform-carousel-next>
+              <span aria-hidden="true">&#8594;</span>
+            </button>
+          </div>
+
+          <div class="featured-capabilities">
+            {featuredCapabilities.map((card) => (
+              <article class:list={['capability-card', 'capability-card--featured', card.variant && `capability-card--${card.variant}`]}>
+                <div class="capability-card__media" aria-hidden="true">
+                  {card.visual === 'world-model' ? (
+                    <div class="world-model-visual">
+                      <svg class="world-model-graph" viewBox="0 32 660 218" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                        <path d="M174,85 L255,85" />
+                        <path d="M405,85 L486,85" />
+                        <path d="M174,185 L255,185" />
+                        <path d="M405,185 L486,185" />
+                        <path d="M99,113 L99,157" />
+                        <path d="M330,113 L330,157" />
+                        <path d="M561,113 L561,157" />
+                        <path class="sdk-path" d="M330,113 C350,144 520,152 561,157" />
+                        <g class="map-node map-node--flow">
+                          <rect x="24" y="57" width="150" height="56" rx="6" />
+                          <text x="36" y="80" class="node-type">Business flow</text>
+                          <text x="36" y="101" class="node-name">ZFL</text>
+                        </g>
+                        <g class="map-node map-node--domain">
+                          <rect x="255" y="57" width="150" height="56" rx="6" />
+                          <text x="267" y="80" class="node-type">Domain model</text>
+                          <text x="267" y="101" class="node-name">ZDL</text>
+                        </g>
+                        <g class="map-node map-node--api">
+                          <rect x="486" y="57" width="150" height="56" rx="6" />
+                          <text x="498" y="80" class="node-type">Open standard</text>
+                          <text x="498" y="101" class="node-name">OpenAPI</text>
+                        </g>
+                        <g class="map-node map-node--event">
+                          <rect x="24" y="157" width="150" height="56" rx="6" />
+                          <text x="36" y="180" class="node-type">Event stream</text>
+                          <text x="36" y="201" class="node-name">AsyncAPI</text>
+                        </g>
+                        <g class="map-node map-node--schema">
+                          <rect x="255" y="157" width="150" height="56" rx="6" />
+                          <text x="267" y="180" class="node-type">Schema</text>
+                          <text x="267" y="201" class="node-name">OrderPlaced</text>
+                        </g>
+                        <g class="map-node map-node--service">
+                          <rect x="486" y="157" width="150" height="56" rx="6" />
+                          <text x="498" y="180" class="node-type">Service</text>
+                          <text x="498" y="201" class="node-name">Spring Boot</text>
+                        </g>
+                      </svg>
+                    </div>
+                  ) : (
+                    <img src={card.image} alt={card.imageAlt} loading="lazy" decoding="async" width={card.imageWidth} height={card.imageHeight} />
+                  )}
+                </div>
+                <div class="capability-card__body">
+                  <div class="capability-card__heading">
+                    <h3>{card.title}</h3>
+                    <span class={`maturity-badge ${maturityBadgeClass(card.badge)}`}>{card.badge}</span>
+                  </div>
+                  <p>{card.text}</p>
+                  {card.note && <p class="capability-card__note">{card.note}</p>}
+                  {card.ctas && (
+                    <div class="capability-actions">
+                      {card.ctas.map((cta) => (
+                        <a class="capability-link" href={cta.href}>{cta.label} <span aria-hidden="true">&#8594;</span></a>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </article>
             ))}
           </div>
 
-          <div class="section-heading section-heading--maturity">
-            <p class="eyebrow">Available now</p>
-            <h2>Capabilities And Maturity</h2>
-            <p>
-              ZenWave is not one thing at one maturity level. Some capabilities are
-              production-proven, some are production-used and actively evolving, and some are being
-              built in public.
-            </p>
+          <div class="capability-group">
+            <h3>Platform Capabilities</h3>
+            <div class="capability-grid" role="list" aria-label="ZenWave platform capabilities">
+              {platformCapabilityCards.map((card) => (
+                <article class="capability-card" role="listitem">
+                  <span class={`maturity-badge ${maturityBadgeClass(card.badge)}`}>{card.badge}</span>
+                  <div class="capability-card__icon" aria-hidden="true">
+                    {card.image && <img src={card.image} alt="" loading="lazy" decoding="async" width={card.imageWidth} height={card.imageHeight} />}
+                  </div>
+                  <div class="capability-card__body">
+                    <h3>{card.title}</h3>
+                    <p>{card.text}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
-          <div class="maturity-grid" role="list" aria-label="ZenWave capabilities and maturity">
-            {maturityRows.map((row) => (
-              <article class="maturity-card" role="listitem">
-                <h3>{row.capability}</h3>
-                <span>{row.maturity}</span>
-                <p>{row.signal}</p>
-              </article>
-            ))}
+
+          <div class="capability-group">
+            <h3>Supporting OSS</h3>
+            <div class="capability-grid" role="list" aria-label="ZenWave supporting open source capabilities">
+              {supportingCapabilityCards.map((card) => (
+                <article class="capability-card" role="listitem">
+                  <span class={`maturity-badge ${maturityBadgeClass(card.badge)}`}>{card.badge}</span>
+                  <div class="capability-card__icon" aria-hidden="true">
+                    <Fragment set:html={supportingCapabilityIcons[card.icon]} />
+                  </div>
+                  <div class="capability-card__body">
+                    <h3>{card.title}</h3>
+                    <p>{card.text}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      <section class="home-section arcadia-section" aria-labelledby="arcadia-title">
-        <div class="home-shell arcadia-grid">
-          <div class="arcadia-copy">
+      <section class="home-section reference-section" aria-labelledby="reference-title">
+        <div class="home-shell">
+          <div class="section-heading">
             <p class="eyebrow">Built in public</p>
-            <h2 id="arcadia-title">Arcadia Editions is the working example</h2>
+            <h2 id="reference-title">Reference Architectures</h2>
             <p>
-              Arcadia Editions is a fictional company with real architectural pressure, used to
-              build the platform idea in public through flows, contracts, services, events, and
-              operational concerns.
+              Examples that show how discovery, domain models, APIs, events, schemas, generated services, and operational concerns work together in realistic systems.
             </p>
-            <div class="actions">
-              <a class="button" href="https://ivangsa.com/articles/arcadia/004-from-event-storming-to-zfl/">Read the series</a>
-              <a class="button button--secondary" href="https://github.com/arcadia-editions">View the code</a>
-            </div>
           </div>
-          <div class="arcadia-visual" aria-label="Arcadia Editions architecture example">
-            <div class="event-board">
-              <span class="event-note event-note--orange">Order placed</span>
-              <span class="event-note event-note--blue">Catalog API</span>
-              <span class="event-note event-note--green">Stock reserved</span>
-              <span class="event-note event-note--yellow">Payment requested</span>
-              <span class="event-note event-note--pink">Shipment planned</span>
-            </div>
-            <div class="arcadia-path">
-              <span>ZFL flow</span>
-              <span>OpenAPI</span>
-              <span>AsyncAPI</span>
-              <span>Service code</span>
-            </div>
-          </div>
-        </div>
-        <div class="home-shell card-grid card-grid--three">
-          {arcadiaCards.map((card) => (
-            <article class="info-card">
-              <h3>{card.title}</h3>
-              <p>{card.text}</p>
-            </article>
-          ))}
-        </div>
-      </section>
 
-      <section class="home-section sdk-section" aria-labelledby="sdk-title">
-        <div class="home-shell sdk-grid">
-          <div class="sdk-visual">
-            <img src="/images/laptop-buddha-transparent.png" alt="" loading="lazy" decoding="async" />
-          </div>
-          <div>
-            <p class="eyebrow">Model to Code</p>
-            <h2 id="sdk-title">ZenWave SDK</h2>
-            <p>
-              The SDK turns connected architecture artifacts into Spring Boot applications, API
-              surfaces, event adapters, tests, and infrastructure support.
-            </p>
-            <div class="capability-list" aria-label="ZenWave SDK capabilities">
-              {sdkCapabilities.map((capability) => <span>{capability}</span>)}
+          <article class="reference-feature">
+            <div class="reference-feature__media">
+              <img src="/images/reference-architectures/arcadia.png" alt="Arcadia Editions" loading="lazy" decoding="async" width="1254" height="1254" />
             </div>
-            <div class="actions">
-              <a class="button" href="/zenwave-sdk/">Explore SDK</a>
+            <div class="reference-feature__body">
+              <span class={`maturity-badge ${maturityBadgeClass('Building in public')}`}>Building in public</span>
+              <h3>Arcadia Editions</h3>
+              <p>
+                A fictional publisher with real product, catalog, order, event, and integration
+                pressure.
+              </p>
+              <p>
+                Arcadia is the working example for the ZenWave Platform idea: from Event Storming
+                to ZFL flows, contracts, services, events, and AI-assisted delivery.
+              </p>
+              <div class="actions">
+                <a class="button" href="https://ivangsa.com/articles/arcadia/004-from-event-storming-to-zfl/">Read the series</a>
+                <a class="button button--secondary" href="https://github.com/arcadia-editions">View the code</a>
+              </div>
             </div>
+          </article>
+
+          <div class="reference-grid">
+            {referenceCards.map((card) => (
+              <a class="reference-card" href={card.href}>
+                <img src={card.image} alt="" loading="lazy" decoding="async" width={card.imageWidth} height={card.imageHeight} />
+                <div class="reference-card__body">
+                  <h3>{card.title}</h3>
+                  <p>{card.text}</p>
+                  <span>{card.cta} <span aria-hidden="true">&#8594;</span></span>
+                </div>
+              </a>
+            ))}
           </div>
         </div>
       </section>
@@ -334,6 +578,12 @@ const maturityRows = [
     color: var(--home-text);
     background: var(--home-bg);
     font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
   }
 
   a {
@@ -430,7 +680,9 @@ const maturityRows = [
 
   .home-hero__visual {
     position: relative;
-    min-height: 30rem;
+    display: grid;
+    gap: 0;
+    min-height: 0;
   }
 
   .model-map {
@@ -461,84 +713,65 @@ const maturityRows = [
     font-size: 0.8rem;
   }
 
-  .model-map__lines {
+  .model-map__graph {
     position: absolute;
     inset: 2.5rem 0 0;
     width: 100%;
     height: calc(100% - 2.5rem);
-    color: color-mix(in srgb, var(--home-highlight), white 12%);
   }
 
-  .model-map__lines path {
+  .model-map__graph path {
     fill: none;
-    stroke: currentColor;
+    stroke: color-mix(in srgb, var(--home-highlight), white 12%);
     stroke-width: 2.2;
     stroke-linecap: round;
     stroke-dasharray: 7 9;
     opacity: 0.62;
   }
 
-  .map-node {
-    position: absolute;
-    display: grid;
-    gap: 0.2rem;
-    width: clamp(7.6rem, 16vw, 10rem);
-    padding: 0.75rem;
-    border: 1px solid color-mix(in srgb, var(--node-color), var(--home-border) 42%);
-    border-radius: 0.45rem;
-    background: color-mix(in srgb, var(--home-panel-strong), var(--node-color) 8%);
+  .model-map__graph .sdk-path {
+    stroke: #14a39a;
+    stroke-dasharray: 8 6;
+    opacity: 0.8;
+    stroke-width: 2.5;
   }
 
-  .map-node span {
-    color: var(--home-muted);
-    font-size: 0.72rem;
+  .model-map__graph .map-node rect {
+    fill: color-mix(in srgb, var(--home-panel-strong), var(--node-color) 8%);
+    stroke: color-mix(in srgb, var(--node-color), var(--home-border) 42%);
+    stroke-width: 1.5;
   }
 
-  .map-node strong {
-    color: var(--home-text);
-    font-size: 0.98rem;
+  .model-map__graph .map-node--flow { --node-color: #f1a13a; }
+  .model-map__graph .map-node--domain { --node-color: #14a39a; }
+  .model-map__graph .map-node--api { --node-color: #3b75d1; }
+  .model-map__graph .map-node--event { --node-color: #55a447; }
+  .model-map__graph .map-node--schema { --node-color: #d99100; }
+  .model-map__graph .map-node--vista { --node-color: #d99100; }
+  .model-map__graph .map-node--service { --node-color: #e05b64; }
+  .model-map__graph .map-node--world { --node-color: #ffe04b; }
+  .model-map__graph .map-node--repo { --node-color: #8d7cf6; }
+  .model-map__graph .map-node--registry { --node-color: #2fb7c9; }
+
+  .model-map__graph .node-type {
+    fill: var(--home-muted);
+    font-size: 11px;
+    font-weight: 600;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif;
   }
 
-  .map-node--flow {
-    --node-color: #f1a13a;
-    top: 4.8rem;
-    left: 1rem;
-  }
-
-  .map-node--context {
-    --node-color: #14a39a;
-    top: 6.4rem;
-    left: 39%;
-  }
-
-  .map-node--api {
-    --node-color: #3b75d1;
-    top: 8.7rem;
-    right: 1rem;
-  }
-
-  .map-node--event {
-    --node-color: #55a447;
-    bottom: 4.9rem;
-    left: 1.8rem;
-  }
-
-  .map-node--schema {
-    --node-color: #d99100;
-    bottom: 6rem;
-    left: 45%;
-  }
-
-  .map-node--service {
-    --node-color: #e05b64;
-    right: 1rem;
-    bottom: 3rem;
+  .model-map__graph .node-name {
+    fill: var(--home-text);
+    font-size: 16px;
+    font-weight: 700;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif;
   }
 
   .delivery-card {
-    position: absolute;
-    right: clamp(0.8rem, 3vw, 1.4rem);
-    bottom: -1.6rem;
+    justify-self: center;
+    margin-top: -1.25rem;
+    position: relative;
+    z-index: 1;
     display: grid;
     grid-template-columns: 5.5rem minmax(0, 1fr);
     gap: 0.9rem;
@@ -549,6 +782,19 @@ const maturityRows = [
     border-radius: 0.5rem;
     background: var(--home-panel-strong);
     box-shadow: 0 1rem 2rem rgb(0 0 0 / 0.22);
+    text-decoration: none;
+    transition:
+      border-color 160ms ease,
+      transform 160ms ease,
+      box-shadow 160ms ease;
+  }
+
+  .delivery-card:hover,
+  .delivery-card:focus-visible {
+    border-color: var(--home-highlight);
+    transform: translateY(-1px);
+    box-shadow: 0 1.2rem 2.2rem rgb(0 0 0 / 0.28);
+    outline: none;
   }
 
   :root[data-theme='light'] .delivery-card {
@@ -567,6 +813,11 @@ const maturityRows = [
     color: var(--home-muted);
   }
 
+  .delivery-card span {
+    color: var(--home-text);
+    font-weight: 600;
+  }
+
   .delivery-card strong {
     display: block;
     margin: 0.1rem 0 0.25rem;
@@ -575,29 +826,20 @@ const maturityRows = [
   }
 
   .delivery-card p {
-    margin: 0;
+    margin: 0.15rem 0 0;
     font-size: 0.86rem;
     line-height: 1.4;
   }
 
-  .info-card h3 {
-    margin: 0 0 0.45rem;
-    color: var(--home-text);
-    font-size: 1.05rem;
-    line-height: 1.2;
-  }
-
-  .info-card p,
-  .section-heading p,
-  .arcadia-copy p,
-  .sdk-grid p {
+  .section-heading p {
     margin: 0;
     color: var(--home-muted);
     line-height: 1.58;
   }
 
   .home-section {
-    padding: clamp(3rem, 6vw, 5rem) 0;
+    position: relative;
+    padding: clamp(2rem, 3vw, 2.75rem) 0 clamp(1.4rem, 2.5vw, 2.2rem);
   }
 
   .home-section + .home-section {
@@ -605,21 +847,19 @@ const maturityRows = [
   }
 
   .section-heading {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
 
   .section-heading--maturity {
-    margin-top: clamp(2.5rem, 5vw, 4rem);
+    margin-top: 1rem;
   }
 
-  .section-heading h2,
-  .arcadia-copy h2,
-  .sdk-grid h2 {
+  .section-heading h2 {
     margin: 0 0 0.75rem;
     color: var(--home-text);
-    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-size: clamp(1.55rem, 2.35vw, 2.05rem);
     font-weight: 600;
-    line-height: 1.05;
+    line-height: 1.12;
     letter-spacing: 0;
   }
 
@@ -627,214 +867,491 @@ const maturityRows = [
     max-width: 58rem;
   }
 
-  .card-grid {
+  .platform-carousel-wrap {
+    position: relative;
+    margin-top: 1.2rem;
+  }
+
+  .platform-carousel {
     display: grid;
+    grid-auto-columns: minmax(100%, 1fr);
+    grid-auto-flow: column;
     gap: 1rem;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-behavior: smooth;
+    scroll-snap-type: inline mandatory;
+    scrollbar-color: var(--home-highlight) transparent;
+    padding-bottom: 0.35rem;
+    cursor: pointer;
+    user-select: none;
   }
 
-  .card-grid--four {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .card-grid--three {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    margin-top: 1rem;
-  }
-
-  .info-card {
-    min-height: 100%;
-    padding: 1.15rem;
+  .platform-slide {
+    position: relative;
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    scroll-snap-align: start;
     border: 1px solid var(--home-border);
     border-radius: 0.5rem;
     background: var(--home-panel);
   }
 
-  .info-card--accent {
-    border-color: color-mix(in srgb, var(--home-highlight), var(--home-border) 68%);
+  .platform-slide img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 8.4;
+    object-fit: contain;
+    background: #0d1118;
+  }
+
+  .platform-slide figcaption {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    padding: 1.8rem 1.1rem 0.85rem;
+    color: #fff8e5;
+    background: linear-gradient(180deg, transparent, rgb(0 0 0 / 0.82));
+    font-size: clamp(0.95rem, 1.6vw, 1.12rem);
+    font-weight: 700;
+    line-height: 1.25;
+    text-shadow: 0 1px 2px rgb(0 0 0 / 0.72);
+  }
+
+  .carousel-control {
+    position: absolute;
+    top: 50%;
+    z-index: 3;
+    display: grid;
+    place-items: center;
+    width: 2.55rem;
+    aspect-ratio: 1;
+    border: 1px solid color-mix(in srgb, var(--home-highlight), var(--home-border) 35%);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--home-panel-strong), transparent 8%);
+    color: var(--home-highlight);
+    font: inherit;
+    font-size: 1.2rem;
+    font-weight: 800;
+    line-height: 1;
+    box-shadow: 0 0.8rem 1.4rem rgb(0 0 0 / 0.26);
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+
+  .carousel-control--prev {
+    left: 0.75rem;
+  }
+
+  .carousel-control--next {
+    right: 0.75rem;
+  }
+
+  .featured-capabilities {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(22rem, 1fr);
+    gap: 1rem;
+    margin-top: 1.2rem;
+  }
+
+  .capability-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 0.75rem;
+  }
+
+  .capability-group {
+    margin-top: 1.2rem;
+  }
+
+  .capability-group h3 {
+    margin: 0;
+    color: var(--home-text);
+    font-size: clamp(1.15rem, 1.8vw, 1.35rem);
+    line-height: 1.2;
+  }
+
+  .capability-card {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 1rem;
+    min-height: 14.5rem;
+    padding: 1.15rem;
+    border: 1px solid var(--home-border);
+    border-radius: 0.5rem;
+    background: color-mix(in srgb, var(--home-panel), var(--home-panel-strong) 44%);
+    box-shadow: 0 0.8rem 1.5rem rgb(0 0 0 / 0.12);
+  }
+
+  .capability-card > .maturity-badge {
+    position: absolute;
+    bottom: 0.75rem;
+    right: 0.75rem;
+  }
+
+  .capability-card--featured {
+    grid-template-columns: minmax(7rem, 0.35fr) minmax(0, 0.65fr);
+    align-items: center;
+    min-height: 18rem;
+    border-color: color-mix(in srgb, var(--home-highlight), var(--home-border) 54%);
     background:
-      linear-gradient(180deg, color-mix(in srgb, var(--home-highlight), transparent 94%), transparent),
+      linear-gradient(135deg, color-mix(in srgb, var(--home-highlight), transparent 93%), transparent 42%),
       var(--home-panel);
   }
 
-  .human-tools-ai-section {
-    background: color-mix(in srgb, var(--home-panel), transparent 46%);
+  .capability-card--world-model {
+    grid-template-columns: 1fr;
   }
 
-  .maturity-section {
-    background: color-mix(in srgb, var(--home-bg), var(--home-panel) 38%);
+  .capability-card--sdk {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: left;
+    background:
+      linear-gradient(135deg, color-mix(in srgb, #14a39a, transparent 90%), transparent 46%),
+      var(--home-panel);
   }
 
-  .maturity-grid {
+  .capability-card__media {
+    display: grid;
+    place-items: center;
+    min-height: 12rem;
+  }
+
+  .capability-card__media img {
+    width: min(100%, 10rem);
+    height: auto;
+    object-fit: contain;
+  }
+
+  .capability-card--sdk .capability-card__media img {
+    width: min(100%, 11rem);
+  }
+
+  .capability-card--sdk .capability-card__media {
+    min-height: 10rem;
+  }
+
+  .world-model-visual {
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--home-border), transparent 20%);
+    border-radius: 0.45rem;
+    background:
+      linear-gradient(color-mix(in srgb, var(--home-border), transparent 68%) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--home-border), transparent 68%) 1px, transparent 1px),
+      color-mix(in srgb, var(--home-panel-strong), var(--home-panel) 30%);
+    background-size: 38px 38px;
+  }
+
+  .capability-card--world-model .world-model-visual {
+    display: grid;
+    place-items: center;
+    height: 12.5rem;
+  }
+
+  .world-model-visual svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .world-model-graph {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .world-model-graph path {
+    fill: none;
+    stroke: color-mix(in srgb, var(--home-highlight), white 12%);
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-dasharray: 7 9;
+    opacity: 0.62;
+  }
+
+  .world-model-graph .sdk-path {
+    stroke: #14a39a;
+    stroke-dasharray: 8 6;
+    opacity: 0.8;
+    stroke-width: 2.5;
+  }
+
+  .world-model-graph .map-node rect {
+    fill: color-mix(in srgb, var(--home-panel-strong), var(--node-color) 8%);
+    stroke: color-mix(in srgb, var(--node-color), var(--home-border) 42%);
+    stroke-width: 1.5;
+  }
+
+  .world-model-graph .map-node--flow { --node-color: #f1a13a; }
+  .world-model-graph .map-node--domain { --node-color: #14a39a; }
+  .world-model-graph .map-node--api { --node-color: #3b75d1; }
+  .world-model-graph .map-node--event { --node-color: #55a447; }
+  .world-model-graph .map-node--schema { --node-color: #d99100; }
+  .world-model-graph .map-node--service { --node-color: #e05b64; }
+
+  .world-model-graph .node-type {
+    fill: var(--home-muted);
+    font-size: 11px;
+    font-weight: 600;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  .world-model-graph .node-name {
+    fill: var(--home-text);
+    font-size: 16px;
+    font-weight: 700;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  .capability-card__icon {
+    display: grid;
+    place-items: center;
+    width: 3.4rem;
+    aspect-ratio: 1;
+    margin-inline: auto;
+    color: var(--home-highlight);
+  }
+
+  .capability-card__icon img {
+    width: 3rem;
+    height: 3rem;
+    object-fit: contain;
+  }
+
+  .capability-card__icon svg {
+    width: 2.8rem;
+    height: 2.8rem;
+    color: var(--home-highlight);
+  }
+
+  .capability-card__icon svg :where(path, rect) {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 3.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .capability-card__icon .schema-mark {
+    width: 3rem;
+  }
+
+  .capability-card__body {
+    display: grid;
+    gap: 0.65rem;
+    min-width: 0;
+    grid-template-rows: auto 1fr auto;
+  }
+
+  .capability-card__heading {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .capability-card h3 {
+    margin: 0;
+    color: var(--home-text);
+    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+    line-height: 1.15;
+  }
+
+  .capability-card p {
+    margin: 0;
+    color: var(--home-muted);
+    line-height: 1.55;
+  }
+
+  .capability-card__note {
+    color: var(--home-text) !important;
+    font-weight: 600;
+  }
+
+  .capability-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    align-items: center;
+  }
+
+  .maturity-badge {
+    --badge-color: var(--home-highlight);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    width: fit-content;
+    padding: 0;
+    border: none;
+    background: none;
+    color: color-mix(in srgb, var(--home-text), transparent 25%);
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.1;
+  }
+
+  .maturity-badge::before {
+    content: '';
+    flex-shrink: 0;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--badge-color);
+  }
+
+  .maturity-badge--production {
+    --badge-color: #4caf50;
+  }
+
+  .maturity-badge--building {
+    --badge-color: #d99100;
+  }
+
+  .maturity-badge--emerging {
+    --badge-color: #7890ad;
+  }
+
+  .maturity-badge--supporting {
+    --badge-color: #18b7aa;
+  }
+
+  .capability-link {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    min-height: 2.25rem;
+    margin-top: 0.15rem;
+    padding: 0 0.8rem;
+    border: 1px solid color-mix(in srgb, var(--home-highlight), transparent 25%);
+    border-radius: 0.4rem;
+    background: var(--home-highlight);
+    color: #1b0d04;
+    font-weight: 700;
+    line-height: 1.1;
+    text-decoration: none;
+  }
+
+  .reference-section {
+    background:
+      linear-gradient(90deg, color-mix(in srgb, #14a39a 8%, transparent), transparent 52%),
+      var(--home-bg);
+  }
+
+  .reference-feature {
+    display: grid;
+    grid-template-columns: minmax(15rem, 0.42fr) minmax(0, 0.58fr);
+    gap: clamp(1.25rem, 4vw, 2.5rem);
+    align-items: center;
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--home-border);
+    border-radius: 0.5rem;
+    background:
+      linear-gradient(135deg, color-mix(in srgb, var(--home-highlight), transparent 94%), transparent 40%),
+      var(--home-panel);
+  }
+
+  .reference-feature__media {
+    display: grid;
+    place-items: center;
+    min-height: 14rem;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--home-border), transparent 20%);
+    border-radius: 0.45rem;
+    background: #ffffff;
+  }
+
+  .reference-feature__media img {
+    width: 100%;
+    height: 100%;
+    max-height: 18rem;
+    object-fit: contain;
+  }
+
+  .reference-feature__body {
+    display: grid;
+    gap: 0.75rem;
+    min-width: 0;
+  }
+
+  .reference-feature h3 {
+    margin: 0;
+    color: var(--home-text);
+    font-size: clamp(1.55rem, 2.35vw, 2.05rem);
+    line-height: 1.12;
+  }
+
+  .reference-feature p {
+    margin: 0;
+    color: var(--home-muted);
+    line-height: 1.58;
+  }
+
+  .reference-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 1rem;
+    margin-top: 1rem;
   }
 
-  .maturity-card {
+  .reference-card {
     display: grid;
-    align-content: start;
-    gap: 0.75rem;
-    min-height: 14rem;
-    padding: 1.15rem;
+    min-height: 100%;
+    overflow: hidden;
     border: 1px solid var(--home-border);
     border-radius: 0.5rem;
     background: var(--home-panel);
+    color: inherit;
+    text-decoration: none;
   }
 
-  .maturity-card h3 {
+  .reference-card img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    height: auto;
+    object-fit: contain;
+    padding: 0.65rem;
+    border-bottom: 1px solid var(--home-border);
+    background: color-mix(in srgb, var(--home-panel-strong), white 5%);
+  }
+
+  .reference-card__body {
+    display: grid;
+    align-content: start;
+    gap: 0.55rem;
+    padding: 1rem;
+  }
+
+  .reference-card h3 {
     margin: 0;
     color: var(--home-text);
     font-size: 1.05rem;
     line-height: 1.2;
   }
 
-  .maturity-card span {
-    display: inline-flex;
-    align-items: center;
-    width: fit-content;
-    min-height: 2rem;
-    padding: 0 0.7rem;
-    border: 1px solid color-mix(in srgb, var(--home-highlight), var(--home-border) 54%);
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--home-highlight), transparent 88%);
-    color: var(--home-text);
-    font-size: 0.82rem;
-    font-weight: 600;
-    line-height: 1.1;
-  }
-
-  .maturity-card p {
+  .reference-card p {
     margin: 0;
     color: var(--home-muted);
-    line-height: 1.58;
+    line-height: 1.48;
   }
 
-  .arcadia-section {
-    background:
-      linear-gradient(90deg, color-mix(in srgb, #14a39a 8%, transparent), transparent 52%),
-      var(--home-bg);
-  }
-
-  .arcadia-grid,
-  .sdk-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 0.9fr) minmax(20rem, 1.1fr);
-    gap: clamp(2rem, 5vw, 4rem);
-    align-items: center;
-  }
-
-  .arcadia-visual {
-    padding: 1rem;
-    border: 1px solid var(--home-border);
-    border-radius: 0.5rem;
-    background: var(--home-panel);
-  }
-
-  .event-board {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 0.7rem;
-    min-height: 15rem;
-    padding: 1rem;
-    border: 1px solid color-mix(in srgb, var(--home-border), transparent 20%);
-    border-radius: 0.4rem;
-    background:
-      linear-gradient(color-mix(in srgb, var(--home-border), transparent 68%) 1px, transparent 1px),
-      linear-gradient(90deg, color-mix(in srgb, var(--home-border), transparent 68%) 1px, transparent 1px),
-      color-mix(in srgb, var(--home-bg), var(--home-panel) 50%);
-    background-size: 40px 40px;
-  }
-
-  .event-note {
-    align-self: start;
-    min-height: 4rem;
-    padding: 0.65rem;
-    border-radius: 0.35rem;
-    color: #201608;
-    font-size: 0.86rem;
-    font-weight: 600;
-    line-height: 1.2;
-  }
-
-  .event-note--orange {
-    grid-column: 1 / span 2;
-    margin-top: 1rem;
-    background: #f1a13a;
-  }
-
-  .event-note--blue {
-    grid-column: 3 / span 2;
-    margin-top: 3.5rem;
-    background: #9cc4ff;
-  }
-
-  .event-note--green {
-    grid-column: 5 / span 2;
-    margin-top: 1.8rem;
-    background: #9ed98d;
-  }
-
-  .event-note--yellow {
-    grid-column: 2 / span 2;
-    margin-top: 1.4rem;
-    background: #ffe04b;
-  }
-
-  .event-note--pink {
-    grid-column: 4 / span 2;
-    margin-top: 2.5rem;
-    background: #ffb7c0;
-  }
-
-  .arcadia-path,
-  .capability-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-    margin-top: 1rem;
-  }
-
-  .arcadia-path span,
-  .capability-list span {
-    display: inline-flex;
-    align-items: center;
-    min-height: 2rem;
-    padding: 0 0.7rem;
-    border: 1px solid var(--home-border);
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--home-panel), var(--home-highlight) 6%);
-    color: var(--home-text);
-    font-size: 0.88rem;
-    font-weight: 600;
-  }
-
-  .sdk-section {
-    background: color-mix(in srgb, var(--home-panel), transparent 30%);
-  }
-
-  .sdk-grid {
-    grid-template-columns: minmax(15rem, 0.75fr) minmax(0, 1.25fr);
-  }
-
-  .sdk-visual {
-    display: grid;
-    place-items: center;
-    min-height: 19rem;
-    padding: 1.25rem;
-    border: 1px solid var(--home-border);
-    border-radius: 0.5rem;
-    background: var(--home-panel);
-  }
-
-  .sdk-visual img {
-    width: min(100%, 18rem);
-    height: auto;
+  .reference-card__body > span {
+    margin-top: 0.25rem;
+    color: var(--home-highlight);
+    font-size: 0.9rem;
+    font-weight: 700;
   }
 
   @media (max-width: 960px) {
     .home-hero__grid,
-    .arcadia-grid,
-    .sdk-grid {
+    .reference-feature {
       grid-template-columns: 1fr;
     }
 
@@ -842,10 +1359,13 @@ const maturityRows = [
       max-width: 18ch;
     }
 
-    .card-grid--four,
-    .card-grid--three,
-    .maturity-grid {
+    .capability-grid,
+    .reference-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .featured-capabilities {
+      grid-template-columns: 1fr;
     }
   }
 
@@ -859,48 +1379,11 @@ const maturityRows = [
     }
 
     .home-hero__visual {
-      min-height: 36rem;
+      min-height: 22rem;
     }
 
     .model-map {
-      min-height: 32rem;
-    }
-
-    .map-node {
-      width: min(11rem, calc(100% - 2rem));
-    }
-
-    .map-node--flow {
-      top: 4.7rem;
-      left: 0.75rem;
-    }
-
-    .map-node--context {
-      top: 10.2rem;
-      left: auto;
-      right: 0.75rem;
-    }
-
-    .map-node--api {
-      top: 15.5rem;
-      right: auto;
-      left: 0.75rem;
-    }
-
-    .map-node--event {
-      bottom: 9.6rem;
-      left: auto;
-      right: 0.75rem;
-    }
-
-    .map-node--schema {
-      bottom: 5.2rem;
-      left: 0.75rem;
-    }
-
-    .map-node--service {
-      right: 0.75rem;
-      bottom: 0.75rem;
+      min-height: 17rem;
     }
 
     .delivery-card {
@@ -910,20 +1393,53 @@ const maturityRows = [
       margin: 0.8rem auto 0;
     }
 
-    .card-grid--four,
-    .card-grid--three,
-    .maturity-grid {
+    .capability-grid,
+    .reference-grid {
       grid-template-columns: 1fr;
     }
 
-    .event-board {
+    .capability-card--featured {
       grid-template-columns: 1fr;
-      min-height: auto;
     }
 
-    .event-note {
-      grid-column: auto;
-      margin-top: 0;
+    .capability-card__media {
+      min-height: 8rem;
     }
+
+    .carousel-control {
+      width: 2.25rem;
+    }
+
   }
 </style>
+
+<script is:inline>
+  document.querySelectorAll('[data-platform-carousel]').forEach((carousel) => {
+    const root = carousel.parentElement;
+    const previous = root?.querySelector('[data-platform-carousel-prev]');
+    const next = root?.querySelector('[data-platform-carousel-next]');
+
+    const scrollBySlide = (direction) => {
+      carousel.scrollBy({
+        left: direction * carousel.clientWidth,
+        behavior: 'smooth',
+      });
+    };
+
+    carousel.addEventListener('click', (event) => {
+      const bounds = carousel.getBoundingClientRect();
+      const direction = event.clientX < bounds.left + bounds.width / 2 ? -1 : 1;
+      scrollBySlide(direction);
+    });
+
+    previous?.addEventListener('click', (event) => {
+      event.stopPropagation();
+      scrollBySlide(-1);
+    });
+
+    next?.addEventListener('click', (event) => {
+      event.stopPropagation();
+      scrollBySlide(1);
+    });
+  });
+</script>

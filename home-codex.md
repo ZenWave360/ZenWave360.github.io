@@ -25,12 +25,10 @@ Important positioning:
 PAGE FLOW
 --------------------------------------------------------------------------------
 WHY    -> Hero
-HOW    -> Humans Explore, Tools Connect, AI Understands
-HOW    -> Discover -> Shape -> Generate -> Navigate
-WHAT   -> What ZenWave Is + Maturity
-WHAT   -> Arcadia Editions
-WHAT   -> ZenWave SDK
-8. Footer
+HOW    -> Humans Explore, Tools Connect, AI Understands + Discover -> Shape -> Generate -> Navigate
+WHAT   -> What ZenWave Platform Is
+PROOF  -> Reference Architectures
+Footer
 --------------------------------------------------------------------------------
 
 HERO
@@ -67,10 +65,11 @@ Current design notes:
   signal, but the hero should stay platform-first.
 --------------------------------------------------------------------------------
 
-BAND 1: HUMANS EXPLORE, TOOLS CONNECT, AI UNDERSTANDS
+BAND 1: HUMANS EXPLORE, TOOLS CONNECT, AI UNDERSTANDS + DISCOVER -> SHAPE -> GENERATE -> NAVIGATE
 --------------------------------------------------------------------------------
 Purpose:
-Make the platform thesis memorable before showing the lifecycle graphic.
+Make the platform thesis memorable, then show the lifecycle cards that explain
+how the platform works.
 
 This band explains why the architecture world model matters:
 - Humans can explore architecture by meaning, not by hunting through isolated
@@ -87,26 +86,10 @@ Suggested intro:
 ZenWave makes architecture readable by people, traversable by tools, and usable
 as context for AI-assisted delivery.
 
-Possible supporting points:
-
-[Point] Humans Explore
-Move from workflows to APIs, events, schemas, services, tests, and source code
-without losing architectural context.
-
-[Point] Tools Connect
-Keep open standards, ZenWave models, generated assets, and implementation code
-linked as the system evolves.
-
-[Point] AI Understands
-Give AI assistants a connected architecture model so generated help starts from
-system context instead of isolated prompts.
---------------------------------------------------------------------------------
-
-BAND 2: DISCOVER -> SHAPE -> GENERATE -> NAVIGATE
---------------------------------------------------------------------------------
-Purpose:
-Show the lifecycle and make clear that ZenWave starts with architecture and
-discovery, then brings in generation as part of delivery.
+Then show the lifecycle and make clear that ZenWave starts with architecture and
+discovery, then brings in generation as part of delivery. Use the lifecycle
+cards as the supporting content for this band instead of separate Humans,
+Tools, and AI cards.
 
 Current implementation:
 - Native SVG + CSS component.
@@ -156,11 +139,12 @@ Design notes:
 - Mobile: one column.
 --------------------------------------------------------------------------------
 
-BAND 3: WHAT ZENWAVE PLATFORM IS + MATURITY
+BAND 2: WHAT ZENWAVE PLATFORM IS
 --------------------------------------------------------------------------------
 Purpose:
-Answer "What is this thing?" after the why and how are clear, then explain what
-can be used today and how mature each part is.
+Answer "What is this thing?" after the why and how are clear. Present ZenWave
+Platform as one connected set of capabilities, with maturity badges inside each
+capability card instead of a separate maturity table.
 
 This band replaces the older "Platform in construction" proof strip and the
 older "A shared map of the system" copy. The old proof-strip ideas should be
@@ -169,136 +153,193 @@ folded into more useful places:
 - "Open standards" belongs in this band.
 - "In construction" belongs in maturity.
 
-Suggested H2:
+Eyebrow:
+ZenWave Platform
+
+H2:
 What ZenWave Platform Is
 
-Suggested intro:
-ZenWave Platform builds an architecture world model from the artifacts your
-system already has, then enriches it with ZenWave modeling languages, IDE
-navigation, and generation capabilities.
+Intro:
+ZenWave Platform is a set of connected capabilities for making the big picture
+of your software explicit, connected, and navigable, from discovery and modeling
+to generation and navigation.
 
-Cards:
+Screenshot carousel:
+- Business flow modeled from Event Storming sessions
+- Systems map generated from a business flow
+- Flowchart visualization generated from ZFL
+- Sequence diagrams derived from business flows
+- Domain model with aggregates, entities and lifecycle states
+- OpenAPI contracts derived from annotated service commands
+- AsyncAPI contracts generated from domain events
 
-[Card] Architecture World Model
-Connect your company’s existing APIs and events, including OpenAPI and AsyncAPI,
-and enrich them with ZenWave ZDL and ZFL for deeper domain and workflow context.
+Carousel interaction:
+- One click on the right half advances to the next screenshot.
+- One click on the left half moves to the previous screenshot.
+- Include visible previous and next arrow controls so the carousel reads as
+  interactive.
 
-[Card] Domain Modeling Languages
-ZDL and ZFL are domain-specific languages for modeling workflows and bounded
-contexts. Grounded in Event Storming and DDD, they enrich your architecture with
-business meaning and make ubiquitous language structured, versioned, and
-executable.
+Featured row:
+Two large cards with asymmetric width. Architecture World Model is wider, while
+ZenWave SDK remains prominent enough for the monk and delivery-engine message
+to land clearly.
 
-[Card] SDK And Generators
-Generates Spring Boot backend applications from architecture artifacts: complete
-APIs, API client SDKs, event producer SDKs, schemas, tests, end-to-end tests,
-and Kafka infrastructure.
+[Card] ZenWave Platform: Architecture World Model
+Image: connected architecture diagram visual
+An IDE experience for designing, navigating, and connecting domain models,
+business flows, APIs, source code, local folders, Git repositories, and schema
+registries with Apicurio. The big picture of your software made explicit,
+connected, and navigable.
+Badge: Building in public
 
-Suggested H2:
-Capabilities And Maturity
+[Card] ZenWave SDK
+Image: monk / buddha visual
+An ever-growing set of plugins that generate Spring Boot services, APIs, tests,
+event adapters, and infrastructure from connected architecture artifacts.
+Badge: Production ready, evolving
+CTAs: Get started, Explore plugins
 
-Suggested intro:
-ZenWave is not one thing at one maturity level. Some capabilities are
-production-proven, some are production-used and actively evolving, and some are
-being built in public.
+Platform Capabilities:
+4-column grid on desktop. This row reads left to right as foundational
+generation, domain modeling, flow modeling, and IDE navigation. It also reads
+left to right as maturity descending.
 
-Preferred structure:
-Use a compact table-like grid or cards with:
-- Capability
-- Maturity
-- Signal / what it means
+[Card] AsyncAPI Generator
+Icon: official AsyncAPI logo
+The original ZenWave generator and most production-proven capability. Generate
+strongly typed Spring Kafka and Spring Cloud Stream producers and consumers from
+AsyncAPI specifications.
+Badge: Production ready
 
-Rows/cards:
+[Card] ZDL Modeling Language
+Icon: zdl-icon.png
+Model bounded contexts, entities, aggregates, commands, events, and services as
+structured domain artifacts.
+Badge: Production ready
 
-[AsyncAPI Generator]
-Maturity: Production-proven
-Signal: 4+ years of production-ready source code.
+[Card] ZFL Flow Language
+Icon: zfl-icon.png
+Model business flows where policies react to events, trigger commands, and
+connect the flow to APIs, schemas, and domain models.
+Badge: Building in public
 
-[ZenWave SDK + ZDL]
-Maturity: Production-used, actively evolving
-Signal: Used in production projects for years. ZDL is stable; the SDK continues
-adding capabilities around ZDL, APIs, events, tests, and infrastructure.
+[Card] ZenWave IDE & MCP
+Icon: zenwave-logo.svg
+Architecture-aware navigation and context for IDEs and AI agents, powered by a
+Kotlin Multiplatform LSP server. IntelliJ first, VS Code next, with MCP support
+for agent workflows.
+Badge: Building in public
 
-[ZFL]
-Maturity: Building in public
-Signal: Work in progress, shaped through Arcadia and real flow-modeling
-examples.
+Supporting OSS:
+4-column grid on desktop.
 
-[Architecture World Model / Platform]
-Maturity: Building in public
-Signal: The integrated platform experience is being assembled from mature
-components and new modeling/navigation layers.
+[Card] EventCatalog Generator
+Icon: generic catalog/list icon
+Export OpenAPI, AsyncAPI, and ZenWave models from ZenWave world model metadata
+to EventCatalog, or import existing EventCatalog documentation back into the
+ZenWave world model.
+Badge: Coming soon
+
+[Card] Terraform / asyncapi-ops
+Icon: generic infrastructure/provisioning icon
+Provision Kafka topics, ACLs, and Schema Registry infrastructure from AsyncAPI
+contracts.
+Badge: Beta
+
+[Card] Spring Modulith Events
+Icon: generic event/stream icon
+Externalize Spring Modulith domain events through Spring Cloud Stream. Used by
+the AsyncAPI Generator for Transactional Outbox integration.
+Badge: Production ready
+
+[Card] JSON Schema Parser
+Icon: generic "{}" schema icon
+Standalone JSON Schema reference parsers for JVM and Kotlin Multiplatform, used
+across ZenWave SDK, the IDE tooling, and other platform components.
+Badge: Supporting OSS
+
+Card rhythm:
+Icon, title, description, then maturity badge.
 
 Label guidance:
 - Avoid generic "alpha / beta / stable" labels.
 - Prefer narrative maturity labels:
-  - Production-proven
-  - Production-used, actively evolving
+  - Production ready
+  - Production ready, evolving
   - Building in public
 - Do not make mature pieces look experimental just because the platform vision
   is still emerging.
+
+Badge color guidance:
+- Production ready: green, confident and proven.
+- Building in public: amber, in progress and honest.
+- Beta / Coming soon: muted gray-blue, available or planned but not committed.
+- Supporting OSS: teal, a supporting role rather than a ZenWave capability.
 --------------------------------------------------------------------------------
 
-BAND 4: ARCADIA EDITIONS
+BAND 3: REFERENCE ARCHITECTURES
 --------------------------------------------------------------------------------
 Purpose:
-Show the public working example and give the "building in public" story a
-concrete place to live.
+Show concrete systems and examples that make the platform idea real. Arcadia
+Editions is the prominent reference architecture, followed by smaller practical
+examples from the same architecture/tooling ecosystem.
 
-Suggested H2:
-Arcadia Editions is the working example
+Eyebrow:
+Built in public
 
-Short paragraph:
-Arcadia Editions is a fictional company with real architectural pressure, used
-to build the platform idea in public through workflows, contracts, services, events,
-and operational concerns.
+H2:
+Reference Architectures
+
+Intro:
+Examples that show how discovery, domain models, APIs, events, schemas,
+generated services, and operational concerns work together in realistic systems.
+
+Featured card:
+
+[Card] Arcadia Editions
+Image: arcadia.png
+Badge: Building in public
+A fictional publisher with real product, catalog, order, event, and integration
+pressure.
+
+Arcadia is the working example for the ZenWave Platform idea: from Event
+Storming to ZFL flows, contracts, services, events, and AI-assisted delivery.
 
 CTAs:
 [Read the series] [View the code]
 
-Visual:
-Arcadia flow / architecture / event board.
+Layout:
+Large horizontal card with image on the left and copy/actions on the right.
 
-Cards:
+Reference cards:
 
-[Card] Why Arcadia exists
-A fictional publisher with real product, catalog, order, event, and integration
-pressure.
+[Card] AsyncAPI Shopping Cart
+Image: ShoppingCartAsyncAPI.png
+Define AsyncAPI and Avro contracts, then derive Kafka producers and consumers
+for a multi-module event-driven application.
+CTA: Follow the tutorial
+Route: /docs/examples/eda-examples/asyncapi-shopping-cart/
 
-[Card] From Event Storming to ZFL
-Discovery work becomes connected workflows that can be discussed, versioned, and
-evolved.
+[Card] Order Fulfillment Kotlin
+Image: OrderFulfillmentKotlin.png
+Capture ubiquitous language in ZDL and derive a Kotlin Spring Boot service with
+REST APIs, domain events, and generated implementation.
+CTA: Follow the tutorial
+Route: /docs/examples/ddd-examples/order-fullillment-kotlin/
 
-[Card] From flow to service scaffolding
-AI can help start the work, while ZenWave keeps the architecture understandable
-as delivery continues.
---------------------------------------------------------------------------------
+[Card] Transactional Outbox
+Image: TransactionalOutBoxWithAsyncAPIAndSpringModulith.png
+Implement the transactional outbox pattern with AsyncAPI, Spring Cloud Stream,
+Spring Modulith, and ZenWave SDK generation.
+CTA: Follow the tutorial
+Route: /posts/TransactionalOutBoxWithAsyncAPIAndSpringModulith/
 
-BAND 5: ZENWAVE SDK
---------------------------------------------------------------------------------
-Purpose:
-Keep SDK visible and concrete, but frame it as the delivery engine inside the
-broader platform.
-
-Suggested H2:
-ZenWave SDK
-
-Short paragraph:
-The SDK remains the delivery engine inside the broader platform. It turns
-connected architecture artifacts into Spring Boot applications, API surfaces,
-event adapters, tests, and infrastructure support.
-
-Visual:
-Buddha / laptop visual.
-
-Capability row:
-- Spring Boot generation
-- OpenAPI / AsyncAPI
-- Tests
-- Infrastructure support
-
-CTA:
-[Explore SDK]
+[Card] Clinical Tool Modulith
+Image: ClinicalToolModulith.png
+Model multiple bounded contexts and derive a modular monolith where domain
+boundaries, APIs, and persistence stay aligned.
+CTA: Follow the tutorial
+Route: /docs/examples/ddd-examples/modulith-clinical-tool-jpa/
 --------------------------------------------------------------------------------
 
 FOOTER
@@ -309,18 +350,14 @@ IMPLEMENTATION NOTES
 Current relevant files:
 - src/pages/index.astro
 - src/components/ArchitectureLifecycleBand.astro
+- public/images/platform/screenshots
+- public/images/platform/icons
 
 Bands that are conceptually OK but need visual/copy polishing:
 - Hero
-- Humans Explore, Tools Connect, AI Understands
-- Discover -> Shape -> Generate -> Navigate
-- Arcadia
-- ZenWave SDK
-
-Bands that should be refactored:
-- Remove or replace the old "Platform in construction" proof strip.
-- Refactor "A shared map of the system" into "What ZenWave Platform Is".
-- Refactor "Available today" into "Available Capabilities And Maturity".
+- Humans Explore, Tools Connect, AI Understands + Discover -> Shape -> Generate -> Navigate
+- Reference Architectures
+- What ZenWave Platform Is
 
 Do not overcommit the homepage to a claim that every platform capability is at
 the same maturity level.

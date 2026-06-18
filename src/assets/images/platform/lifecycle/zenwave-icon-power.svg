@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80" role="img" aria-label="Power icon">
+  <defs>
+    <linearGradient id="g" x1="22" y1="12" x2="58" y2="68" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#78C37C"/>
+      <stop offset="0.55" stop-color="#4CAF50"/>
+      <stop offset="1" stop-color="#2E7D32"/>
+    </linearGradient>
+    <filter id="s" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity=".16"/>
+    </filter>
+  </defs>
+  <circle cx="40" cy="40" r="36" fill="#fff" opacity=".95" filter="url(#s)"/>
+  <path d="M40 11 61 20.5 69 43 55 64H25L11 43l8-22.5L40 11Z" fill="url(#g)"/>
+  <path d="M29.5 34a18 18 0 1 0 21 0" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
+  <path d="M40 22v20" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
+</svg>

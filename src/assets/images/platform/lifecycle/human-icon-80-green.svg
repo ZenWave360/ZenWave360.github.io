@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80" role="img" aria-label="Human icon">
+  <g fill="none" stroke="#55a447" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="40" cy="24" r="10"/>
+    <path d="M20 58
+             C20 46, 28 40, 40 40
+             C52 40, 60 46, 60 58
+             L60 64
+             L20 64
+             Z"/>
+  </g>
+</svg>
