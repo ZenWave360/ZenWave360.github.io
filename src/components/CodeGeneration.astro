@@ -20,7 +20,6 @@ interface Props {
 }
 
 const props = Astro.props;
-const isDev = import.meta.env.DEV;
 ---
 
 <section class="code-generation">
@@ -33,7 +32,6 @@ const isDev = import.meta.env.DEV;
       language={props.sourceLanguage}
       visibleRange={props.sourceVisibleRange}
       collapsed={props.sourceCollapsed}
-      deferInDev={isDev}
       showLegend={Boolean(props.sourceUrl)}
     />
   )}
@@ -46,7 +44,6 @@ const isDev = import.meta.env.DEV;
       language={props.outputLanguage}
       visibleRange={props.outputVisibleRange}
       collapsed={props.outputCollapsed}
-      deferInDev={isDev}
       showLegend={Boolean(props.outputUrl)}
     />
   )}

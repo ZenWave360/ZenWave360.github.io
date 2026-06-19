@@ -15,6 +15,14 @@ const expressiveCodeEngine = new ExpressiveCodeEngine({
     new ExpressiveCodeTheme(zenWaveDarkCodeTheme),
     new ExpressiveCodeTheme(zenWaveLightCodeTheme),
   ],
+  themeCssSelector: (theme, { styleVariants }) => {
+    const baseTheme = styleVariants[0]?.theme;
+    const alternateTheme = styleVariants.find((variant) => variant.theme.type !== baseTheme?.type)?.theme;
+    if (theme === baseTheme || theme === alternateTheme) {
+      return `[data-theme='${theme.type}']`;
+    }
+    return `[data-theme='${theme.name}']`;
+  },
   plugins: [
     pluginShiki({
       langs: customShikiLanguages,

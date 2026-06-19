@@ -4,6 +4,7 @@ import {
   customShikiLangAlias,
 } from '../utils/code-highlighting';
 import { renderExpressiveCode } from '../utils/expressive-code';
+import SourceIcon from './SourceIcon.astro';
 
 interface Props {
   url?: string;
@@ -14,7 +15,6 @@ interface Props {
   title?: string;
   summary?: string;
   collapsed?: boolean;
-  deferInDev?: boolean;
 }
 
 const {
@@ -26,7 +26,6 @@ const {
   title,
   summary,
   collapsed = false,
-  deferInDev = false,
 } = Astro.props;
 
 function transformGitHubUrl(inputUrl?: string) {
@@ -57,55 +56,113 @@ function trimBlankEdgeLines(value: string) {
 
 const label = title || summary;
 const fetchUrl = transformGitHubUrl(url);
+const sourceHref = sourceUrl(url);
 const cacheKey = `${fetchUrl || ''}:${visibleRange || 'full'}`;
 const cachedEntry = (cache as Record<string, { content: string; language?: string }>)[cacheKey];
 const cached = cachedEntry?.content;
 const rawDisplayContent = content || cached || `Remote code snapshot missing for ${cacheKey}. Run npm run sync:remote-code.`;
 const displayContent = trimBlankEdgeLines(rawDisplayContent);
 const resolvedLanguage = resolveLanguage(language, cachedEntry?.language);
-const isDev = import.meta.env.DEV;
-const isDeferredInDev = isDev && deferInDev;
 let highlightedCode: string | undefined;
 let sharedStyles: string | undefined;
 let blockStyles: string | undefined;
 let blockScripts: string | undefined;
 
-if (!isDeferredInDev) {
-  const rendered = await renderExpressiveCode({
-    code: displayContent,
-    language: resolvedLanguage,
-    title: collapsed ? undefined : label,
-  });
-  highlightedCode = rendered.html;
-  blockStyles = rendered.blockStyles;
+const rendered = await renderExpressiveCode({
+  code: displayContent,
+  language: resolvedLanguage,
+});
+highlightedCode = rendered.html;
+blockStyles = rendered.blockStyles;
 
-  const locals = Astro.locals as Record<string, unknown>;
-  if (!locals.__ecStylesEmitted) {
-    locals.__ecStylesEmitted = true;
-    sharedStyles = rendered.sharedStyles;
-    blockScripts = rendered.scripts;
-  }
+const locals = Astro.locals as Record<string, unknown>;
+if (!locals.__ecStylesEmitted) {
+  locals.__ecStylesEmitted = true;
+  sharedStyles = rendered.sharedStyles;
+  blockScripts = rendered.scripts;
 }
 ---
 
-<div class="remote-code">
+<div class="remote-code not-content">
   {sharedStyles && <style is:inline set:html={sharedStyles} />}
   {blockScripts && <script type="module" is:inline set:html={blockScripts} />}
   {blockStyles && <style is:inline set:html={blockStyles} />}
-  {isDeferredInDev ? (
-    <details>
-      {label && <summary>{label}</summary>}
-      <div class="remote-code__deferred">
-        Deferred in dev mode for faster page loads. Use preview/build to inspect the full generated snippet.
-      </div>
-    </details>
-  ) : collapsed ? (
-    <details>
-      {label && <summary>{label}</summary>}
-      <Fragment set:html={highlightedCode} />
-    </details>
+  {label ? (
+    collapsed ? (
+      <details data-lazy-code>
+        <summary>
+          <span class="remote-code__title">
+            <span class="remote-code__caret" aria-hidden="true"></span>
+            <span class="remote-code__label">{label}</span>
+          </span>
+          {showLegend && sourceHref && (
+            <a
+              class="remote-code__source-action"
+              href={sourceHref}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Navigate to source"
+              title="Navigate to source"
+              onclick="event.stopPropagation()"
+            >
+              <SourceIcon class="remote-code__source-action-icon" />
+            </a>
+          )}
+        </summary>
+        <template class="remote-code__lazy-content">
+          <Fragment set:html={highlightedCode} />
+        </template>
+      </details>
+    ) : (
+      <details open>
+        <summary>
+          <span class="remote-code__title">
+            <span class="remote-code__caret" aria-hidden="true"></span>
+            <span class="remote-code__label">{label}</span>
+          </span>
+          {showLegend && sourceHref && (
+            <a
+              class="remote-code__source-action"
+              href={sourceHref}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Navigate to source"
+              title="Navigate to source"
+              onclick="event.stopPropagation()"
+            >
+              <SourceIcon class="remote-code__source-action-icon" />
+            </a>
+          )}
+        </summary>
+        <Fragment set:html={highlightedCode} />
+      </details>
+    )
   ) : (
     <Fragment set:html={highlightedCode} />
   )}
-  {showLegend && url && <p class="remote-code__source"><a href={sourceUrl(url)} target="_blank" rel="noreferrer">Navigate to source</a></p>}
+  {showLegend && sourceHref && <p class="remote-code__source"><a href={sourceHref} target="_blank" rel="noreferrer">Navigate to source</a></p>}
 </div>
+
+<script>
+  function initLazyRemoteCode() {
+    document.querySelectorAll('details[data-lazy-code]').forEach(details => {
+      if (details.dataset.lazyCodeBound === 'true') return;
+      details.dataset.lazyCodeBound = 'true';
+      const handler = () => {
+        if (details.open) {
+          const template = details.querySelector('template.remote-code__lazy-content');
+          if (template) {
+            details.insertBefore(template.content, template);
+            template.remove();
+          }
+          details.removeAttribute('data-lazy-code');
+          delete details.dataset.lazyCodeBound;
+          details.removeEventListener('toggle', handler);
+        }
+      };
+      details.addEventListener('toggle', handler);
+    });
+  }
+  initLazyRemoteCode();
+  document.addEventListener('astro:page-load', initLazyRemoteCode);
+</script>

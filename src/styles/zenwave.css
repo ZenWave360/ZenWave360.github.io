@@ -65,23 +65,6 @@
   }
 }
 
-.sl-hidden {
-  display: none;
-}
-
-.sl-flex {
-  display: flex;
-}
-
-@media (min-width: 50rem) {
-  .md\:sl-hidden {
-    display: none;
-  }
-
-  .md\:sl-flex {
-    display: flex;
-  }
-}
 
 html,
 body {
@@ -336,32 +319,195 @@ html {
   margin: 1rem 0;
 }
 
+:root[data-theme='light'] .remote-code {
+  --ec-brdCol: #e1e4e8;
+  --ec-codeBg: #ffffff;
+  --ec-codeFg: #24292f;
+  --ec-gtrFg: #1b1f2381;
+  --ec-gtrBrdCol: #1b1f2333;
+  --ec-gtrHlFg: #24292eab;
+  --ec-sbThumbCol: #959da533;
+  --ec-sbThumbHoverCol: #959da5eb;
+  --ec-frm-edActTabBg: #fff;
+  --ec-frm-edActTabFg: #2f363d;
+  --ec-frm-edActTabIndBtmCol: #fff;
+  --ec-frm-edTabBarBg: #f6f8fa;
+  --ec-frm-edTabBarBrdCol: #e1e4e8;
+  --ec-frm-edTabBarBrdBtmCol: #e1e4e8;
+  --ec-frm-edBg: #ffffff;
+  --ec-frm-inlBtnFg: #24292f;
+  --ec-frm-inlBtnBg: #24292f;
+  --ec-frm-inlBtnBrd: #24292f;
+}
+
+:root[data-theme='light'] .remote-code .expressive-code .ec-line :where(span[style^='--']:not([class])) {
+  color: var(--1, inherit);
+  background-color: var(--1bg, transparent);
+  font-style: var(--1fs, inherit);
+  font-weight: var(--1fw, inherit);
+  text-decoration: var(--1td, inherit);
+}
+
 .remote-code :where(.expressive-code) {
   margin-block: 0;
 }
 
-.remote-code details {
-  overflow: clip;
-  border: 1px solid color-mix(in srgb, var(--sl-color-gray-5), var(--sl-color-accent) 12%);
-  border-radius: 0.5rem;
-  background: color-mix(in srgb, var(--sl-color-bg-nav), transparent 8%);
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--sl-color-white), transparent 94%) inset;
+.remote-code details > .expressive-code {
+  margin-block: 0;
+}
+
+/* When open, flush the EC block's top against the summary (remove radius + top border) */
+.remote-code details[open] > .expressive-code .frame {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.remote-code details[open] > .expressive-code pre {
+  border-top: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 
 .remote-code summary {
+  --remote-code-header-radius: calc(var(--ec-brdRad, 0px) + var(--ec-brdWd, 1px));
+  --remote-code-tab-radius: calc(var(--ec-frm-edTabBrdRad, 0px) + var(--ec-brdWd, 1px));
   cursor: pointer;
-  padding: 0.65rem 0.85rem;
-  border-bottom: 1px solid var(--sl-color-gray-6);
-  color: var(--sl-color-white);
-  font-weight: 600;
-  line-height: 1.35;
-  list-style-position: outside;
+  position: relative;
+  display: flex;
+  min-width: 0;
+  padding-inline-start: var(--ec-frm-edTabsMargInlStart, 0);
+  background:
+    linear-gradient(
+      to top,
+      var(--ec-frm-edTabBarBrdBtmCol, var(--ec-brdCol, #1b1f23)) var(--ec-brdWd, 1px),
+      transparent var(--ec-brdWd, 1px)
+    ),
+    linear-gradient(var(--ec-frm-edTabBarBg, #1f2428), var(--ec-frm-edTabBarBg, #1f2428));
+  background-repeat: no-repeat;
+  border-radius: var(--remote-code-header-radius);
+  color: var(--ec-frm-edActTabFg, #e1e4e8);
+  font-family: var(--ec-uiFontFml, system-ui);
+  font-size: var(--ec-uiFontSize, 0.9rem);
+  font-weight: var(--ec-uiFontWg, 400);
+  line-height: var(--ec-uiLineHt, 1.65);
+  list-style: none;
+  user-select: none;
 }
 
-.remote-code__deferred {
-  padding: 0.9rem 1rem;
-  color: var(--sl-color-gray-3);
-  font-size: 0.95rem;
+.remote-code summary::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  inset: 0;
+  border: var(--ec-brdWd, 1px) solid var(--ec-frm-edTabBarBrdCol, var(--ec-brdCol, #1b1f23));
+  border-radius: inherit;
+}
+
+.remote-code summary:hover .remote-code__title {
+  background: color-mix(in srgb, var(--ec-frm-edActTabBg, #24292e), var(--ec-frm-edActTabFg, #e1e4e8) 5%);
+}
+
+.remote-code summary::-webkit-details-marker {
+  display: none;
+}
+
+.remote-code summary::marker,
+.remote-code summary::before {
+  content: none;
+  display: none;
+}
+
+.remote-code__title {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  flex: 0 1 auto;
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+  margin-block-start: var(--ec-frm-edTabsMargBlkStart, 0);
+  padding: calc(var(--ec-uiPadBlk, 0.25rem) + var(--ec-frm-edActTabIndHt, 1px)) var(--ec-uiPadInl, 1rem);
+  border: var(--ec-brdWd, 1px) solid var(--ec-frm-edActTabBrdCol, transparent);
+  border-bottom: none;
+  border-radius: var(--remote-code-tab-radius) var(--remote-code-tab-radius) 0 0;
+  background: var(--ec-frm-edActTabBg, #24292e);
+  background-clip: padding-box;
+  color: var(--ec-frm-edActTabFg, #e1e4e8);
+  overflow: hidden;
+  transition: background 0.12s;
+}
+
+.remote-code__title::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  inset: 0;
+  border-top: var(--ec-frm-edActTabIndHt, 1px) solid var(--ec-frm-edActTabIndTopCol, #f9826c);
+  border-bottom: var(--ec-frm-edActTabIndHt, 1px) solid var(--ec-frm-edActTabIndBtmCol, #24292e);
+}
+
+.remote-code__caret {
+  flex-shrink: 0;
+  margin-inline-end: 0.6rem;
+  border-style: solid;
+  border-width: 0.32rem 0 0.32rem 0.48rem;
+  border-color: transparent transparent transparent currentColor;
+  transition: transform 0.15s ease;
+}
+
+.remote-code__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.remote-code__source-action {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 2rem;
+  height: 2rem;
+  margin: auto calc(var(--ec-uiPadInl, 1rem) / 2) auto auto;
+  border: var(--ec-brdWd, 1px) solid transparent;
+  border-radius: 0.25rem;
+  color: var(--ec-frm-edActTabFg, #e1e4e8);
+  opacity: 0.72;
+  text-decoration: none;
+  transition:
+    background 0.12s,
+    border-color 0.12s,
+    opacity 0.12s;
+}
+
+.remote-code__source-action:hover,
+.remote-code__source-action:focus-visible {
+  background: color-mix(in srgb, currentColor, transparent 85%);
+  border-color: color-mix(in srgb, currentColor, transparent 55%);
+  color: var(--ec-frm-edActTabFg, #e1e4e8);
+  opacity: 1;
+}
+
+.remote-code__source-action-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Open: bottom border + radius removed so summary flows into the EC block */
+.remote-code details[open] > summary {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.remote-code details[open] > summary::after {
+  border-bottom: none;
+}
+
+.remote-code details[open] .remote-code__caret {
+  transform: rotate(90deg);
 }
 
 .remote-code__source {
@@ -372,19 +518,19 @@ html {
 
 .code-generation {
   margin: 1.5rem 0;
-  padding: 1rem;
-  border: 1px solid color-mix(in srgb, var(--sl-color-gray-5), var(--sl-color-accent) 14%);
-  border-radius: 0.6rem;
-  background: color-mix(in srgb, var(--sl-color-bg-nav), transparent 12%);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
 .code-generation > p {
-  margin: 0.5rem 0 0.85rem;
+  margin: 0.75rem 0 0.6rem;
   color: var(--sl-color-gray-2);
 }
 
 .code-generation > .remote-code + p {
-  margin-top: 1.1rem;
+  margin-top: 1.35rem;
 }
 
 .sl-markdown-content {
