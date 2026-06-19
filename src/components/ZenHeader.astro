@@ -53,9 +53,10 @@ const shouldRenderSearch =
       width: 100%;
       min-width: 0;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(14rem, 24rem) auto auto;
+      grid-template-columns: minmax(12rem, 1fr) minmax(14rem, 24rem) auto max-content;
       align-items: center;
       gap: var(--sl-nav-gap, 1rem);
+      overflow: hidden;
     }
 
     .zen-header__title {
@@ -69,6 +70,7 @@ const shouldRenderSearch =
       align-items: center;
       gap: 0.55rem;
       min-width: 0;
+      max-width: 100%;
       color: var(--sl-color-white);
       font-size: 1.25rem;
       font-weight: 500;
@@ -77,8 +79,16 @@ const shouldRenderSearch =
     }
 
     .zen-brand img {
+      flex: 0 0 auto;
       max-height: 2.05rem;
       width: auto;
+    }
+
+    .zen-brand span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .zen-header__nav {
@@ -86,7 +96,7 @@ const shouldRenderSearch =
       align-items: center;
       justify-content: flex-end;
       gap: 1.1rem;
-      min-width: 0;
+      min-width: max-content;
       white-space: nowrap;
     }
 
@@ -104,6 +114,7 @@ const shouldRenderSearch =
     .zen-header__search {
       display: flex;
       justify-content: center;
+      width: 100%;
       min-width: 0;
     }
 
@@ -112,14 +123,19 @@ const shouldRenderSearch =
     }
 
     .zen-header__tools {
+      display: flex;
       align-items: center;
-      gap: 1rem;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      height: 100%;
       min-width: max-content;
+      white-space: nowrap;
     }
 
     .zen-header__social {
       display: flex;
       align-items: center;
+      flex: 0 0 auto;
       gap: 0.75rem;
     }
 
@@ -154,12 +170,42 @@ const shouldRenderSearch =
       display: block;
     }
 
-    @media (max-width: 68rem) {
+    .zen-header__tools :global(.zen-theme-toggle) {
+      flex: 0 0 auto;
+    }
+
+    @media (max-width: 78rem) {
+      .zen-header {
+        grid-template-columns: minmax(10rem, 1fr) minmax(12rem, 20rem) max-content;
+      }
+
+      .zen-header__nav {
+        display: none;
+      }
+    }
+
+    @media (max-width: 50rem) {
       .zen-header {
         grid-template-columns: auto minmax(8rem, 1fr) auto;
       }
 
-      .zen-header__nav {
+      .zen-brand {
+        max-width: 2.25rem;
+      }
+
+      .zen-brand span {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      .zen-header__tools {
         display: none;
       }
 
