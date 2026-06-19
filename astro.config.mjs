@@ -29,6 +29,16 @@ export default defineConfig({
         replacesTitle: true,
       },
       favicon: '/favicon.svg',
+      head: [
+        {
+          tag: 'script',
+          attrs: {
+            'data-goatcounter': 'https://zenwave360.goatcounter.com/count',
+            async: true,
+            src: '//gc.zgo.at/count.js',
+          },
+        },
+      ],
       customCss: ['./src/styles/zenwave.css'],
       credits: false,
       expressiveCode: {
