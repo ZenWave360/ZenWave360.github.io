@@ -176,7 +176,7 @@ aggregate OrderAggregate (Order) {
 
 Aggregates can define a lifecycle block to model state machines:
 
-```
+```zdl
 entity Order { }
 
 @lifecycle(field: status, initial = DRAFT)
