@@ -46,6 +46,53 @@ const shouldRenderSearch =
   </div>
 </div>
 
+<script is:inline>
+  (() => {
+    const selector = '.sl-markdown-content pre.astro-code';
+
+    const addCopyButtons = () => {
+      document.querySelectorAll(selector).forEach((pre) => {
+        if (!(pre instanceof HTMLElement) || pre.dataset.copyReady === 'true') return;
+        if (pre.closest('.not-content')) return;
+        pre.dataset.copyReady = 'true';
+        const button = document.createElement('button');
+        button.className = 'zen-code-copy';
+        button.type = 'button';
+        button.setAttribute('aria-label', 'Copy code');
+        button.title = 'Copy code';
+        pre.append(button);
+      });
+    };
+
+    document.addEventListener('click', async (event) => {
+      const button = event.target instanceof Element ? event.target.closest('.zen-code-copy') : null;
+      if (!(button instanceof HTMLButtonElement)) return;
+
+      const pre = button.closest('pre');
+      const code = pre?.querySelector('code')?.textContent;
+      if (!code) return;
+
+      try {
+        await navigator.clipboard.writeText(code);
+        button.dataset.copied = 'true';
+        button.setAttribute('aria-label', 'Copied');
+        button.title = 'Copied';
+        window.setTimeout(() => {
+          delete button.dataset.copied;
+          button.setAttribute('aria-label', 'Copy code');
+          button.title = 'Copy code';
+        }, 1500);
+      } catch {
+        button.setAttribute('aria-label', 'Copy failed');
+        button.title = 'Copy failed';
+      }
+    });
+
+    (window.requestIdleCallback || ((callback) => window.setTimeout(callback, 1)))(addCopyButtons);
+    document.addEventListener('astro:page-load', addCopyButtons);
+  })();
+</script>
+
 <style>
   @layer starlight.core {
     .zen-header {

@@ -41,13 +41,13 @@ export default defineConfig({
       ],
       customCss: ['./src/styles/zenwave.css'],
       credits: false,
-      expressiveCode: {
-        themes: [zenWaveDarkCodeTheme, zenWaveLightCodeTheme],
-      },
+      expressiveCode: false,
       components: {
         Header: './src/components/ZenHeader.astro',
         Footer: './src/components/StarlightFooter.astro',
+        PageSidebar: './src/components/StaticPageSidebar.astro',
         PageTitle: './src/components/EmptyPageTitle.astro',
+        Search: './src/components/LazySearch.astro',
         ThemeSelect: './src/components/ZenThemeToggle.astro',
       },
       social: [
@@ -117,8 +117,56 @@ export default defineConfig({
           label: 'Examples',
           collapsed: false,
           items: [
-            { label: 'DDD Examples', link: '/docs/examples/ddd-examples/' },
-            { label: 'EDA Examples', link: '/docs/examples/eda-examples/' },
+            {
+              label: 'DDD Examples',
+              collapsed: true,
+              items: [
+                { label: 'Overview', link: '/docs/examples/ddd-examples/' },
+                {
+                  label: 'Order Fulfillment (Kotlin)',
+                  link: '/docs/examples/ddd-examples/order-fullillment-kotlin/',
+                },
+                {
+                  label: 'Customer Master Data Service (JPA)',
+                  link: '/docs/examples/ddd-examples/customer-address-jpa/',
+                },
+                {
+                  label: 'Kustomer Master Data Service (Kotlin + JPA) (Kotlin)',
+                  link: '/docs/examples/ddd-examples/kustomer-address-jpa/',
+                },
+                {
+                  label: 'Clinical Tool - Modulith',
+                  link: '/docs/examples/ddd-examples/modulith-clinical-tool-jpa/',
+                },
+                {
+                  label: 'Klinical Tool - Modulith',
+                  link: '/docs/examples/ddd-examples/modulith-klinical-tool-jpa/',
+                },
+              ],
+            },
+            {
+              label: 'EDA Examples',
+              collapsed: true,
+              items: [
+                { label: 'Overview', link: '/docs/examples/eda-examples/' },
+                {
+                  label: 'AsyncAPI Shopping Cart',
+                  link: '/docs/examples/eda-examples/asyncapi-shopping-cart/',
+                },
+                {
+                  label: 'EDA-TransactionalOutbox-Modulith-JPA',
+                  link: '/docs/examples/eda-examples/#eda-transactionaloutbox-modulith-jpa',
+                },
+                {
+                  label: 'EDA-Playground-Online-Food-Delivery (Microservices)',
+                  link: '/docs/examples/eda-examples/#eda-playground-online-food-delivery-microservices',
+                },
+                {
+                  label: 'EDA-Playground-Online-Food-Delivery (Modulith)',
+                  link: '/docs/examples/eda-examples/#eda-playground-online-food-delivery-modulith',
+                },
+              ],
+            },
           ],
         },
       ],
@@ -129,6 +177,7 @@ export default defineConfig({
     shikiConfig: {
       langs: customShikiLanguages,
       langAlias: customShikiLangAlias,
+      theme: zenWaveDarkCodeTheme,
     },
   },
 });

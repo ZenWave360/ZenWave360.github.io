@@ -130,35 +130,42 @@ const { slides, ariaLabel = 'Image carousel' } = Astro.props;
 </style>
 
 <script is:inline>
-  document.querySelectorAll('[data-image-carousel]').forEach((carousel) => {
-    if (carousel.dataset.carouselReady === 'true') return;
+  (() => {
+    const initImageCarousels = () => {
+      document.querySelectorAll('[data-image-carousel]').forEach((carousel) => {
+        if (carousel.dataset.carouselReady === 'true') return;
 
-    carousel.dataset.carouselReady = 'true';
-    const root = carousel.closest('[data-image-carousel-root]');
-    const previous = root?.querySelector('[data-image-carousel-prev]');
-    const next = root?.querySelector('[data-image-carousel-next]');
+        carousel.dataset.carouselReady = 'true';
+        const root = carousel.closest('[data-image-carousel-root]');
+        const previous = root?.querySelector('[data-image-carousel-prev]');
+        const next = root?.querySelector('[data-image-carousel-next]');
 
-    const scrollBySlide = (direction) => {
-      carousel.scrollBy({
-        left: direction * carousel.clientWidth,
-        behavior: 'smooth',
+        const scrollBySlide = (direction) => {
+          carousel.scrollBy({
+            left: direction * carousel.clientWidth,
+            behavior: 'smooth',
+          });
+        };
+
+        carousel.addEventListener('click', (event) => {
+          const bounds = carousel.getBoundingClientRect();
+          const direction = event.clientX < bounds.left + bounds.width / 2 ? -1 : 1;
+          scrollBySlide(direction);
+        });
+
+        previous?.addEventListener('click', (event) => {
+          event.stopPropagation();
+          scrollBySlide(-1);
+        });
+
+        next?.addEventListener('click', (event) => {
+          event.stopPropagation();
+          scrollBySlide(1);
+        });
       });
     };
 
-    carousel.addEventListener('click', (event) => {
-      const bounds = carousel.getBoundingClientRect();
-      const direction = event.clientX < bounds.left + bounds.width / 2 ? -1 : 1;
-      scrollBySlide(direction);
-    });
-
-    previous?.addEventListener('click', (event) => {
-      event.stopPropagation();
-      scrollBySlide(-1);
-    });
-
-    next?.addEventListener('click', (event) => {
-      event.stopPropagation();
-      scrollBySlide(1);
-    });
-  });
+    (window.requestIdleCallback || ((callback) => setTimeout(callback, 1)))(initImageCarousels);
+    document.addEventListener('astro:page-load', initImageCarousels);
+  })();
 </script>
