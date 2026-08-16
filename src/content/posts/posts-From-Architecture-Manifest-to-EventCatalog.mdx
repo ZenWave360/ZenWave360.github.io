@@ -1,0 +1,391 @@
+---
+title: "From Architecture Manifest to EventCatalog"
+description: "How the ZenWave Event Catalog generator turns a zenwave-architecture.yml master file into EventCatalog domains, services, events, commands, queries, channels, entities, and business flows."
+slug: "/posts/From-Architecture-Manifest-to-EventCatalog/"
+date: "2026-08-16T09:00:00+02:00"
+author: "Ivan Garcia Sainz-Aja"
+excerpt: "The architecture manifest is only an index. This post follows the generator as it loads that file, parses the contracts it points at, and writes an EventCatalog of domains, services, messages, and flows."
+image: "/posts/From-Architecture-Manifest-to-EventCatalog/architecture-manifest-eventcatalog-banner.jpg"
+tags:
+  - "EventCatalog"
+  - "Architecture Manifest"
+  - "AsyncAPI"
+  - "OpenAPI"
+  - "ZDL"
+  - "ZFL"
+  - "ZenWave SDK"
+  - "API-First"
+---
+
+import Image from '../../components/Image.astro';
+
+# From Architecture Manifest to EventCatalog
+
+<Image src="architecture-manifest-eventcatalog-banner.jpg" alt="From Architecture Manifest to EventCatalog" />
+
+The [Event Catalog generator](https://github.com/ZenWave360/zenwave-sdk/blob/develop/plugins/event-catalog-generator/README.md) has a man page now: the command, the options, the templates, and the live pipeline.
+
+This post is about what happens after that command runs.
+
+The input is a `zenwave-architecture.yml` master file. That file does not contain your OpenAPI paths, your AsyncAPI channels, or your ZDL entities. It only says where those artifacts live and how they sit in the business tree: domain, subdomain, service.
+
+The generator, with [zenwave-manifest](https://github.com/ZenWave360/zenwave-manifest), follows those pointers, parses each artifact, and writes an EventCatalog content tree. The rest of this post is that projection: which source becomes which catalog page, and how the identifiers are assigned.
+
+The examples come from [Arcadia Editions](https://github.com/arcadia-editions/arcadia-editions-architecture/blob/main/zenwave-architecture.yml), a fictional public showcase. Treat the generated catalog as a complete walkthrough, not as a product you should depend on.
+
+## The projection in one picture
+
+```text
+zenwave-architecture.yml
+        |
+        |  zenwave-manifest
+        |    workspace / git / registry
+        v
+   domains, subdomains, services
+   + resolved artifacts
+        |
+        |-- Markdown docs      -> service page body
+        |-- AsyncAPI           -> channels, events, commands, sends
+        |-- asyncapi-client    -> receives, consumer evidence
+        |-- OpenAPI            -> commands, queries, REST operation
+        |-- ZDL                -> entities, logical operations
+        |-- ZFL                -> domain flows
+        v
+   EventCatalog MDX
+     domains/{domain}/...
+     .../services/{service}/{events|commands|queries|entities}/...
+     domains/{domain}/flows/{flow}/
+```
+
+The plugin chain is the same sequence. The loader reads the typed manifest and builds an architecture graph. Processors then enrich each service. The writer replaces the output folder and archives previous versions.
+
+## The manifest is the skeleton
+
+Domains, subdomains, and services come from the YAML tree. Their catalog IDs are the explicit `id` values. If a node omits `id`, the generator uses a dotted path from the map keys.
+
+```yaml
+domains:
+  "orders":
+    id: "orders"
+    name: "Orders"
+    subdomains:
+      "checkout":
+        id: "orders.checkout"
+        services:
+          "orders-checkout":
+            id: "orders.checkout.orders-checkout"
+            repository: "orders-checkout-api"
+            docs:
+              summary: SUMMARY.md
+              content: EVENT_CATALOG.md
+              changelog: CHANGELOG.md
+            artifacts:
+              - type: zdl
+                path: "domain-model.zdl"
+                version: "0.0.0"
+              - type: asyncapi
+                path: "asyncapi.yml"
+                version: "0.1.1"
+              - type: asyncapi-client
+                path: "asyncapi-client.yml"
+                version: "0.1.1"
+              - type: openapi
+                path: "openapi.yml"
+                version: "0.0.0"
+```
+
+That fragment becomes:
+
+| Catalog page | Path | ID |
+|--------------|------|----|
+| Domain | `domains/orders/index.mdx` | `orders` |
+| Subdomain | `domains/orders/subdomains/orders.checkout/index.mdx` | `orders.checkout` |
+| Service | `.../services/orders.checkout.orders-checkout/index.mdx` | `orders.checkout.orders-checkout` |
+
+Everything else hangs off the service. Child IDs are `{service-id}.{local-key}`. That is why an event, a command, and an entity from Orders Checkout all start with `orders.checkout.orders-checkout.`.
+
+The service page also embeds the Markdown files listed under `docs`. The default template concatenates `summary`, `content`, and `changelog`. Those documents are not rewritten as their own catalog types; they become the long-form body under the generated overview.
+
+Service `specifications` in the frontmatter are the `asyncapi` and `openapi` artifacts. `linkSource` decides which resolved URL is written there. In the Arcadia CI run that is Git, so EventCatalog can open the live contracts:
+
+```yaml
+specifications:
+- type: "asyncapi"
+  path: "https://github.com/arcadia-editions/orders-checkout-api/raw/main/asyncapi.yml"
+- type: "openapi"
+  path: "https://github.com/arcadia-editions/orders-checkout-api/raw/main/openapi.yml"
+```
+
+The published service page is the result of that projection:
+
+<Image src="orders-checkout-service.png" alt="Generated Orders Checkout service page in the Arcadia EventCatalog" title="Orders Checkout in the generated catalog" href="https://arcadia-editions.github.io/arcadia-event-catalog/docs/services/orders.checkout.orders-checkout/0.1.1/" />
+
+## Versions come from the contracts
+
+The manifest carries an artifact `version` for source resolution. The catalog page version is richer.
+
+The first loaded provider AsyncAPI `info.version` becomes the service version. OpenAPI can fill it only if AsyncAPI did not. Child pages inherit that service version unless the resource has its own.
+
+That is why Catalog Products is `0.5.0` in the catalog even though the manifest service version is `0.0.0`: the generator read `version: "0.5.0"` from `catalog-products-api/asyncapi.yml`. Orders Checkout is `0.1.1` for the same reason.
+
+When a later run changes that version, the writer copies the previous page into `versioned/{old-version}/` and writes the new current page. Existing `versioned/` trees are left alone. Regeneration can wipe generated files without erasing catalog history.
+
+## AsyncAPI becomes channels, events, and commands
+
+Only the owned `asyncapi` artifact is projected as public messaging. `asyncapi-client` is not a second set of channels. It is consumption evidence, handled later.
+
+For each channel in the provider spec the generator writes a channel page:
+
+```text
+{service-id}.{channel-key}
+```
+
+Catalog Products declares:
+
+```yaml
+channels:
+  product-published-event-v1:
+    address: catalog-products.product-published.event.avro.v1
+    messages:
+      ProductPublishedEvent:
+        $ref: "#/components/messages/ProductPublishedEvent"
+```
+
+That becomes:
+
+- Channel `catalog.catalog-management.catalog-products.product-published-event-v1`
+- Kafka address copied into frontmatter as `address`
+- A message page with the same ID
+
+The message page type is not taken from EventCatalog guesses. [zenwave-manifest](https://github.com/ZenWave360/zenwave-manifest) classifies the channel first:
+
+1. `x-message-type: event` or `command` on the channel or message
+2. Otherwise the channel key: `event` in the name makes an event, `command` makes a command
+3. Otherwise `send` operations default to event, `receive` to command
+
+`product-published-event-v1` is therefore an **event**. A channel named `reserve-stock-command` would be a **command**.
+
+Each AsyncAPI operation also fills the owning service's `sends` or `receives`:
+
+- `action: send` → the service **sends** that message
+- `action: receive` → the service **receives** that message
+
+Catalog Products only sends. Its generated service frontmatter looks like this:
+
+```yaml
+sends:
+- id: "catalog.catalog-management.catalog-products.product-published-event-v1"
+- id: "catalog.catalog-management.catalog-products.product-retired-event-v1"
+```
+
+If the payload `$ref`s an Avro file, the event page gets a `schemaPath` and a remote schema viewer pointed at the AsyncAPI URL plus the channel and message names.
+
+## OpenAPI becomes commands and queries
+
+Every OpenAPI operation with an `operationId` becomes a candidate catalog resource:
+
+```text
+{service-id}.{operationId}
+```
+
+The HTTP method decides the first classification:
+
+- `GET` and `HEAD` → queries
+- `POST`, `PUT`, `PATCH`, `DELETE` → commands
+
+The REST binding is kept on the page:
+
+```yaml
+id: "catalog.catalog-management.catalog-products.createProduct"
+name: "createProduct"
+operation:
+  method: "POST"
+  path: "/products"
+  statusCodes:
+  - "201"
+```
+
+That is the OpenAPI fragment:
+
+```yaml
+paths:
+  /products:
+    post:
+      operationId: createProduct
+```
+
+Arcadia's published services are command-style APIs, so the live catalog has command pages and no query pages. Add a `GET /products/{id}` with `operationId: getProduct` and the generator would write `.../queries/{service-id}.getProduct/index.mdx`.
+
+## ZDL becomes entities and logical operations
+
+ZDL is the domain model. Each entity becomes:
+
+```text
+{service-id}.{kebab-case-entity-name}
+```
+
+`Product` in Catalog Products is `catalog.catalog-management.catalog-products.product`. `Order` in Orders Checkout is `orders.checkout.orders-checkout.order`.
+
+The page keeps the modeling facts EventCatalog can render: aggregate root, identifier, properties, enums, and references.
+
+```yaml
+id: "orders.checkout.orders-checkout.order"
+name: "Order"
+aggregateRoot: true
+identifier: "orderId"
+properties:
+- name: "status"
+  type: "OrderStatus"
+  required: true
+  enum: ["CREATED", "CONFIRMED", "CANCELLED"]
+```
+
+ZDL service methods are also collected as logical operations. They are not automatically catalog pages. They are the stable semantic identity used in the next step.
+
+## When REST and AsyncAPI bind to the same operation
+
+A ZDL method, an OpenAPI operation, and an AsyncAPI command channel can describe the same business action. The generator does not merge them by name. It merges them only when the architecture graph has a validated binding from the ZDL method to that transport.
+
+When that happens, the published command or query ID is the logical operation:
+
+```text
+{service-id}.{operation-slug}
+```
+
+`reserveStock` stays `catalog.inventory-management.catalog-inventory.reserveStock`, with the OpenAPI `POST /inventory/reservations` recorded on the page. The channel key is not the command ID.
+
+If the graph cannot bind a ZDL method to a published contract, the operation stays internal. It can still appear as a blue node in a ZFL flow, linked to its owning service. `publishInternalOperations=true` is the opt-in that also writes those internal operations as catalog command or query pages.
+
+Unbound AsyncAPI events and unbound REST operations that have no ZDL method still become catalog resources. They are not dropped just because the domain model did not name them.
+
+## Consumers connect services without duplicating channels
+
+The manifest `consumers` list is the declared graph of who talks to whom:
+
+```yaml
+consumers:
+  - "payments.payment-processing.payments-processing#asyncapi-client"
+  - "fulfillment.shipping.fulfillment-shipping#asyncapi-client"
+```
+
+The generator then matches those client artifacts against the provider AsyncAPI. A verified match does two things:
+
+- The **consumer** service receives the provider message.
+- The **event** page lists that service under `consumers`, with the client operation that matched.
+
+`OrderConfirmed` is owned by Orders Checkout. Fulfillment Shipping consumes it through its `asyncapi-client`. The generated event page therefore has:
+
+```yaml
+id: "orders.checkout.orders-checkout.order-confirmed-event-v1"
+producers:
+- "orders.checkout.orders-checkout-0.1.1"
+consumers:
+- "fulfillment.shipping.fulfillment-shipping-0.1.0"
+```
+
+Fulfillment does not get a second copy of the channel. The channel stays in the provider subdomain. The consumer relationship is a pointer.
+
+The same match is what fills `receives` on the consumer service. That is how a service page can show inbound events the service never declared in its own provider AsyncAPI.
+
+## ZFL becomes EventCatalog flows
+
+A domain-level `zfl` artifact is a business narrative. Arcadia keeps Place Order on the architecture domain:
+
+```yaml
+domains:
+  "architecture":
+    artifacts:
+      - type: zfl
+        path: "business-flows/place-order-flow.zfl"
+        version: "0.0.0"
+```
+
+The flow ID is the slug of the ZFL flow name: `PlaceOrderFlow` → `place-order-flow`. The page is written at `domains/architecture/flows/place-order-flow/index.mdx`.
+
+The generator walks the architecture graph, not the raw ZFL text:
+
+| ZFL construct | EventCatalog step |
+|---------------|-------------------|
+| `@actor` start | Actor step |
+| Timer / scheduler start | Custom timer step |
+| Bound command or query | Native message step, clickable into the catalog resource |
+| Unbound operation | Blue operation node, linked to the owning service |
+| Emitted event that matches a catalog event | Native event message step |
+| Unmatched event | Custom event node |
+| Flow outcome | End node |
+
+Participating services get a `flows` pointer back to the same flow. That is why the Orders Checkout service frontmatter includes:
+
+```yaml
+flows:
+- id: "place-order-flow"
+  version: "0.0.0"
+```
+
+The published flow is the readable version of that graph:
+
+<Image src="place-order-flow.png" alt="Generated Place Order Flow in the Arcadia EventCatalog" title="Place Order Flow generated from ZFL" href="https://arcadia-editions.github.io/arcadia-event-catalog/docs/flows/place-order-flow/0.0.0/" />
+
+## What a run actually writes
+
+Frontmatter is built from typed Java records and serialized as YAML. The MDX body is a Handlebars template. Clients override bodies by copying the same path under `.zenwave/templates`; they do not template the header.
+
+One Arcadia-sized run produces this layout:
+
+```text
+event-catalog-content/
+  domains/
+    architecture/
+      index.mdx
+      flows/place-order-flow/index.mdx
+    orders/
+      index.mdx
+      subdomains/orders.checkout/
+        index.mdx
+        channels/...order-confirmed-event-v1/index.mdx
+        services/orders.checkout.orders-checkout/
+          index.mdx
+          commands/....startOrderCheckout/index.mdx
+          events/....order-confirmed-event-v1/index.mdx
+          entities/....order/index.mdx
+          versioned/0.0.0/index.mdx
+```
+
+The writer deletes generated files first, then writes the new tree, while leaving every `versioned/` directory in place.
+
+## Closing the loop in CI
+
+Generation is only useful if it is the catalog, not a snapshot someone pasted once.
+
+[arcadia-event-catalog](https://github.com/arcadia-editions/arcadia-event-catalog) keeps the EventCatalog application in `site/` and the generated tree in `event-catalog-content/`. The generator can clean the content folder without touching the app, the workflows, or the lockfile.
+
+[`scripts/generate-catalog.sh`](https://github.com/arcadia-editions/arcadia-event-catalog/blob/main/scripts/generate-catalog.sh) is the whole mapping described above, invoked as:
+
+```shell
+jbang zw \
+  -p io.zenwave360.sdk.plugins.EventCatalogPlugin \
+  inputFile=https://raw.githubusercontent.com/arcadia-editions/arcadia-editions-architecture/main/zenwave-architecture.yml \
+  preferredSource=git \
+  allowFallback=false \
+  linkSource=git \
+  outputFolder=event-catalog-content
+```
+
+[`update-catalog.yml`](https://github.com/arcadia-editions/arcadia-event-catalog/blob/main/.github/workflows/update-catalog.yml) runs that script when an API repository dispatches `api-updated`, or when someone triggers the workflow by hand. It verifies, builds, opens a pull request, merges through `main`, and publishes the site.
+
+The enforcement loop is the same shape as API First Ops, with a different artifact:
+
+```text
+change a contract or the master YAML
+  -> regenerate EventCatalog content
+  -> review the PR
+  -> publish the catalog
+```
+
+The live site is [arcadia-editions.github.io/arcadia-event-catalog](https://arcadia-editions.github.io/arcadia-event-catalog/).
+
+## What this is for
+
+The architecture manifest is the index. The contracts remain the source of truth for messages, REST operations, and domain types. EventCatalog is the generated view of that graph: one place to see who owns a channel, who consumes an event, which command a flow invokes, and which aggregate a service writes.
+
+If you want the command, the options, and the template override recipe, use the [plugin README](https://github.com/ZenWave360/zenwave-sdk/blob/develop/plugins/event-catalog-generator/README.md). If you want the file that makes this projection possible, start with [zenwave-manifest](https://github.com/ZenWave360/zenwave-manifest) and a `zenwave-architecture.yml`.
