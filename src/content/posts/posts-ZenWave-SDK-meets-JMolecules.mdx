@@ -1,0 +1,214 @@
+---
+title: "ZenWave SDK meets jMolecules: a new ZDLAnnotator"
+description: "See which jMolecules DDD and architecture annotations ZenWave SDK generates, which ArchUnit rules validate them, and how the selected project layout keeps both views aligned."
+slug: "/posts/ZenWave-SDK-meets-JMolecules/"
+date: "2026-08-29T11:00:00+02:00"
+author: "Ivan Garcia Sainz-Aja"
+excerpt: "ZenWave SDK can now carry the DDD and architecture meaning of a ZDL model into generated Java code, then validate that meaning with jMolecules and ArchUnit."
+image: "/posts/ZenWave-SDK-meets-JMolecules/zenwave-sdk-meets-jmolecules.png"
+tags:
+  - "ZenWave SDK"
+  - "jMolecules"
+  - "DDD"
+  - "Code Generator"
+  - "ZDL"
+draft: false
+---
+
+import Image from '../../components/Image.astro';
+
+# ZenWave SDK meets jMolecules: a new ZDLAnnotator
+
+<Image src="zenwave-sdk-meets-jmolecules.png" alt="ZenWave SDK and JMolecules" />
+
+If you are familiar with generating a Spring Boot backend from a ZDL model, you already know that the generated project follows the architectural layout you chose. In a hexagonal layout the inbound ports, the application services, the outbound ports and the adapters sit in their packages. In a layered layout the same ideas appear as web, service and repository tiers. Until now that structure was visible to the reader of the code, but it was not expressed with the stereotypes that [jMolecules](https://jmolecules.org) uses so that the compiler, ArchUnit and future tooling can see the same roles.
+
+jMolecules, created around Oliver Drotbohm's work, is a small set of libraries whose purpose is to let you write `Customer`, `CustomerRepository` and `CustomerService` as ordinary types, while still marking them as an aggregate root, a repository and a primary port. You can do that with annotations, without inheriting from `AggregateRoot<T, ID>` or wrapping associations in `Association<T, ID>`. That annotation based style is the one ZenWave SDK now generates.
+
+Because the ZDL model already knows which entity is the aggregate, which type is a value object, which event is a domain event and which layout you asked for, the mapping is almost a translation: the model speaks DDD, and jMolecules writes it on the generated Java and Kotlin types.
+
+There is still a second story in this feature, and it is the one that will matter if you extend templates. jMolecules is not hard coded into Handlebars files. It arrives through a `ZDLAnnotator`, the same extension point that already produces JSpecify nullability annotations, and that you can implement yourself when your team has its own stereotypes.
+
+## Enabling jMolecules and Choosing the Architecture
+
+jMolecules support is enabled with `useJMolecules true` in the ZDL configuration. The architecture vocabulary comes from the selected project layout, so there is no second option where the same architectural decision has to be repeated.
+
+```zdl
+config {
+    title "ZenWave Java Archetype Baseapp"
+    basePackage "io.zenwave360.example"
+    persistence jpa
+    databaseType postgresql
+
+    // You can choose DefaultProjectLayout, LayeredProjectLayout, SimpleDomainProjectLayout
+    //                CleanHexagonalProjectLayout, HexagonalProjectLayout, CleanArchitectureProjectLayout
+    layout LayeredProjectLayout
+
+    useJMolecules true
+}
+```
+
+The layout is already responsible for deciding where entities, services, repositories, controllers, listeners, and infrastructure classes live, so it is also the most reliable source for deciding which architecture annotations describe them.
+
+`DefaultProjectLayout`, `CleanHexagonalProjectLayout`, and `HexagonalProjectLayout` use the hexagonal jMolecules vocabulary. `LayeredProjectLayout` uses the layered vocabulary. `SimpleDomainProjectLayout` and `CleanArchitectureProjectLayout` currently receive the DDD annotations without an additional architecture vocabulary, because the first has no explicit architectural boundaries and the second would need the jMolecules onion vocabulary, which is not implemented yet.
+
+You can see the package structures, the ideas behind each option, and the ways to override them in [Meet ZenWave SDK Project Architecture Layouts](/posts/Meet-ZenWave-SDK-Project-Architecture-Layouts/).
+
+Annotations are emitted as fully qualified names, so the SDK itself needs no jMolecules dependency on its own classpath. The generated project does:
+
+```xml
+<dependency>
+    <groupId>org.jmolecules</groupId>
+    <artifactId>jmolecules-ddd</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.jmolecules</groupId>
+    <artifactId>jmolecules-events</artifactId>
+</dependency>
+<!-- plus jmolecules-hexagonal-architecture or jmolecules-layered-architecture, matching your layout -->
+<dependency>
+    <groupId>org.jmolecules.integrations</groupId>
+    <artifactId>jmolecules-archunit</artifactId>
+    <scope>test</scope>
+</dependency>
+```
+
+Those fully qualified names look verbose at first sight, and they are a deliberate choice. `jakarta.persistence.Entity` and `org.jmolecules.ddd.annotation.Entity` share a simple name, so a generator that emitted short names would have to run an import resolution pass and would still be one collision away from writing the wrong annotation into your code.
+
+## What you can expect from the generated code
+
+With that settled, here is what each generated artifact receives:
+
+| artifact | DDD | hexagonal | layered |
+|---|---|---|---|
+| entity | `@AggregateRoot` or `@Entity`, `@Identity` on the id | | `@DomainLayer` |
+| repository | `@Repository` | `@SecondaryPort` | `@InfrastructureLayer` |
+| domain event (not `@asyncapi`) | `@DomainEvent` | | `@DomainLayer` |
+| service interface | | `@PrimaryPort` | `@ApplicationLayer` |
+| service implementation | | `@Application` | `@ApplicationLayer` |
+| input / output DTO, `@vo` / `@embedded` entity | `@ValueObject` | | |
+| controller, event listener, asyncapi consumer | | `@PrimaryAdapter` | `@InterfaceLayer` |
+| event publisher port | | `@SecondaryPort` | |
+| event publisher implementation | | `@SecondaryAdapter` | `@InfrastructureLayer` |
+| Spring Modulith `package-info` | `@Module` | | |
+
+A few mappings are worth saying in words, because they follow from the model rather than from a Java type.
+
+An entity annotated `@aggregate` or `@lifecycle`, and the root of a declared `aggregate Customer(Address)`, receive `@AggregateRoot`. A plain entity receives `@Entity`. jMolecules meta annotates `@AggregateRoot` with `@Entity`, so we emit one or the other, never both. The synthetic `id` field that templates inject, and that is not a field in the ZDL, receives `@Identity`.
+
+`@vo` and `@embedded` entities have no identity in the model, so they are annotated `@ValueObject`, the same way inbound inputs and outputs are. Events that are not marked `@asyncapi` receive `@DomainEvent`. Events that *are* marked `@asyncapi` are payload DTOs generated from the contract, so they are not domain events in the jMolecules sense.
+
+We do not emit jMolecules `@Service`. In jMolecules that annotation denotes a *domain* service. ZenWave services are application or use case services, and calling them domain services would misrepresent the model. We also do not emit `@BoundedContext`: ZenWave generates one application per model, so the marker would be redundant, and there is no base package `package-info.java` waiting to host it.
+
+`@Association` is not generated yet. The relationship model is now populated, so the door is open, but the current pack stays on the annotation based style and does not introduce `Association<T, ID>` types.
+
+## A Customer in hexagonal layout
+
+With `useJMolecules true` and `useJSpecify true`, a hexagonal `Customer` comes out along these lines:
+
+```java
+@org.jmolecules.ddd.annotation.AggregateRoot
+public class Customer implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @org.jmolecules.ddd.annotation.Identity
+    private Long id;
+
+    @Version
+    private Integer version;
+}
+
+@Repository
+@org.jmolecules.ddd.annotation.Repository
+@org.jmolecules.architecture.hexagonal.SecondaryPort
+public interface CustomerRepository extends JpaRepository<Customer, Long> {}
+
+@org.jmolecules.architecture.hexagonal.PrimaryPort
+@org.jspecify.annotations.NullMarked
+public interface CustomerService {
+    Optional<Customer> updateCustomer(@org.jspecify.annotations.Nullable Long id, Customer input);
+}
+
+@Service
+@Transactional
+@org.jmolecules.architecture.hexagonal.Application
+@org.jspecify.annotations.NullMarked
+public class CustomerServiceImpl implements CustomerService {}
+```
+
+Notice how the same ZDL service produces `@PrimaryPort` on the inbound interface and `@Application` on the implementation, while `@NullMarked` from JSpecify lands on both. That is the whole point of scoping annotations to the generated artifact rather than to the model element: one `CustomerService` in the ZDL, two files, two different architecture stereotypes, and a nullability annotation that is happy to appear in every file that renders that service.
+
+The repository is annotated both `@Repository` and `@SecondaryPort`. In ZenWave the Spring Data interface *is* the outbound port: it lives in the outbound package, and that is the role it plays in the layout. It also extends `JpaRepository`, so the port is not technology free. Splitting a pure port from a Spring Data adapter remains the stricter hexagonal fix, and if that is what your project needs you already have custom templates for it. The stereotype we emit describes the role the artifact actually has today.
+
+## What tests you get
+
+Annotations that nobody reads are only documentation, and documentation drifts. So when jMolecules is enabled the generator also writes a `JMoleculesArchitectureTest` into your test sources, built on `jmolecules-archunit`, which reads the annotations themselves and fails the build when the arrangement stops being true.
+
+It is kept separate from the existing `ArchitectureTest`, and the two verify genuinely different things. The older test matches package names, so it is tied to one particular layout. These rules read stereotypes, so they hold under any layout that produces them.
+
+| rule | when it is generated |
+|---|---|
+| `annotatedEntitiesAndAggregatesNeedToHaveAnIdentifier` | always |
+| `valueObjectsMustNotReferToIdentifiables` | always |
+| `entitiesShouldBeDeclaredForUseInSameAggregate` | always |
+| `aggregateReferencesShouldBeViaIdOrAssociation` | always, and you may opt out |
+| `ensureHexagonal(STRICT)` | on a hexagonal layout |
+| `ensureLayering()` | never, for the reason below |
+
+Two of those rows deserve an honest word, because you are likely to meet both.
+
+The aggregate reference rule rejects any direct reference to an `@AggregateRoot`, accepting only an identifier or an `Association`. A bidirectional relationship such as `Customer{addresses} to Address{customer}` generates exactly such a reference, and the rule reports it even though `Address` is correctly placed inside the `Customer` aggregate. It ships enabled anyway, on the grounds that it is telling you something true about your model. If you do not want it, comment out its `@ArchTest`, and since the file is generated once and never overwritten, that edit is permanent.
+
+The layering rule is not generated at all for layered projects. It encodes Evans' layering, in which infrastructure sits below the domain and may not reference it, while `LayeredProjectLayout` is the three tier arrangement where the repository is the persistence tier. A Spring Data repository names its aggregate in its own type signature, so the rule could never pass for any model. The two ways to make it green would be to relabel the repository as domain, which misdescribes the architecture, or to split persistence and domain into mirror types, which is a large structural cost paid for a check. Neither is worth it, so the annotations stay truthful and the rule is left out.
+
+The rules were verified twice over, by compiling generated output and running them for real. Against a project whose embedded types are JSON columns, all of them pass, `ensureHexagonal(STRICT)` included.
+
+That exercise also uncovered a quiet bug that had been shipping for a long time. Both architecture test templates interpolated a variable that resolved to nothing, so every generated project analysed an empty set of classes. The tests had been passing because they had nothing to look at. That is fixed now, and pinned by a test of its own, which means the older `ArchitectureTest` in your projects is about to start doing its job.
+
+## How it works: ZDLAnnotator as the extension point
+
+`JSpecifyAnnotator` was the first pack. `JMoleculesAnnotator` is the pack that forced the framework to become general, because one entity had to carry `@AggregateRoot` in one file and `@Repository` in another.
+
+An annotator is a small Java class that walks the `JavaZdlModel` and contributes `Annotation` instances. The default traversal already visits entities, fields, the synthetic id, relationships, enums, inputs, outputs, events, services, methods, parameters and return types. You override only the methods you care about:
+
+```java
+public class AuditedAnnotator implements ZDLAnnotator {
+
+    @Override
+    public void annotate(JavaZdlModel.Entity entity, Map<String, Object> zdlEntity, Map<String, Object> zdl) {
+        entity.addAnnotation(Annotation.on("com.acme.Audited", CoreArtifactType.DOMAIN_ENTITY));
+    }
+}
+```
+
+`Annotation.on(name, artifactTypes...)` scopes the annotation to those artifacts. `Annotation.of(name)` is unscoped and renders wherever the owning element renders, which is how JSpecify puts `@NullMarked` on both the port and the implementation from a single contribution.
+
+If you introduce a new kind of generated file, you do not need to wait for `CoreArtifactType`. A lambda is enough, because `ArtifactType` is a single method:
+
+```java
+entity.addAnnotation(Annotation.on("com.acme.Handled", () -> "acme.command-handler"));
+```
+
+And in the custom template:
+
+```handlebars
+{{annotate "acme.command-handler" method.javaServiceMethod method}}
+```
+
+To register the annotator you subclass `ProjectTemplates` and override `getZDLAnnotators()`, then load that class through the same classpath extension you already use for custom templates and custom layouts ([Customizing Generated Code](/docs/zenwave-sdk/customizing-code/)): a Maven artifact on `jbang --deps`, or `@import("org.example:custom-artifact:RELEASE")` in the `.zw` file.
+
+```java
+@Override
+public List<ZDLAnnotator> getZDLAnnotators() {
+    return List.of(new AuditedAnnotator());
+}
+```
+
+Built in packs (`JSpecifyAnnotator`, `JMoleculesAnnotator`) are not registered there. They are created by `ZDLProcessor` from `useJSpecify` and `useJMolecules`, so they apply across every generator in the chain. `getZDLAnnotators()` remains the extension point for *your* annotators.
+
+In a nutshell:
+
+> Templates declare the artifact they generate. Annotators, looking at the ZDL, decide which annotations that artifact should carry. The default packs are jMolecules and JSpecify. The same mechanism is how you attach the annotations of your own libraries when you extend the templates.
+
+If you only needed a single extra annotation on a single file, copying the template is still the smallest change, and it still works. The annotator is for the case where the same decision has to hold across many files, or where the annotation depends on something the model already knows (`@aggregate`, `@vo`, an optional parameter, the chosen layout) and you do not want that decision copied into every `.hbs`.
