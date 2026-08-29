@@ -66,6 +66,14 @@
   }
 }
 
+/* The primary links use a second row below desktop widths. Keep the fixed
+   header's layout offset in sync so it never covers the page content. */
+@media (max-width: 78rem) {
+  :root {
+    --sl-nav-height: 7rem;
+  }
+}
+
 
 html,
 body {

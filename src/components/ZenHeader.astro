@@ -148,6 +148,9 @@ const shouldRenderSearch =
     }
 
     .zen-header__nav a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.5rem;
       color: var(--sl-color-white);
       font-size: var(--sl-text-base);
       font-weight: 500;
@@ -224,16 +227,28 @@ const shouldRenderSearch =
     @media (max-width: 78rem) {
       .zen-header {
         grid-template-columns: minmax(10rem, 1fr) minmax(12rem, 20rem) max-content;
+        grid-template-rows: minmax(2.5rem, 1fr) auto;
+        row-gap: 0.35rem;
       }
 
       .zen-header__nav {
-        display: none;
+        grid-column: 1 / -1;
+        grid-row: 2;
+        justify-content: center;
       }
     }
 
     @media (max-width: 50rem) {
       .zen-header {
         grid-template-columns: auto minmax(8rem, 1fr) auto;
+      }
+
+      .zen-header__nav {
+        gap: clamp(0.65rem, 4vw, 1.1rem);
+      }
+
+      .zen-header__nav a {
+        font-size: var(--sl-text-sm);
       }
 
       .zen-brand {
