@@ -29,7 +29,7 @@ This post is about what happens after that command runs.
 
 The input is a `zenwave-architecture.yml` master file. That file does not contain your OpenAPI paths, your AsyncAPI channels, or your ZDL entities. It only says where those artifacts live and how they sit in the business tree: domain, subdomain, service.
 
-The generator, with [zenwave-manifest](https://github.com/ZenWave360/zenwave-manifest), follows those pointers, parses each artifact, and writes an EventCatalog content tree. The rest of this post is that projection: which source becomes which catalog page, and how the identifiers are assigned.
+The generator, with [zenwave-architecture](https://github.com/ZenWave360/zenwave-architecture), follows those pointers, parses each artifact, and writes an EventCatalog content tree. The rest of this post is that projection: which source becomes which catalog page, and how the identifiers are assigned.
 
 The examples come from [Arcadia Editions](https://github.com/arcadia-editions/arcadia-editions-architecture/blob/main/zenwave-architecture.yml), a fictional public showcase. Treat the generated catalog as a complete walkthrough, not as a product you should depend on.
 
@@ -38,7 +38,7 @@ The examples come from [Arcadia Editions](https://github.com/arcadia-editions/ar
 ```text
 zenwave-architecture.yml
         |
-        |  zenwave-manifest
+        |  zenwave-architecture
         |    workspace / git / registry
         v
    domains, subdomains, services
@@ -157,7 +157,7 @@ That becomes:
 - Kafka address copied into frontmatter as `address`
 - A message page with the same ID
 
-The message page type is not taken from EventCatalog guesses. [zenwave-manifest](https://github.com/ZenWave360/zenwave-manifest) classifies the channel first:
+The message page type is not taken from EventCatalog guesses. [zenwave-architecture](https://github.com/ZenWave360/zenwave-architecture) classifies the channel first:
 
 1. `x-message-type: event` or `command` on the channel or message
 2. Otherwise the channel key: `event` in the name makes an event, `command` makes a command
@@ -388,4 +388,4 @@ The live site is [arcadia-editions.github.io/arcadia-event-catalog](https://arca
 
 The architecture manifest is the index. The contracts remain the source of truth for messages, REST operations, and domain types. EventCatalog is the generated view of that graph: one place to see who owns a channel, who consumes an event, which command a flow invokes, and which aggregate a service writes.
 
-If you want the command, the options, and the template override recipe, use the [plugin README](https://github.com/ZenWave360/zenwave-sdk/blob/develop/plugins/event-catalog-generator/README.md). If you want the file that makes this projection possible, start with [zenwave-manifest](https://github.com/ZenWave360/zenwave-manifest) and a `zenwave-architecture.yml`.
+If you want the command, the options, and the template override recipe, use the [plugin README](https://github.com/ZenWave360/zenwave-sdk/blob/develop/plugins/event-catalog-generator/README.md). If you want the file that makes this projection possible, start with [zenwave-architecture](https://github.com/ZenWave360/zenwave-architecture) and a `zenwave-architecture.yml`.

@@ -24,11 +24,11 @@ export default defineConfig({
     starlight({
       title: 'ZenWave 360',
       logo: {
-        src: './public/images/zenwave-logo.svg',
+        src: './public/zenwave-brand/zenwave-logo.svg',
         alt: 'ZenWave Platform',
         replacesTitle: true,
       },
-      favicon: '/favicon.svg',
+      favicon: '/zenwave-brand/zenwave-logo.svg',
       head: [
         {
           tag: 'script',

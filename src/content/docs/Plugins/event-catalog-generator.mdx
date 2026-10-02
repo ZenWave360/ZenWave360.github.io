@@ -10,7 +10,7 @@ slug: "/zenwave-sdk/plugins/event-catalog-generator/"
 
 Generates an [EventCatalog](https://www.eventcatalog.dev/) source tree from a `zenwave-architecture.yml` master file.
 
-The generator loads that manifest with [zenwave-manifest](https://github.com/ZenWave360/zenwave-manifest) and turns the artifacts it points at — Markdown, AsyncAPI, OpenAPI, ZDL, and ZFL — into EventCatalog MDX pages.
+The generator loads that manifest with [zenwave-architecture](https://github.com/ZenWave360/zenwave-architecture) and turns the artifacts it points at — Markdown, AsyncAPI, OpenAPI, ZDL, and ZFL — into EventCatalog MDX pages.
 
 ## Command line usage
 
@@ -38,7 +38,7 @@ jbang zw -p io.zenwave360.sdk.plugins.EventCatalogPlugin \
 
 The input is a `zenwave-architecture.yml` master file: an index of domains, subdomains, services, and the artifacts each service already owns. It does not copy OpenAPI, AsyncAPI, or ZDL content. It only points at those files and says how they fit together.
 
-[zenwave-manifest](https://github.com/ZenWave360/zenwave-manifest) publishes the JSON Schema, resolves each pointer from configured sources (`workspace`, `git`, `apicurio`, `artifactory`, `maven`, …), and fetches the content the generator parses.
+[zenwave-architecture](https://github.com/ZenWave360/zenwave-architecture) publishes the JSON Schema, resolves each pointer from configured sources (`workspace`, `git`, `apicurio`, `artifactory`, `maven`, …), and fetches the content the generator parses.
 
 - Schema: [https://schemas.zenwave360.io/zenwave-architecture/latest/schema.json](https://schemas.zenwave360.io/zenwave-architecture/latest/schema.json)
 - Live example: [arcadia-editions/arcadia-editions-architecture/zenwave-architecture.yml](https://github.com/arcadia-editions/arcadia-editions-architecture/blob/main/zenwave-architecture.yml)
