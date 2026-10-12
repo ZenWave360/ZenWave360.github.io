@@ -51,36 +51,38 @@ const platformScreenshots = [
   },
 ];
 
-const featuredCapabilities = [
-  {
-    variant: 'world-model',
-    title: 'ZenWave Platform: Architecture World Model',
-    badge: 'Building in public',
-    text: 'An IDE experience for designing, navigating, and connecting domain models, business flows, APIs, source code, local folders, Git repositories, and schema registries with Apicurio.',
-    note: 'The big picture of your software made explicit, connected, and navigable.',
-    visual: 'world-model',
-  },
-  {
-    variant: 'sdk',
-    title: 'ZenWave SDK',
-    badge: 'Production ready, evolving',
-    image: '/images/laptop-buddha-transparent.png',
-    imageAlt: '',
-    imageWidth: 958,
-    imageHeight: 1045,
-    text: 'An ever-growing set of plugins that generate Spring Boot services, APIs, tests, event adapters, and infrastructure from connected architecture artifacts.',
-    ctas: [
-      {
-        href: '/docs/zenwave-sdk/',
-        label: 'ZenWave SDK',
-      },
-      {
-        href: '/zenwave-sdk/',
-        label: 'Explore plugins',
-      },
-    ],
-  },
-];
+const sdk = {
+  badge: 'Production ready',
+  image: '/images/laptop-buddha-transparent.png',
+  imageWidth: 958,
+  imageHeight: 1045,
+  points: [
+    {
+      label: 'From ZDL',
+      text: 'A complete Spring Boot backend, plus draft OpenAPI and AsyncAPI.',
+      icon: '/zenwave-brand/zdl-website-diagram-icon.png',
+      accent: '#d99100',
+    },
+    {
+      label: 'From OpenAPI',
+      text: 'Spring MVC controllers, WebTestClient and Karate tests.',
+      icon: '/logos/openapi-logo.svg',
+      accent: '#3b75d1',
+    },
+    {
+      label: 'From AsyncAPI and Avro',
+      text: 'Typed Spring Kafka and Spring Cloud Stream producers and consumers.',
+      icon: '/logos/asyncapi-logo.png',
+      accent: '#14a39a',
+    },
+    {
+      label: 'Event-driven modular monoliths',
+      text: 'Spring Modulith modules with domain events and a transactional outbox.',
+      icon: '/logos/modutlith.png',
+      accent: '#55a447',
+    },
+  ],
+};
 
 const platformCapabilityCards = [
   {
@@ -246,10 +248,10 @@ const referenceCards = [
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ZenWave Platform</title>
+    <title>ZenWave 360 | Model-driven development for Spring Boot</title>
     <meta
       name="description"
-      content="ZenWave Platform makes the big picture of your software explicit, connected, and navigable for your team, your tools, and your AI agents."
+      content="Model your domain. Generate the boring parts. ZenWave SDK generates Spring Boot services, event adapters, tests and infrastructure from ZDL, OpenAPI and AsyncAPI."
     />
     <ZenThemeProvider />
     <script
@@ -264,98 +266,49 @@ const referenceCards = [
       <section class="home-hero" aria-labelledby="hero-title">
         <div class="home-shell home-hero__grid">
           <div class="home-hero__copy">
-            <p class="eyebrow">Architecture Knowledge Platform</p>
+            <div class="hero-eyebrow">
+              <p class="eyebrow">Model-driven development for Spring Boot</p>
+              <span class={`maturity-badge ${maturityBadgeClass(sdk.badge)}`}>{sdk.badge}</span>
+            </div>
             <h1 id="hero-title">
-              Make software architecture explicit, connected, and navigable for humans, tools and AI.
+              <span>Model your domain.</span>
+              <span>Generate the boring parts.</span>
             </h1>
             <p class="hero-lede">
-              A single world model connecting APIs, domain models, workflows, events, schemas, and services.
+              Describe your services in ZDL, OpenAPI and AsyncAPI. ZenWave SDK generates Spring Boot services, event adapters, tests and infrastructure that stay aligned with the model.
             </p>
+
+            <ul class="sdk-points">
+              {sdk.points.map((point) => (
+                <li style={`--accent: ${point.accent}`}>
+                  <img src={point.icon} alt="" loading="eager" decoding="async" width="40" height="40" />
+                  <div>
+                    <strong>{point.label}</strong>
+                    <span>{point.text}</span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            <p class="sdk-section__note">In production since 2022. Java or Kotlin. Open source.</p>
+
             <div class="actions">
-              <a class="button button--secondary" href="/docs/getting-started/">Get Started</a>
-              <a class="button" href="#reference-title">See it in action</a>
+              <a class="button" href="/docs/getting-started/">Generate your first service <span aria-hidden="true">&#8594;</span></a>
+              <a class="button button--secondary" href="/docs/zenwave-sdk/">Read the SDK docs</a>
             </div>
-            <p class="status-line">Grounded in open standards. Built in public.</p>
+            <p class="status-line"><a href="/zenwave-sdk/">Explore all plugins</a></p>
           </div>
 
-          <div class="home-hero__visual" aria-label="Architecture model map">
-            <div class="model-map">
-              <div class="model-map__header">
-                <span>Architecture model</span>
-                <span>Human + tools + AI</span>
-              </div>
-              <svg class="model-map__graph" viewBox="0 0 660 360" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-                <path d="M190,66 L248,146" />
-                <path d="M330,78 L330,146" />
-                <path d="M470,66 L412,146" />
-                <path d="M190,178 L248,178" />
-                <path d="M470,178 L412,178" />
-                <path d="M190,294 L248,216" />
-                <path d="M330,282 L330,216" />
-                <path d="M470,294 L412,216" />
-                <g class="map-node map-node--world">
-                  <rect x="248" y="146" width="164" height="70" rx="8" />
-                  <text x="330" y="173" class="node-type" text-anchor="middle">Architecture</text>
-                  <text x="330" y="195" class="node-name" text-anchor="middle">World Model</text>
-                </g>
-                <g class="map-node map-node--flow">
-                  <rect x="40" y="38" width="150" height="56" rx="6" />
-                  <text x="52" y="61" class="node-type">API contracts</text>
-                  <text x="52" y="82" class="node-name">OpenAPI</text>
-                </g>
-                <g class="map-node map-node--domain">
-                  <rect x="255" y="22" width="150" height="56" rx="6" />
-                  <text x="267" y="45" class="node-type">Event contracts</text>
-                  <text x="267" y="66" class="node-name">AsyncAPI + Avro</text>
-                </g>
-                <g class="map-node map-node--api">
-                  <rect x="470" y="38" width="150" height="56" rx="6" />
-                  <text x="482" y="61" class="node-type">Source code</text>
-                  <text x="482" y="82" class="node-name">Spring Boot</text>
-                </g>
-                <g class="map-node map-node--event">
-                  <rect x="40" y="150" width="150" height="56" rx="6" />
-                  <text x="52" y="173" class="node-type">Repositories</text>
-                  <text x="52" y="194" class="node-name">Git + folders</text>
-                </g>
-                <g class="map-node map-node--vista">
-                  <rect x="40" y="266" width="150" height="56" rx="6" />
-                  <text x="52" y="289" class="node-type">Domain model</text>
-                  <text x="52" y="310" class="node-name">ZDL</text>
-                </g>
-                <g class="map-node map-node--service">
-                  <rect x="470" y="150" width="150" height="56" rx="6" />
-                  <text x="482" y="173" class="node-type">Schema registry</text>
-                  <text x="482" y="194" class="node-name">Apicurio</text>
-                </g>
-                <g class="map-node map-node--repo">
-                  <rect x="255" y="266" width="150" height="56" rx="6" />
-                  <text x="267" y="289" class="node-type">Business workflows</text>
-                  <text x="267" y="310" class="node-name">ZFL</text>
-                </g>
-                <g class="map-node map-node--registry">
-                  <rect x="470" y="266" width="150" height="56" rx="6" />
-                  <text x="482" y="289" class="node-type">Documentation</text>
-                  <text x="482" y="310" class="node-name">EventCatalog</text>
-                </g>
-              </svg>
-            </div>
-
-            <a class="delivery-card" href="/docs/getting-started/" aria-label="Get started with ZenWave SDK">
-              <img
-                src="/images/laptop-buddha-transparent.png"
-                alt=""
-                loading="eager"
-                decoding="async"
-                fetchpriority="high"
-                width="958"
-                height="1045"
-              />
-              <div>
-                <span>ZenWave SDK</span>
-                <p>Generate Spring Boot services, APIs, event adapters, tests, and infrastructure from connected architecture artifacts.</p>
-              </div>
-            </a>
+          <div class="home-hero__media" aria-hidden="true">
+            <img
+              src={sdk.image}
+              alt=""
+              loading="eager"
+              decoding="async"
+              fetchpriority="high"
+              width={sdk.imageWidth}
+              height={sdk.imageHeight}
+            />
           </div>
         </div>
       </section>
@@ -364,14 +317,84 @@ const referenceCards = [
 
       <section class="home-section" aria-labelledby="platform-title">
         <div class="home-shell">
-          <div class="section-heading">
-            <p class="eyebrow">ZenWave Platform</p>
-            <h2 id="platform-title">What ZenWave Platform Is</h2>
-            <p>
-              ZenWave Platform is a set of connected capabilities for making the big picture of
-              your software explicit, connected, and navigable, from discovery and modeling to
-              generation and navigation.
-            </p>
+          <div class="platform-intro">
+            <div class="section-heading">
+              <p class="eyebrow">Building in public</p>
+              <h2 id="platform-title">What ZenWave Platform Is</h2>
+              <p>
+                ZenWave Platform is a set of connected capabilities for making the big picture of
+                your software explicit, connected, and navigable, from discovery and modeling to
+                generation and navigation.
+              </p>
+              <p>
+                Its IDE experience lets you design, navigate, and connect domain models, business
+                flows, APIs, source code, local folders, Git repositories, and schema registries
+                with Apicurio.
+              </p>
+            </div>
+            <div class="platform-intro__map" aria-label="Architecture world model map">
+              <div class="model-map">
+                <div class="model-map__header">
+                  <span>Architecture model</span>
+                  <span>Human + tools + AI</span>
+                </div>
+                <svg class="model-map__graph" viewBox="0 0 660 360" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                  <path d="M190,66 L248,146" />
+                  <path d="M330,78 L330,146" />
+                  <path d="M470,66 L412,146" />
+                  <path d="M190,178 L248,178" />
+                  <path d="M470,178 L412,178" />
+                  <path d="M190,294 L248,216" />
+                  <path d="M330,282 L330,216" />
+                  <path d="M470,294 L412,216" />
+                  <g class="map-node map-node--world">
+                    <rect x="248" y="146" width="164" height="70" rx="8" />
+                    <text x="330" y="173" class="node-type" text-anchor="middle">Architecture</text>
+                    <text x="330" y="195" class="node-name" text-anchor="middle">World Model</text>
+                  </g>
+                  <g class="map-node map-node--flow">
+                    <rect x="40" y="38" width="150" height="56" rx="6" />
+                    <text x="52" y="61" class="node-type">API contracts</text>
+                    <text x="52" y="82" class="node-name">OpenAPI</text>
+                  </g>
+                  <g class="map-node map-node--domain">
+                    <rect x="255" y="22" width="150" height="56" rx="6" />
+                    <text x="267" y="45" class="node-type">Event contracts</text>
+                    <text x="267" y="66" class="node-name">AsyncAPI + Avro</text>
+                  </g>
+                  <g class="map-node map-node--api">
+                    <rect x="470" y="38" width="150" height="56" rx="6" />
+                    <text x="482" y="61" class="node-type">Source code</text>
+                    <text x="482" y="82" class="node-name">Spring Boot</text>
+                  </g>
+                  <g class="map-node map-node--event">
+                    <rect x="40" y="150" width="150" height="56" rx="6" />
+                    <text x="52" y="173" class="node-type">Repositories</text>
+                    <text x="52" y="194" class="node-name">Git + folders</text>
+                  </g>
+                  <g class="map-node map-node--vista">
+                    <rect x="40" y="266" width="150" height="56" rx="6" />
+                    <text x="52" y="289" class="node-type">Domain model</text>
+                    <text x="52" y="310" class="node-name">ZDL</text>
+                  </g>
+                  <g class="map-node map-node--service">
+                    <rect x="470" y="150" width="150" height="56" rx="6" />
+                    <text x="482" y="173" class="node-type">Schema registry</text>
+                    <text x="482" y="194" class="node-name">Apicurio</text>
+                  </g>
+                  <g class="map-node map-node--repo">
+                    <rect x="255" y="266" width="150" height="56" rx="6" />
+                    <text x="267" y="289" class="node-type">Business workflows</text>
+                    <text x="267" y="310" class="node-name">ZFL</text>
+                  </g>
+                  <g class="map-node map-node--registry">
+                    <rect x="470" y="266" width="150" height="56" rx="6" />
+                    <text x="482" y="289" class="node-type">Documentation</text>
+                    <text x="482" y="310" class="node-name">EventCatalog</text>
+                  </g>
+                </svg>
+              </div>
+            </div>
           </div>
 
           <ImageCarousel
@@ -384,76 +407,6 @@ const referenceCards = [
               height: screenshot.height,
             }))}
           />
-
-          <div class="featured-capabilities">
-            {featuredCapabilities.map((card) => (
-              <article class:list={['capability-card', 'capability-card--featured', card.variant && `capability-card--${card.variant}`]}>
-                <div class="capability-card__media" aria-hidden="true">
-                  {card.visual === 'world-model' ? (
-                    <div class="world-model-visual">
-                      <svg class="world-model-graph" viewBox="0 32 660 218" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-                        <path d="M174,85 L255,85" />
-                        <path d="M405,85 L486,85" />
-                        <path d="M174,185 L255,185" />
-                        <path d="M405,185 L486,185" />
-                        <path d="M99,113 L99,157" />
-                        <path d="M330,113 L330,157" />
-                        <path d="M561,113 L561,157" />
-                        <path class="sdk-path" d="M330,113 C350,144 520,152 561,157" />
-                        <g class="map-node map-node--flow">
-                          <rect x="24" y="57" width="150" height="56" rx="6" />
-                          <text x="36" y="80" class="node-type">Business flow</text>
-                          <text x="36" y="101" class="node-name">ZFL</text>
-                        </g>
-                        <g class="map-node map-node--domain">
-                          <rect x="255" y="57" width="150" height="56" rx="6" />
-                          <text x="267" y="80" class="node-type">Domain model</text>
-                          <text x="267" y="101" class="node-name">ZDL</text>
-                        </g>
-                        <g class="map-node map-node--api">
-                          <rect x="486" y="57" width="150" height="56" rx="6" />
-                          <text x="498" y="80" class="node-type">Open standard</text>
-                          <text x="498" y="101" class="node-name">OpenAPI</text>
-                        </g>
-                        <g class="map-node map-node--event">
-                          <rect x="24" y="157" width="150" height="56" rx="6" />
-                          <text x="36" y="180" class="node-type">Event stream</text>
-                          <text x="36" y="201" class="node-name">AsyncAPI</text>
-                        </g>
-                        <g class="map-node map-node--schema">
-                          <rect x="255" y="157" width="150" height="56" rx="6" />
-                          <text x="267" y="180" class="node-type">Schema</text>
-                          <text x="267" y="201" class="node-name">OrderPlaced</text>
-                        </g>
-                        <g class="map-node map-node--service">
-                          <rect x="486" y="157" width="150" height="56" rx="6" />
-                          <text x="498" y="180" class="node-type">Service</text>
-                          <text x="498" y="201" class="node-name">Spring Boot</text>
-                        </g>
-                      </svg>
-                    </div>
-                  ) : (
-                    <img src={card.image} alt={card.imageAlt} loading="lazy" decoding="async" width={card.imageWidth} height={card.imageHeight} />
-                  )}
-                </div>
-                <div class="capability-card__body">
-                  <div class="capability-card__heading">
-                    <h3>{card.title}</h3>
-                    <span class={`maturity-badge ${maturityBadgeClass(card.badge)}`}>{card.badge}</span>
-                  </div>
-                  <p>{card.text}</p>
-                  {card.note && <p class="capability-card__note">{card.note}</p>}
-                  {card.ctas && (
-                    <div class="capability-actions">
-                      {card.ctas.map((cta) => (
-                        <a class="capability-link" href={cta.href}>{cta.label} <span aria-hidden="true">&#8594;</span></a>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </article>
-            ))}
-          </div>
 
           <div class="capability-group">
             <h3>Platform Capabilities</h3>
@@ -628,7 +581,7 @@ const referenceCards = [
   }
 
   .home-hero {
-    padding: calc(var(--sl-nav-height, 4rem) + clamp(3rem, 7vw, 6rem) + 2.7rem) 0 clamp(3rem, 7vw, 5rem);
+    padding: calc(var(--sl-nav-height, 4rem) + clamp(1.5rem, 3vw, 2.5rem)) 0 clamp(2.5rem, 5vw, 4rem);
     border-bottom: 1px solid var(--home-border);
     background:
       radial-gradient(circle at 88% 12%, color-mix(in srgb, #14a39a 16%, transparent), transparent 28rem),
@@ -637,9 +590,21 @@ const referenceCards = [
 
   .home-hero__grid {
     display: grid;
-    grid-template-columns: minmax(22rem, 0.85fr) minmax(28rem, 1.15fr);
-    gap: clamp(2.25rem, 5vw, 5rem);
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.7fr);
+    gap: clamp(2rem, 5vw, 4rem);
     align-items: center;
+  }
+
+  .hero-eyebrow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.9rem;
+    align-items: baseline;
+    margin-bottom: 0.6rem;
+  }
+
+  .hero-eyebrow .eyebrow {
+    margin: 0;
   }
 
   .eyebrow {
@@ -666,6 +631,10 @@ const referenceCards = [
     font-weight: 600;
     line-height: 1.06;
     letter-spacing: 0;
+  }
+
+  #hero-title span {
+    display: block;
   }
 
   .hero-lede {
@@ -710,11 +679,33 @@ const referenceCards = [
     font-size: 0.95rem;
   }
 
-  .home-hero__visual {
-    position: relative;
+  .status-line a {
+    color: var(--home-text);
+  }
+
+  .home-hero__media {
     display: grid;
-    gap: 0;
-    min-height: 0;
+    align-self: end;
+    justify-items: center;
+    /* lift to the bottom of the CTA buttons, above the "Explore all plugins" line */
+    margin-bottom: calc(1rem + 0.95rem * 1.5);
+  }
+
+  .home-hero__media img {
+    width: min(100%, 32rem);
+    height: auto;
+  }
+
+  .platform-intro {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .platform-intro .section-heading {
+    margin-bottom: 0;
   }
 
   .model-map {
@@ -799,74 +790,14 @@ const referenceCards = [
     font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif;
   }
 
-  .delivery-card {
-    justify-self: center;
-    margin-top: -1.25rem;
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: 5.5rem minmax(0, 1fr);
-    gap: 0.9rem;
-    align-items: center;
-    width: min(23rem, calc(100% - 2rem));
-    padding: 0.9rem;
-    border: 1px solid color-mix(in srgb, var(--home-highlight), var(--home-border) 50%);
-    border-radius: 0.5rem;
-    background: var(--home-panel-strong);
-    box-shadow: 0 1rem 2rem rgb(0 0 0 / 0.22);
-    text-decoration: none;
-    transition:
-      border-color 160ms ease,
-      transform 160ms ease,
-      box-shadow 160ms ease;
-  }
-
-  .delivery-card:hover,
-  .delivery-card:focus-visible {
-    border-color: var(--home-highlight);
-    transform: translateY(-1px);
-    box-shadow: 0 1.2rem 2.2rem rgb(0 0 0 / 0.28);
-    outline: none;
-  }
-
-  :root[data-theme='light'] .delivery-card {
-    background: #ffffff;
-    box-shadow: 0 1rem 2rem rgb(32 41 58 / 0.1);
-  }
-
-  .delivery-card img {
-    width: 5.5rem;
-    height: 5.5rem;
-    object-fit: contain;
-  }
-
-  .delivery-card span,
-  .delivery-card p {
-    color: var(--home-muted);
-  }
-
-  .delivery-card span {
-    color: var(--home-text);
-    font-weight: 600;
-  }
-
-  .delivery-card strong {
-    display: block;
-    margin: 0.1rem 0 0.25rem;
-    color: var(--home-text);
-    font-size: 1.05rem;
-  }
-
-  .delivery-card p {
-    margin: 0.15rem 0 0;
-    font-size: 0.86rem;
-    line-height: 1.4;
-  }
-
   .section-heading p {
     margin: 0;
     color: var(--home-muted);
     line-height: 1.58;
+  }
+
+  .section-heading .eyebrow {
+    color: var(--home-highlight);
   }
 
   .home-section {
@@ -899,11 +830,62 @@ const referenceCards = [
     max-width: 58rem;
   }
 
-  .featured-capabilities {
+  .section-heading p + p {
+    margin-top: 0.75rem;
+  }
+
+  .sdk-points {
     display: grid;
-    grid-template-columns: minmax(0, 1.5fr) minmax(22rem, 1fr);
-    gap: 1rem;
-    margin-top: 1.2rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .sdk-points li {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: 0.9rem;
+    align-items: start;
+    padding: 0.9rem 1rem;
+    border: 1px solid color-mix(in srgb, var(--accent), var(--home-border) 65%);
+    border-top: 3px solid var(--accent);
+    border-radius: 0.5rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--accent), transparent 90%), transparent 70%),
+      var(--home-panel);
+  }
+
+  .sdk-points img {
+    width: 2.5rem;
+    height: 2.5rem;
+    object-fit: contain;
+  }
+
+  .sdk-points li > div {
+    display: grid;
+    gap: 0.3rem;
+  }
+
+  .sdk-points strong {
+    color: var(--home-text);
+    font-weight: 600;
+  }
+
+  .sdk-points span {
+    color: var(--home-muted);
+    line-height: 1.5;
+  }
+
+  .sdk-section__note {
+    margin: 1.1rem 0 0;
+    color: var(--home-text);
+    font-weight: 600;
+  }
+
+  .button span {
+    margin-left: 0.35rem;
   }
 
   .capability-grid {
@@ -960,122 +942,6 @@ const referenceCards = [
     right: 0.75rem;
   }
 
-  .capability-card--featured {
-    grid-template-columns: minmax(7rem, 0.35fr) minmax(0, 0.65fr);
-    align-items: center;
-    min-height: 18rem;
-    border-color: color-mix(in srgb, var(--home-highlight), var(--home-border) 54%);
-    background:
-      linear-gradient(135deg, color-mix(in srgb, var(--home-highlight), transparent 93%), transparent 42%),
-      var(--home-panel);
-  }
-
-  .capability-card--world-model {
-    grid-template-columns: 1fr;
-  }
-
-  .capability-card--sdk {
-    grid-template-columns: 1fr;
-    justify-items: center;
-    text-align: left;
-    background:
-      linear-gradient(135deg, color-mix(in srgb, #14a39a, transparent 90%), transparent 46%),
-      var(--home-panel);
-  }
-
-  .capability-card__media {
-    display: grid;
-    place-items: center;
-    min-height: 12rem;
-  }
-
-  .capability-card__media img {
-    width: min(100%, 10rem);
-    height: auto;
-    object-fit: contain;
-  }
-
-  .capability-card--sdk .capability-card__media img {
-    width: min(100%, 11rem);
-  }
-
-  .capability-card--sdk .capability-card__media {
-    min-height: 10rem;
-  }
-
-  .world-model-visual {
-    width: 100%;
-    overflow: hidden;
-    border: 1px solid color-mix(in srgb, var(--home-border), transparent 20%);
-    border-radius: 0.45rem;
-    background:
-      linear-gradient(color-mix(in srgb, var(--home-border), transparent 68%) 1px, transparent 1px),
-      linear-gradient(90deg, color-mix(in srgb, var(--home-border), transparent 68%) 1px, transparent 1px),
-      color-mix(in srgb, var(--home-panel-strong), var(--home-panel) 30%);
-    background-size: 38px 38px;
-  }
-
-  .capability-card--world-model .world-model-visual {
-    display: grid;
-    place-items: center;
-    height: 12.5rem;
-  }
-
-  .world-model-visual svg {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-
-  .world-model-graph {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
-
-  .world-model-graph path {
-    fill: none;
-    stroke: color-mix(in srgb, var(--home-highlight), white 12%);
-    stroke-width: 2.2;
-    stroke-linecap: round;
-    stroke-dasharray: 7 9;
-    opacity: 0.62;
-  }
-
-  .world-model-graph .sdk-path {
-    stroke: #14a39a;
-    stroke-dasharray: 8 6;
-    opacity: 0.8;
-    stroke-width: 2.5;
-  }
-
-  .world-model-graph .map-node rect {
-    fill: color-mix(in srgb, var(--home-panel-strong), var(--node-color) 8%);
-    stroke: color-mix(in srgb, var(--node-color), var(--home-border) 42%);
-    stroke-width: 1.5;
-  }
-
-  .world-model-graph .map-node--flow { --node-color: #f1a13a; }
-  .world-model-graph .map-node--domain { --node-color: #14a39a; }
-  .world-model-graph .map-node--api { --node-color: #3b75d1; }
-  .world-model-graph .map-node--event { --node-color: #55a447; }
-  .world-model-graph .map-node--schema { --node-color: #d99100; }
-  .world-model-graph .map-node--service { --node-color: #e05b64; }
-
-  .world-model-graph .node-type {
-    fill: var(--home-muted);
-    font-size: 11px;
-    font-weight: 600;
-    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  }
-
-  .world-model-graph .node-name {
-    fill: var(--home-text);
-    font-size: 16px;
-    font-weight: 700;
-    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  }
-
   .capability-card__icon {
     display: grid;
     place-items: center;
@@ -1116,14 +982,6 @@ const referenceCards = [
     grid-template-rows: auto 1fr auto;
   }
 
-  .capability-card__heading {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.65rem;
-    align-items: center;
-    justify-content: space-between;
-  }
-
   .capability-card h3 {
     margin: 0;
     color: var(--home-text);
@@ -1135,18 +993,6 @@ const referenceCards = [
     margin: 0;
     color: var(--home-muted);
     line-height: 1.55;
-  }
-
-  .capability-card__note {
-    color: var(--home-text) !important;
-    font-weight: 600;
-  }
-
-  .capability-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-    align-items: center;
   }
 
   .maturity-badge {
@@ -1187,22 +1033,6 @@ const referenceCards = [
 
   .maturity-badge--supporting {
     --badge-color: #18b7aa;
-  }
-
-  .capability-link {
-    display: inline-flex;
-    align-items: center;
-    width: fit-content;
-    min-height: 2.25rem;
-    margin-top: 0.15rem;
-    padding: 0 0.8rem;
-    border: 1px solid color-mix(in srgb, var(--home-highlight), transparent 25%);
-    border-radius: 0.4rem;
-    background: var(--home-highlight);
-    color: #1b0d04;
-    font-weight: 700;
-    line-height: 1.1;
-    text-decoration: none;
   }
 
   .reference-section {
@@ -1413,6 +1243,7 @@ const referenceCards = [
 
   @media (max-width: 960px) {
     .home-hero__grid,
+    .platform-intro,
     .reference-feature {
       grid-template-columns: 1fr;
     }
@@ -1426,14 +1257,23 @@ const referenceCards = [
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .featured-capabilities {
-      grid-template-columns: 1fr;
+    .home-hero__media {
+      justify-items: center;
+      margin-bottom: 0;
+    }
+
+    .home-hero__media img {
+      width: min(100%, 16rem);
     }
   }
 
   @media (max-width: 640px) {
     .home-shell {
       width: min(var(--home-shell-width), calc(100% - 1rem));
+    }
+
+    .home-hero__media {
+      display: none;
     }
 
     .home-hero {
@@ -1444,19 +1284,8 @@ const referenceCards = [
       font-size: clamp(2rem, 10vw, 2.45rem);
     }
 
-    .home-hero__visual {
-      min-height: 22rem;
-    }
-
     .model-map {
       min-height: 17rem;
-    }
-
-    .delivery-card {
-      position: relative;
-      right: auto;
-      bottom: auto;
-      margin: 0.8rem auto 0;
     }
 
     .capability-grid,
@@ -1464,12 +1293,8 @@ const referenceCards = [
       grid-template-columns: 1fr;
     }
 
-    .capability-card--featured {
+    .sdk-points {
       grid-template-columns: 1fr;
-    }
-
-    .capability-card__media {
-      min-height: 8rem;
     }
 
   }

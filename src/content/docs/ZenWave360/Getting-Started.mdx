@@ -1,48 +1,30 @@
 ---
-title: "Getting Started"
+title: "Getting Started with ZenWave SDK"
 slug: "/docs/getting-started/"
 ---
 
-import ImageCarousel from '../../../components/ImageCarousel.astro';
+import RemoteCode from '../../../components/RemoteCode.astro';
 
-export const zdlModelingSlides = [
-  {
-    src: '/page-assets/docs/ZenWave360/images/getting-started/zdl-config.png',
-    caption: 'ZDL config section with SDK plugins',
-  },
-  {
-    src: '/page-assets/docs/ZenWave360/images/getting-started/zdl-entities.png',
-    caption: 'ZDL entities with nested entities for MongoDB',
-  },
-  {
-    src: '/page-assets/docs/ZenWave360/images/getting-started/zdl-entities-jpa.png',
-    caption: 'ZDL entities with relationships for JPA',
-  },
-  {
-    src: '/page-assets/docs/ZenWave360/images/getting-started/zdl-service.png',
-    caption: 'ZDL service with annotations for REST API',
-  },
-  {
-    src: '/page-assets/docs/ZenWave360/images/getting-started/zdl-events.png',
-    caption: 'ZDL events with annotations for AsyncAPI',
-  },
-];
+# Getting Started with ZenWave SDK
+Generate your first Spring Boot service from a ZDL model
 
-<div class="getting-started-page">
+## What you will build
 
-# Getting Started with ZenWave 360
+You will write one small ZDL model and generate a Spring Boot service from it. The service exposes a REST API defined with OpenAPI, publishes domain events documented with AsyncAPI, and comes with unit and integration tests.
 
-## Installation
+## Prerequisites
 
-<div class="getting-started-intro">
+- [Java 17+](https://sdkman.io/jdks)
+- [Maven](https://sdkman.io/sdks#maven) (or Gradle, see [Maven & Gradle Support](/zenwave-sdk/zenwave-sdk-maven-plugin/))
+- [JBang](https://sdkman.io/sdks#jbang)
 
-We recommend using [SDKMAN!](https://sdkman.io/) to install ZenWave SDK requirements: [Java 17+](https://sdkman.io/jdks), [Maven](https://sdkman.io/sdks#maven), and [JBang](https://sdkman.io/sdks#jbang).
+We recommend [SDKMAN!](https://sdkman.io/) to install all of them.
 
-NOTE: Temurin (Eclipse) is a good option for Java JDK because it is high performance, enterprise-caliber, and open-source licensed.
+Temurin (Eclipse) is a good open-source option for the Java JDK.
 
-</div>
+{/* TODO: the ZenWave archetype README lists Java 25+ for archetype-generated projects. Confirm the minimum Java version for this page. */}
 
-## ZenWave SDK Installation
+## Install the CLI
 
 Use JBang to install an _evergreen_ self-updating CLI for the ZenWave SDK.
 
@@ -52,15 +34,235 @@ jbang alias add --force --fresh --name=zw release@zenwave360/zenwave-sdk
 
 **NOTE:** You can install ZenWave versions from different channels: `release` for the latest stable version and `snapshots` for development versions. They can be installed side by side using different `--name=<alias>` values, or independently.
 
-## Install ZenWave Editor IntelliJ Plugin
+## Use your own Spring Boot project
 
-<div class="getting-started-section getting-started-section--plugin">
+ZenWave SDK generates business code and tests with no exotic dependencies. It works with any Spring Boot project.
 
-Install ZenWave Editor IntelliJ Plugin from JetBrains Marketplace:
+You can start from a fresh project on [start.spring.io](https://start.spring.io) or from a project you already have.
+
+The simplest setup is a single-module Maven or Gradle project. This is a recommendation, not a requirement. Multi-module Maven projects also work, but you need to point each generator to the right module folder.
+
+{/* TODO: confirm the Spring Boot, Hibernate, MongoDB and Spring Cloud versions currently tested with ZenWave SDK. */}
+
+### Start from a ZenWave archetype
+
+For the fastest start, use the ZenWave archetypes. They are kept up to date and come with the OpenAPI Generator and ZenWave SDK Maven plugins already configured. You choose JPA or MongoDB, Kafka and Spring Modulith when you generate the project.
+
+Java:
+
+```bash
+mvn archetype:generate \
+  -DarchetypeCatalog=internal \
+  -DarchetypeGroupId=io.zenwave360.archetypes \
+  -DarchetypeArtifactId=zenwave-java-archetype \
+  -DarchetypeVersion=RELEASE \
+  -DinteractiveMode=true
+```
+
+Kotlin (see [Kotlin Backend Application](/zenwave-sdk/plugins/customizations/kotlin-backend-application/)):
+
+```bash
+mvn archetype:generate \
+  -DarchetypeCatalog=internal \
+  -DarchetypeGroupId=io.zenwave360.archetypes \
+  -DarchetypeArtifactId=zenwave-kotlin-archetype \
+  -DarchetypeVersion=RELEASE \
+  -DinteractiveMode=true
+```
+
+Maven asks for the project name, description, `artifactId`, `groupId` and `package`. Then it asks which features to include:
+
+```
+[FEATURE] Support for JPA? y
+[FEATURE] Support for MONGODB? n
+[FEATURE] Support for KAFKA? n
+[FEATURE] Support for MODULITH? y
+```
+
+Choose exactly one of JPA or MongoDB. Modulith implies Kafka. See the [Java archetype](https://github.com/ZenWave360/zenwave-playground/tree/main/zenwave-java-archetype-baseapp) and [Kotlin archetype](https://github.com/ZenWave360/zenwave-playground/tree/main/zenwave-kotlin-archetype-baseapp) READMEs for all options.
+
+The generated project already contains a sample `zenwave-model.zdl` and a `zenwave-scripts.zw` with the plugin configuration.
+
+## Write your first model
+
+Create a `zenwave-model.zdl` file in the project root. This model has one aggregate, one service exposed as a REST API and one domain event. The `plugins` block in `config` lists the SDK plugins you will run in the next section.
+
+```zdl
+config {
+    title "ZenWave Customer JPA Example"
+    basePackage "io.zenwave360.example"
+    persistence jpa
+    databaseType postgresql
+
+    layout CleanHexagonalProjectLayout
+
+    // these should match the values of openapi-generator-maven-plugin
+    // used by the OpenAPIControllersPlugin and SpringWebTestClientPlugin
+    openApiApiPackage "{{basePackage}}.adapters.web"
+    openApiModelPackage "{{basePackage}}.adapters.web.model"
+    openApiModelNameSuffix DTO
+
+    plugins {
+        ZDLToOpenAPIPlugin {
+            idType integer
+            idTypeFormat int64
+            targetFile "src/main/resources/public/apis/openapi.yml"
+        }
+
+        ZDLToAsyncAPIPlugin {
+            asyncapiVersion v3
+            idType integer
+            idTypeFormat int64
+            targetFile "src/main/resources/public/apis/asyncapi.yml"
+        }
+
+        BackendApplicationDefaultPlugin {
+            includeEmitEventsImplementation true
+        }
+
+        OpenAPIControllersPlugin {
+            openapiFile "src/main/resources/public/apis/openapi.yml"
+        }
+    }
+}
+
+/**
+* Customer entity
+*/
+@aggregate
+@auditing // adds auditing fields to the entity
+entity Customer {
+    name String required maxlength(254) /** Customer name */
+    email String required maxlength(254)
+}
+
+@rest("/customers")
+service CustomerService for (Customer) {
+    @post
+    createCustomer(Customer) Customer withEvents CustomerEvent
+    @get("/{id}")
+    getCustomer(id) Customer?
+}
+
+@copy(Customer)
+@asyncapi({ channel: "CustomersChannel", topic: "customers" })
+event CustomerEvent {
+    id Long required
+    version Integer
+}
+```
+
+- `persistence` selects `jpa` or `mongodb`.
+- `layout` sets the package structure of the generated code.
+- `@rest`, `@post` and `@get` describe how the service is exposed as a REST API.
+- `withEvents` makes `createCustomer` publish `CustomerEvent`. `@asyncapi` documents it in AsyncAPI.
+
+The full syntax is in [ZDL Domain Language](/docs/event-driven-design/zenwave-domain-language/). A larger version of this model is the [Customer Address JPA](/docs/examples/ddd-examples/customer-address-jpa/) example.
+
+## Generate
+
+Run every command from the project root.
+
+### 1. Generate OpenAPI and AsyncAPI from the ZDL
+
+```bash
+jbang zw -p io.zenwave360.sdk.plugins.ZDLToOpenAPIPlugin \
+    specFile=zenwave-model.zdl \
+    idType=integer \
+    idTypeFormat=int64 \
+    targetFile=src/main/resources/public/apis/openapi.yml
+```
+
+```bash
+jbang zw -p io.zenwave360.sdk.plugins.ZDLToAsyncAPIPlugin \
+    specFile=zenwave-model.zdl \
+    idType=integer \
+    idTypeFormat=int64 \
+    targetFile=src/main/resources/public/apis/asyncapi.yml
+```
+
+These API definitions are the source of truth for your inbound and outbound communications. You can edit them before the next step.
+
+### 2. Configure the API-first generators in `pom.xml`
+
+If you started from a ZenWave archetype, skip this step. Both generators are already configured.
+
+Otherwise, add `openapi-generator-maven-plugin` to generate Spring MVC interfaces and DTOs from `openapi.yml`. Its packages must match `openApiApiPackage` and `openApiModelPackage` in your ZDL:
+
+<RemoteCode
+  title="openapi-generator-maven-plugin in pom.xml" language="xml" visibleRange="383,419" collapsed={true}
+  url="https://github.com/ZenWave360/zenwave-playground/blob/v20260120/examples/customer-address-jpa/pom.xml" />
+
+Then add `zenwave-sdk-maven-plugin` with the `AsyncAPIGenerator` to generate event producers and DTOs from `asyncapi.yml`. Follow [AsyncAPI Generator: Maven Usage](/zenwave-sdk/plugins/asyncapi-generator/#maven-usage). For Gradle, see [Maven & Gradle Support](/zenwave-sdk/zenwave-sdk-maven-plugin/).
+
+### 3. Generate the backend code and tests
+
+Generate the domain entities, services, repositories and their tests:
+
+```bash
+jbang zw -p BackendApplicationDefaultPlugin \
+    zdlFile=zenwave-model.zdl \
+    includeEmitEventsImplementation=true \
+    targetFolder=.
+```
+
+Generate the Spring MVC controllers that implement the OpenAPI interfaces:
+
+```bash
+jbang zw -p io.zenwave360.sdk.plugins.OpenAPIControllersPlugin \
+    openapiFile=src/main/resources/public/apis/openapi.yml \
+    zdlFile=zenwave-model.zdl \
+    targetFolder=.
+```
+
+To see all options of a plugin, run it with `--help`:
+
+```bash
+jbang zw -p io.zenwave360.sdk.plugins.BackendApplicationDefaultPlugin --help
+```
+
+## Run it
+
+Run the tests:
+
+```bash
+mvn test
+```
+
+Start the infrastructure and the application. Projects created from the archetypes include a `docker-compose.yml`:
+
+```bash
+docker-compose up -d
+mvn spring-boot:run
+```
+
+Open SwaggerUI at http://localhost:8080/swagger-ui/index.html.
+
+## What you got
+
+With `CleanHexagonalProjectLayout`, the generated code is organized under your `basePackage`:
+
+- `core.domain`: the `Customer` entity.
+- `core.inbound`: the `CustomerService` interface and its DTOs.
+- `core.outbound`: the `CustomerRepository` Spring Data interface.
+- `core.implementation`: `CustomerServiceImpl` and its mappers. It saves the entity and publishes `CustomerEvent`.
+- `adapters.web`: `CustomerApiController`, implementing the interface generated from `openapi.yml`.
+- `src/test`: `CustomerServiceTest` with an in-memory repository, repository integration tests with Testcontainers, and controller tests.
+
+OpenAPI interfaces, AsyncAPI producers and their DTOs are generated by the Maven build into `target/generated-sources`.
+
+Generated service implementations, mappers and tests are a starting point. Add your business logic and test data there. To change layouts or templates, see [Customizing Generated Code](/docs/zenwave-sdk/customizing-code/).
+
+## Next steps
+
+### ZenWave Editor for IntelliJ
+
+The IntelliJ plugin is optional. It adds editing support for `.zdl` and `.zw` files and runs each plugin from a play button.
 
 <iframe
   width="384"
   height="319"
+  style={{ maxWidth: '100%' }}
   src="https://plugins.jetbrains.com/embeddable/card/22858"
   title="ZenWave Editor IntelliJ Plugin"
   loading="lazy"
@@ -68,72 +270,25 @@ Install ZenWave Editor IntelliJ Plugin from JetBrains Marketplace:
 
 For rendering class diagrams in markdown preview, install the [PlantUML Integration](https://plugins.jetbrains.com/plugin/7017-plantuml-integration) plugin.
 
-**NOTE:** ZenWave Editor will use the `jbang zw` command to execute plugins, so you need JBang available in the PATH of the console configured by default in IntelliJ.
+**NOTE:** ZenWave Editor uses the `jbang zw` command to execute plugins, so you need JBang available in the PATH of the console configured by default in IntelliJ.
 
-</div>
+### Examples
 
-## Spring Boot Base Project
+- [AsyncAPI Shopping Cart](/docs/examples/eda-examples/asyncapi-shopping-cart/)
+- [Order Fulfillment (Kotlin)](/docs/examples/ddd-examples/order-fullillment-kotlin/)
+- [Transactional Outbox](/posts/TransactionalOutBoxWithAsyncAPIAndSpringModulith/)
+- [Clinical Tool Modulith](/docs/examples/ddd-examples/modulith-clinical-tool-jpa/)
 
-ZenWave SDK only generates business logic code and tests. It is expected to work with any compatible Spring Boot project. The default backend generator is based on a Maven single-module project.
+### Tutorial
 
-We expect most companies and teams to have their own starter base project. If you do not have one, you can create one from https://start.spring.io or clone one of the ZenWave 360 base projects from our GitHub playground repository.
+[DDD In Practice: From Ubiquitous Language DSL to Complete Spring Boot Kotlin Project](/posts/DDD-In-Practice_From_DSL_to_Complete_Spring-Boot_Kotlin/)
 
-<div class="getting-started-starters">
-  <a class="getting-started-starters__card" href="https://github.com/ZenWave360/zenwave-playground/tree/main/zenwave-jpa-baseline">
-    <strong>Starter Project for JPA</strong>
-    <span>Spring Boot baseline for relational persistence and ZenWave SDK generation.</span>
-  </a>
-  <a class="getting-started-starters__card" href="https://github.com/ZenWave360/zenwave-playground/tree/main/zenwave-mongodb-baseline">
-    <strong>Starter Project for MongoDB</strong>
-    <span>Document-oriented baseline with the same ZenWave-ready project setup.</span>
-  </a>
-</div>
-
-> NOTE: These baseline projects come with OpenAPI Generator and ZenWave SDK Maven plugins already configured, so you do not have to.
-
-ZenWave SDK generated code was tested with Spring Boot up to 3.5.0, Hibernate 6.x, MongoDB 5, and Spring Cloud 2024.0.0. Because it only generates business code without any exotic dependency, it should work with any compatible version.
-
-Once you have installed ZenWave SDK CLI and IntelliJ Plugin, you are ready to start modeling your domain and generating code.
-
-## Examples & Tutorials
-
-<div class="getting-started-highlight">
-
-You can check out [DDD Examples](/docs/examples/ddd-examples/) and [EDA Examples](/docs/examples/eda-examples/), in particular [Customer Address JPA Service](/docs/examples/ddd-examples/customer-address-jpa/), a canonical ZenWave example of a DDD aggregate with JPA persistence and externalized domain events. It will provide you a complete explanation of how to use ZenWave ZDL + SDK, what generated code looks like, and what you can expect from it.
-
-You can also follow this tutorial for a dive into ZenWave modeling and code generation: [DDD In Practice: From Ubiquitous Language DSL to Complete Spring Boot Kotlin Project](/posts/DDD-In-Practice_From_DSL_to_Complete_Spring-Boot_Kotlin/)
-
-</div>
-
-## ZDL Modeling and Code Generation
-
-Scroll left/right for a quick overview of how ZDL modeling looks with an example. Then follow the instructions below.
-
-<ImageCarousel ariaLabel="ZDL modeling and code generation screenshots" slides={zdlModelingSlides} />
-
-Create a new ZDL model or use one of the ZDL examples as a base:
-
-<div class="getting-started-steps">
-
-1. Create a new file with the `.zdl` extension.
-2. Model your bounded context by adding entities, services, inputs, and events.
-3. Add ZenWave SDK plugins to the ZDL `config` section. You can use IntelliJ live templates for this task.
-4. Follow these steps to generate code and tests from your model:
-    1. Generate API definitions from your model. OpenAPI and AsyncAPI v2/v3 are supported.
-    2. Customize your API definitions. They are the source of truth for outbound and inbound communications.
-    3. Configure API-first generators in `pom.xml` for OpenAPI and AsyncAPI.
-    4. Generate your core backend code and tests. ZenWave SDK can generate CRUD implementation for your services.
-    5. Customize generated code by implementing non-CRUD service commands, and customize generated tests.
-    6. Implement adapter code for web and events, connecting API-first generated code with your core backend. ZenWave SDK can generate stub implementations for some adapters.
-5. Run your tests and start your application.
-
-</div>
-
-## Generating a Complete Spring Boot Application with ZenWave SDK
+### Video: Generating a Complete Spring Boot Application with ZenWave SDK
 
 <iframe
   width="1050"
   height="591"
+  style={{ width: '100%', height: 'auto', aspectRatio: '16 / 9' }}
   src="https://www.youtube.com/embed/G93Mkf1xaXQ?si=XVghVSdbiy8yQA3j"
   title="Generating a Complete Spring Boot Application with ZenWave SDK"
   frameborder="0"
@@ -141,5 +296,3 @@ Create a new ZDL model or use one of the ZDL examples as a base:
   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
   allowfullscreen
 ></iframe>
-
-</div>
