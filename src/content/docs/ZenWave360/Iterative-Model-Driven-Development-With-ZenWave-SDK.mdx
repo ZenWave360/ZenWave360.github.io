@@ -1,0 +1,166 @@
+---
+title: "Iterative, AI-Assisted Model-Driven Development with ZenWave SDK"
+slug: "/docs/iterative-ai-assisted-development/"
+---
+
+import Image from '../../../components/Image.astro';
+
+# Iterative, AI-Assisted Model-Driven Development with ZenWave SDK
+
+<Image alt="Iterative, AI-Assisted Model-Driven Development with ZenWave: Research & Discovery, Iterative Model-Driven Prototyping, Gaps Report, Tasks & Kanban, and Agent Implementation & QA" light="/images/iterative-model-driven-development.light.webp" dark="/images/iterative-model-driven-development.dark.webp" href="/images/iterative-model-driven-development.light.png" />
+
+## At a glance
+
+| Stage | What happens | Tools | Output |
+|---|---|---|---|
+| [1. Research and Discovery](#1-research-and-discovery) | Understand the problem with stakeholders, Event Storming and AI agents | Event Storming, agents | PRD and Event Storming findings |
+| [2. Iterative Model-Driven Prototyping](#2-iterative-model-driven-prototyping-zenwave) | Model, generate, run and refine until the design fits, reviewing the models with agents | ZFL, ZDL, OpenAPI, AsyncAPI, ZenWave SDK, zfl-to-zdl | Architecture models and a generated application |
+| [3. Gaps Report](#3-gaps-report) | Compare the models with the code to find missing behavior, blockers and open questions | zenwave-gap-report | Gap report |
+| [4. Tasks and Kanban](#4-tasks-and-kanban) | Turn the gaps into ordered tasks and track them | Your existing AI workflow | Task backlog |
+| [5. Agent Implementation and QA](#5-agent-implementation-and-qa) | Agents implement and test one task at a time, then the gap report runs again | zenwave-fill-gaps, zenwave-test-data, zenwave-test-scenarios | Working software |
+
+## Introduction
+
+ZenWave is a toolkit for designing and implementing software with Domain-Driven Design and Event-Driven Architecture. It provides domain modeling languages ([ZFL](/docs/event-driven-design/zenwave-flow-language/) and [ZDL](/docs/event-driven-design/zenwave-domain-language/)), API specifications ([OpenAPI](/API-First/OpenAPI/) and [AsyncAPI](/API-First/AsyncAPI/)), code generators ([ZenWave SDK](/docs/zenwave-sdk/)), and development tools ([ZenWave Editor for IntelliJ](/plugin/)) that help us describe the architecture of a system and turn it into working software.
+
+One of the main ideas behind ZenWave is that **generating code should be cheap enough to experiment with it**. We can describe a bounded context or a service, generate an application, run it, write some tests, and see how well the design works. If we find something wrong, we change the models and generate the application again, so code generation becomes a way to discover and refine the architecture as well as to implement it.
+
+AI coding agents take this approach further, because they can help us explore requirements, find gaps in our models, implement missing behavior, and reconcile generated code with existing implementations. The result is an iterative development process where domain models, executable prototypes, and implementation evolve together.
+
+## 1. Research and Discovery
+
+We start by understanding the problem we want to solve. This may involve talking to stakeholders, studying existing systems, exploring technical alternatives, and understanding business requirements.
+
+Event Storming is one of the techniques we use to discover the domain, because it helps us identify business events, commands, actors, policies, and processes, and these map naturally to [ZFL flows](/docs/event-driven-design/zenwave-flow-language/) and [ZDL models](/docs/event-driven-design/zenwave-domain-language/). At this stage we may also use AI agents to help with research, organize information, and ask questions about things we have not considered.
+
+<Image alt="Event Storming to ZDL mapping" src="/images/EventStorming-ZDL-Mapping.png" />
+
+We don't need a complete specification before moving forward. We want to understand enough of the problem to start modeling it, knowing that we will discover more details as we experiment. A Product Requirements Document (PRD) can help us record the business goals, functional requirements, constraints, and acceptance criteria.
+
+**Output:** a PRD with goals, requirements, and constraints, plus the Event Storming findings we will model next.
+
+## 2. Iterative Model-Driven Prototyping (ZenWave)
+
+This is where ZenWave plays its main role. Instead of writing a detailed technical implementation plan, we describe the system with domain models and API specifications, then we generate code, experiment with it, and refine the design.
+
+We repeat these four activities as many times as necessary: model, generate, experiment, and refine. Along the way, we review and clarify the specifications with the help of AI agents.
+
+### Model
+
+We describe business flows in [ZFL](/docs/event-driven-design/zenwave-flow-language/), bounded contexts and their aggregates, commands and events in [ZDL](/docs/event-driven-design/zenwave-domain-language/), and API contracts in [OpenAPI](/API-First/OpenAPI/) and [AsyncAPI](/API-First/AsyncAPI/).
+
+We usually start with ZFL, capturing the business flow that came out of Event Storming, and from the ZFL we derive one ZDL per bounded context. The [zfl-to-zdl](https://github.com/ZenWave360/zenwave-sdd/tree/main/skills/zfl-to-zdl) skill can draft these ZDL models for us as a starting point that we then review and refine. From the ZDL, ZenWave SDK can also draft the OpenAPI and AsyncAPI contracts.
+
+<Image alt="A business flow modeled in ZFL in the ZenWave Editor" title="A business flow modeled in ZFL, in the ZenWave Editor for IntelliJ" src="/images/platform/screenshots/zfl-flow.png" />
+
+These specifications are written for both humans and machines. Developers can read, review, and navigate them, and code generators and AI agents can use them to understand the system. And because they are plain text files, developers, ZenWave SDK, and AI agents all work from the same source. ZenWave also provides [IDE integrations](/plugin/) and architectural navigation to help developers move between models, API specifications, and implementation code.
+
+### Generate
+
+Once we have an initial model, we use ZenWave SDK to generate the application structure from ZDL, OpenAPI, and AsyncAPI. Depending on the generators and technologies selected, this may include Spring Boot services, domain classes, service interfaces, DTOs, API endpoints, event producers and consumers, and other infrastructure code.
+
+<Image alt="Code generated by ZenWave SDK" src="/images/SDK-Generated-Code.png" href="/images/SDK-Generated-Code.png" />
+
+Because a large part of the application structure is generated, we get a working starting point without spending much time writing repetitive code. See [Getting Started](/docs/getting-started/) for a complete example, and [Customizing Generated Code](/docs/zenwave-sdk/customizing-code/) to adapt the generated code to your own conventions.
+
+### Experiment
+
+Now we can run the application, write tests, implement some business logic, and explore how the design behaves. This is where we often discover things that were not obvious during the initial modeling: an entity is missing a field, a command should return a different result, a business process needs another step, or a relationship between aggregates does not work as expected.
+
+<Image alt="Fast feedback loop between design and code" light="/images/ZenWave-SDK-Design-Code-Loop.light.png" dark="/images/ZenWave-SDK-Design-Code-Loop.dark.png" width="50%" />
+
+These discoveries help us improve the domain model before we invest too much effort in the implementation, so the generated application also works as a prototype of the architecture.
+
+### Refine
+
+When we discover a problem, we go back to the models and change them. We may update the ZDL, modify a flow in ZFL, or adjust an OpenAPI or AsyncAPI contract. Then we regenerate the code from the updated ZDL, OpenAPI, and AsyncAPI and continue experimenting. ZFL changes feed the design and the context we give to AI agents, while the code generators work from the other models.
+
+During the early stages we can simply discard the generated application and start again, because code generation is cheap and there may be very little implementation worth preserving. Later, when we already have useful business logic and tests, regenerating everything becomes more complicated.
+
+AI coding agents can help here. We can generate a fresh version of the application in another directory, compare it with the existing implementation, and ask an agent to reconcile the differences while preserving the code and behavior we want to keep. This way the architecture can keep evolving and we don't have to choose between maintaining the models and preserving the implementation.
+
+### Review and Clarify
+
+Throughout the modeling and prototyping cycle, we use AI agents to review the specifications and find inconsistencies. An agent can inspect the ZDL, ZFL, OpenAPI, AsyncAPI, and related documentation looking for missing information, contradictions, or decisions that have not been made yet.
+
+Skills such as Matt Pocock's [grill-with-docs](https://github.com/mattpocock/skills/tree/main/skills/engineering/grill-with-docs), which interviews us about the design and records ADRs and a glossary as it goes, can help us find the details we may have forgotten. What should happen when an external service does not respond? Can an operation be executed more than once? What happens when a business process fails halfway through?
+
+Some answers require changes to the models, and others are architectural decisions that we want to record in Architecture Decision Records (ADRs). Agents can point out problems and suggest changes, but the models remain owned by people: we decide on the change, update the ZFL or ZDL, and regenerate.
+
+This way unresolved questions become visible and can be answered before they cause problems during implementation. And this activity is not tied to one particular phase: we can review and clarify the architecture whenever new information appears.
+
+We repeat this cycle until the design is understood and stable enough to continue with the remaining development work.
+
+**Output:** architecture models (ZFL, ZDL, OpenAPI, and AsyncAPI) and a generated application with services, APIs, events, tests, and infrastructure.
+
+## 3. Gaps Report
+
+Once we have generated an application and refined the models, we need to understand what remains to be implemented. For this we use the [zenwave-gap-report](https://github.com/ZenWave360/zenwave-sdd/tree/main/skills/zenwave-gap-report) agent skill from [zenwave-sdd](https://github.com/ZenWave360/zenwave-sdd).
+
+ZenWave SDK generates the *structure* of a service and deliberately leaves the *behavior* to the developer. The skill compares the ZFL flows and ZDL models with the existing code to find missing service method bodies, event listener wiring, mappers, controllers, test fixtures, tests, and other gaps, along with the questions and blockers that need human input. It is read-only: it reports gaps but does not change the code.
+
+A gap may be something simple, like a service method that has not been implemented, or it may be a missing business rule, an integration that requires additional configuration, or a behavior that is not covered by tests.
+
+The report should also detect requirements that are not properly represented in the models, because otherwise something important could be missing from both the generated code and the implementation backlog. When closing a gap would need a new field, command, or event, it is reported as a model gap, and a person updates the models and regenerates.
+
+What we get is a clear view of the remaining work. Each gap references the ZFL or ZDL line that defines the expected behavior, and can include acceptance criteria, dependencies, and the questions that must be resolved before implementation.
+
+This is an abridged excerpt from the gap report of the Arcadia Editions modulith service, for its Place Order flow:
+
+```markdown
+## Summary
+
+| Severity | Model (M) | Code (G) | Cross-cutting (X) | Open questions (Q) |
+|---|---|---|---|---|
+| blocker | 3 | 12 | 0 | — |
+| major | 4 | 18 | 3 | — |
+| minor | 3 | 9 | 2 | — |
+| **total** | **10** | **39** | **5** | **16** |
+
+## 1. Model gaps (fix in ZFL / ZDL, then regenerate)
+
+**M-01 · blocker · `confirmStockReservation` is keyed by one reservation id; an order has many.**
+catalog-inventory ZDL:27 says "one reservation per order line", but `confirmStockReservation(id)`
+(ZDL:121-122) takes the `Long id` of one `StockReservation`. [...]
+
+## 2. PlaceOrderFlow — traceability
+
+| # | ZFL step | Trigger in code | Input mapping | Service body |
+|---|---|---|---|---|
+| 1 | `StartOrderCheckout → startOrderCheckout` (ZFL:82) | ✅ `POST /api/orders/start-checkout` | ✅ | ❌ G-OC-01 |
+| 2 | `call reserveStock` (ZFL:84, ZDL `@calls`) | ❌ `// TODO: call` | — | ❌ G-CI-01 |
+```
+
+zenwave-sdd is still at an early stage. Its skills were extracted from the [Arcadia Editions](https://ivangsa.com/articles/arcadia/) reference project and have not yet been fully validated as standalone skills.
+
+**Output:** a gap report with implementation tasks, blockers, and questions.
+
+## 4. Tasks and Kanban
+
+Once the gaps are understood and the blockers are resolved, we can convert the remaining work into implementation tasks, define their dependencies, and prioritize them. This is where a Kanban workflow fits naturally.
+
+We create the tasks from the actual gaps between the intended architecture and the existing implementation, instead of creating all of them directly from a PRD. Because ZenWave SDK has already generated much of the application, we don't need to ask an agent to plan the implementation of classes, interfaces, or API contracts that already exist.
+
+The tasks should describe the work that remains, including dependencies, acceptance criteria, and references to the architecture. A Kanban board then helps us track which tasks are ready, which are being implemented, which are blocked, and which are done.
+
+We don't need to invent a new task management framework for this. We can reuse existing AI development skills and workflows, as long as they can consume the tasks produced by the gap report, and the implementation workflow should stay independent from ZenWave's modeling languages and code generators.
+
+**Output:** a task backlog with ordered tasks and their dependencies.
+
+## 5. Agent Implementation and QA
+
+With the tasks prepared, AI coding agents can implement the remaining functionality. They have access to the domain models, API specifications, ADRs, generated code, and task descriptions, so they can understand the intended behavior and implement it within the existing architecture.
+
+The [zenwave-fill-gaps](https://github.com/ZenWave360/zenwave-sdd/tree/main/skills/zenwave-fill-gaps) skill implements one gap report finding or task at a time, using ZenWave-aware patterns. If it finds an open model gap or an unanswered question, it stops and hands over to a person instead of working around it in code.
+
+As tasks are completed, the agents run tests and verify the results. Checking that a task has been marked as complete is not enough, because we also need to verify that the implementation behaves correctly and stays consistent with the architecture. This may include unit tests, integration tests, API contract tests (for example with [Spring WebTestClient](/docs/zenwave-sdk/api-testing/spring-webtestclient/) or [KarateDSL](/docs/zenwave-sdk/api-testing/karate/)), and tests of complete business processes. The [zenwave-test-data](https://github.com/ZenWave360/zenwave-sdd/tree/main/skills/zenwave-test-data) and [zenwave-test-scenarios](https://github.com/ZenWave360/zenwave-sdd/tree/main/skills/zenwave-test-scenarios) skills generate consistent test data, including a fixture for each branch, failure path, and outcome of the ZFL flows.
+
+After implementation we can run the gap report again to find remaining work or new inconsistencies, and if necessary we create new tasks and continue.
+
+**Output:** working software with implemented services, APIs, events, and tests.
+
+## Continuous Learning and Improvement
+
+The process is not strictly linear. Implementation may reveal a problem in the domain model, or a new requirement may force us to reconsider a decision, and then we go back to the right stage, update the models, and continue. ZenWave does not replace existing AI development workflows: it provides the domain models, the deterministic code generation, and the architectural context those workflows need, shared by developers, generators, and agents. [Arcadia Editions](https://ivangsa.com/articles/arcadia/) is where we are applying this process end to end.
+
+And perhaps the most useful consequence of this approach is that we can use working software to discover and improve the design, instead of waiting until the design is finished to start writing code.

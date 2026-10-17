@@ -62,11 +62,10 @@ const stages = [
   <div class="architecture-band__shell">
     <div class="architecture-band__heading">
       <p>Complete workflow</p>
-      <h2 id="architecture-band-title">From discovery to production</h2>
-      <p>
-        ZenWave makes architecture readable by people, traversable by tools, and usable as context
-        for AI-assisted delivery.
-      </p>
+      <h2 id="architecture-band-title">Iterative, AI-Assisted Model-Driven Development</h2>
+      <a class="architecture-band__link" href="/docs/iterative-ai-assisted-development/">
+        How models, generators and AI agents work together <span aria-hidden="true">&#8594;</span>
+      </a>
     </div>
 
     <ol class="architecture-band__stages">
@@ -200,8 +199,23 @@ const stages = [
     text-transform: uppercase;
   }
 
-  .architecture-band__heading p:last-child {
-    max-width: 58rem;
+  .architecture-band__link {
+    display: inline-block;
+    color: var(--home-highlight, #ffe04b);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  :root[data-theme='light'] .architecture-band__link {
+    color: #8a6800;
+  }
+
+  .architecture-band__link:hover,
+  .architecture-band__link:focus-visible,
+  :root[data-theme='light'] .architecture-band__link:hover,
+  :root[data-theme='light'] .architecture-band__link:focus-visible {
+    color: var(--band-text);
   }
 
   .architecture-band__heading h2 {

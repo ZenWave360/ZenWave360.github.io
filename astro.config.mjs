@@ -60,6 +60,7 @@ export default defineConfig({
           collapsed: false,
           items: [
             { label: 'Getting Started', link: '/docs/getting-started/' },
+            { label: 'Iterative AI-Assisted Development', link: '/docs/iterative-ai-assisted-development/' },
             { label: 'ZDL Domain Language', link: '/docs/event-driven-design/zenwave-domain-language/' },
             { label: 'ZFL Flow Language', link: '/docs/event-driven-design/zenwave-flow-language/' },
           ],
