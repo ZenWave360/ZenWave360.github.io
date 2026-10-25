@@ -34,6 +34,50 @@ jbang alias add --force --fresh --name=zw release@zenwave360/zenwave-sdk
 
 **NOTE:** You can install ZenWave versions from different channels: `release` for the latest stable version and `snapshots` for development versions. They can be installed side by side using different `--name=<alias>` values, or independently.
 
+```bash
+jbang alias add --force --fresh --name=zw-snapshots snapshots@zenwave360/zenwave-sdk
+```
+
+### Snapshot versions
+
+ZenWave snapshots (`-SNAPSHOT` versions built from the `develop` branch of each ZenWave project) are published to the Maven repository
+[https://www.zenwave360.io/maven-snapshots/](https://www.zenwave360.io/maven-snapshots/). They are not published to Maven Central.
+The `snapshots` JBang channel already uses this repository.
+
+To use ZenWave snapshots, such as the `zenwave-sdk-maven-plugin` or the ZenWave DSL libraries, from your own build, add the repository.
+
+Maven (`pom.xml`):
+
+```xml
+<repositories>
+    <repository>
+        <id>zenwave-snapshots</id>
+        <url>https://www.zenwave360.io/maven-snapshots/</url>
+        <releases><enabled>false</enabled></releases>
+        <snapshots><enabled>true</enabled></snapshots>
+    </repository>
+</repositories>
+<pluginRepositories>
+    <pluginRepository>
+        <id>zenwave-snapshots</id>
+        <url>https://www.zenwave360.io/maven-snapshots/</url>
+        <releases><enabled>false</enabled></releases>
+        <snapshots><enabled>true</enabled></snapshots>
+    </pluginRepository>
+</pluginRepositories>
+```
+
+Gradle (`build.gradle.kts`):
+
+```kotlin
+repositories {
+    mavenCentral()
+    maven("https://www.zenwave360.io/maven-snapshots/") { mavenContent { snapshotsOnly() } }
+}
+```
+
+Snapshots change with every build and are kept for a short time; use released versions for anything you depend on.
+
 ## Use your own Spring Boot project
 
 ZenWave SDK generates business code and tests with no exotic dependencies. It works with any Spring Boot project.
