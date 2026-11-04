@@ -101,7 +101,7 @@ Only the orchestrator writes to the board. Subagents report back to it.
 An implementer or reviewer that finds a gap in the model does not work around it in code and does not edit the model. It:
 
 1. marks the task as blocked by the model;
-2. writes a proposal with one or more solutions, as changes in the modeling language, with the evidence (failing test, code location);
+2. writes a proposal report attached to the task: the problem, the model lines involved, the evidence (failing test, code location) and one or more options to unblock it. The report never changes the model;
 3. hands it to the human, while the orchestrator continues with other ready tasks.
 
 The human chooses or adjusts a solution in Shape, updates the model, regenerates and approves a new baseline. The orchestrator reconciles the regenerated code with the code already merged, and the blocked tasks become ready again.
@@ -125,7 +125,7 @@ The human then reviews the evidence: review reports, test results per branch, op
 The two loops connect in two places:
 
 - **The gate**, going forward: an approved batch of models, test data and tasks.
-- **Model-change proposals**, going back: written in the modeling language, so a human can review them in minutes.
+- **Model-change proposals**, going back: reports that point at the lines of the model, so a human can review them in minutes and change the model in Shape.
 
 <Image alt="Where the two loops meet: the human-led Shape loop sends an approved baseline of models, test data and tasks to the agent-led Implement & Verify loop; agents return model-change proposals to the human and produce evidence through reports and tests" light="/images/two-loops-handover.light.webp" dark="/images/two-loops-handover.dark.webp" href="/images/two-loops-handover.light.png" />
 
