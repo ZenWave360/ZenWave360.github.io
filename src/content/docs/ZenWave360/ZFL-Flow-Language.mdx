@@ -175,6 +175,51 @@ do reserveStock {
 
 Use `call` when the caller waits for an answer. Use `response` for outcomes returned directly to the caller. Use `emits response` when the same outcome is both returned synchronously and published as an event.
 
+### Early Exits with `on`
+
+An `on` line handles one response of the `call` just before it. When the `on` answers with `response`, `emits` or `emits response`, it is an exit: the command ends there and the steps after it do not run on that path. A response that no `on` handles is the happy path, and the command goes on to the next line.
+
+```zfl
+when RequestBooking, RequestAssistedBooking do bookSlot {
+    service Bookings.BookingService
+
+    call getBookingTerms
+    on SlotNotBookable response SlotNotBookable
+
+    call checkBookingHolder
+    on HolderNotEligible, HolderBlocked response BookingRejected
+
+    @outcome(confirmed)
+    emits response BookingConfirmed
+}
+
+do getBookingTerms {
+    service Facilities.FacilityCatalogService
+    response BookingTermsResult
+    response SlotNotBookable
+}
+
+do checkBookingHolder {
+    service Accounts.AccountService
+    response HolderEligibleResult
+    response HolderNotEligible
+    response HolderBlocked
+}
+```
+
+Read it as plain language: "call `getBookingTerms`; if the slot cannot be booked, answer `SlotNotBookable`". When `getBookingTerms` answers `SlotNotBookable`, the command answers `SlotNotBookable` and `checkBookingHolder` does not run. When it answers `BookingTermsResult`, which no `on` handles, the command goes on to `checkBookingHolder`.
+
+`on <Event> call <commandName>` is different: it chains. The `on` lines after it handle the responses of that second call, not of the first one.
+
+**Several events in one `on`.** Separate the events with commas when they lead to the same exit, as in `on HolderNotEligible, HolderBlocked response BookingRejected`. Annotations placed before `on` apply to it, for example `@outcome("holder-rejected")` to name an early exit.
+
+**Checks in the editor.**
+
+- It is an error when an event in an `on` is not a declared response of the `call` before it. For example, writing `on SlotNotBookable` after `call checkBookingHolder` gives `Action 'bookSlot' handles event 'SlotNotBookable' that is not a declared response of action 'checkBookingHolder'.`
+- It is a warning when the `on` lines cover every response the call declares and more lines follow them, because those lines cannot run: `Action 'bookSlot' handles every response from action 'getBookingTerms', so subsequent lines are unreachable.`
+
+**Diagrams.** The flowchart and the sequence diagrams draw an `on` that answers as an exit of the command, not as one more step.
+
 ### Async Calls for Asynchronous Commands
 
 When the caller should not wait for an inline response, use `async call`.
@@ -495,8 +540,9 @@ when <Trigger> do <commandName> {
     [service <SystemName>.<ServiceName>]
     [call <commandName>]
     [async call <commandName>]
-    [on <EventName> call <commandName>]
-    [on <EventName> emits <EventName>]
+    [on <EventName>[, <EventName>]* call <commandName>]
+    [on <EventName>[, <EventName>]* response <EventName>]
+    [on <EventName>[, <EventName>]* emits <EventName>]
     [emits <EventName>]
     [emits response <EventName>]
     [response <EventName>]
