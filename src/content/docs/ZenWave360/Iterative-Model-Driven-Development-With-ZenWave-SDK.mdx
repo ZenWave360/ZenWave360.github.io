@@ -1,7 +1,9 @@
 ---
 title: "Two Loops: Model-Driven Development with Agents"
-slug: "/docs/two-loops-model-driven-development/"
+slug: "/docs/ai-assisted-model-driven-development/"
 ---
+
+import Image from '../../../components/Image.astro';
 
 # Two Loops: Model-Driven Development with Agents
 
@@ -9,7 +11,7 @@ Agents can work away from the keyboard only on what a human approved. A human ca
 
 This method puts a model at the center of the spec instead. Business flows, domain models and API contracts are written in structured languages that humans and agents can both read and validate. A human designs the system with them, in a loop with agents. Then agents implement it, in a loop of their own.
 
-{/* IMAGE: two-loops cycle (Discover → Shape/HITL → Implement & Verify/AFK → Navigate), light and dark */}
+<Image alt="The two loops of model-driven development with agents: Discover, then Shape as a human-in-the-loop design loop, an approval gate, Implement & Verify as an away-from-keyboard agentic loop, and Navigate, with model-change proposals going back from the agents to the human" light="/images/two-loops-model-driven-development.light.webp" dark="/images/two-loops-model-driven-development.dark.webp" href="/images/two-loops-model-driven-development.light.png" />
 
 ## Principles
 
@@ -53,6 +55,8 @@ The human drives the design; agents assist. The loop repeats until the gate pass
 - **Challenge.** Agents review the models looking for contradictions, missing outcomes and decisions nobody made. Answers change the model or become ADRs.
 - **Prepare the handover.** Generate test data for each use case and branch of the flow ([zenwave-test-data](https://github.com/ZenWave360/zenwave-sdd/tree/main/skills/zenwave-test-data), [zenwave-test-scenarios](https://github.com/ZenWave360/zenwave-sdd/tree/main/skills/zenwave-test-scenarios)) and validate it. Split the work into tasks.
 
+<Image alt="One model, many projections: a human-owned ZFL and ZDL model produces EventFlow, sequence diagrams, a class diagram, a state machine, OpenAPI, AsyncAPI, and code with tests" light="/images/one-model-many-projections.light.webp" dark="/images/one-model-many-projections.dark.webp" href="/images/one-model-many-projections.light.png" />
+
 ### Task splitting
 
 Splitting is a discrete step at the end of Shape, not a loop, though it may take a few iterations. The human splits the work, assisted by an agent that derives a task list from the approved model: from the generated code when there is some, from a blank slate when there isn't.
@@ -87,7 +91,7 @@ Agents implement the batch without a human at the keyboard. They read **only** t
 3. **Route.** It chooses a model according to the task's difficulty.
 4. **Implement.** An implementer subagent works in its own worktree, reads the task and the model lines it points at, and runs only the focused tests for that task.
 5. **Review, per batch.** A reviewer subagent runs the entire suite, or the vertical slice of a module in a modular monolith, and checks the changes against the model and the test data. It writes a review report with the reviewed commit range (`from..to`). Optionally, it adds regression tests covered by the model.
-6. **Integrate.** The review report is always committed with the code. On a **FIX FIRST** verdict, the orchestrator redelivers the affected tasks to implementers.
+6. **Integrate.** The review report is always committed with the code. On a **FIX** verdict, the orchestrator redelivers the affected tasks to implementers.
 7. **Repeat** until the board is cleared or every remaining task is blocked.
 
 Only the orchestrator writes to the board. Subagents report back to it.
@@ -107,7 +111,7 @@ The human chooses or adjusts a solution in Shape, updates the model, regenerates
 A batch is done when:
 
 - every task of the approved board is done;
-- the batch review is clean (no FIX FIRST);
+- the batch review is clean (no FIX);
 - the full suite, or the vertical slices, are green;
 - structural assertions and approved test data have not changed since the baseline;
 - there are no open model-change proposals.
@@ -122,6 +126,8 @@ The two loops connect in two places:
 
 - **The gate**, going forward: an approved batch of models, test data and tasks.
 - **Model-change proposals**, going back: written in the modeling language, so a human can review them in minutes.
+
+<Image alt="Where the two loops meet: the human-led Shape loop sends an approved baseline of models, test data and tasks to the agent-led Implement & Verify loop; agents return model-change proposals to the human and produce evidence through reports and tests" light="/images/two-loops-handover.light.webp" dark="/images/two-loops-handover.dark.webp" href="/images/two-loops-handover.light.png" />
 
 Because the method is iterative, both loops run at the same time on different batches. When a later batch changes a shared ZDL, that is a new baseline: regenerate, approve, and let the orchestrator reconcile.
 

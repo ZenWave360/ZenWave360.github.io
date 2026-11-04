@@ -35,7 +35,7 @@ const stages = [
     ],
   },
   {
-    title: 'Generate & Implement',
+    title: 'Generate & Verify',
     tone: 'amber',
     legend: ['APIs', 'Services', 'Tests', 'Infra'],
     icons: [
@@ -63,7 +63,7 @@ const stages = [
     <div class="architecture-band__heading">
       <p>Complete workflow</p>
       <h2 id="architecture-band-title">Iterative, AI-Assisted Model-Driven Development</h2>
-      <a class="architecture-band__link" href="/docs/two-loops-model-driven-development/">
+      <a class="architecture-band__link" href="/docs/ai-assisted-model-driven-development/">
         How models, generators and AI agents work together <span aria-hidden="true">&#8594;</span>
       </a>
     </div>
@@ -92,7 +92,7 @@ const stages = [
                       <path d="M23 42h18" />
                     </svg>
                   )}
-                  {stage.title === 'Generate & Implement' && (
+                  {stage.title === 'Generate & Verify' && (
                     <svg viewBox="0 0 64 64">
                       <path d="m25 20-12 12 12 12" />
                       <path d="m39 20 12 12-12 12" />
@@ -121,7 +121,7 @@ const stages = [
                   <img src={shapeImg.src} alt="ZenWave architecture shape diagram with bounded contexts and domain model" width={shapeImg.width} height={shapeImg.height} loading="lazy" decoding="async" />
                 )}
 
-                {stage.title === 'Generate & Implement' && (
+                {stage.title === 'Generate & Verify' && (
                   <img src={generateImg.src} alt="ZenWave SDK generated Spring Boot service code in IDE" width={generateImg.width} height={generateImg.height} loading="lazy" decoding="async" />
                 )}
 
