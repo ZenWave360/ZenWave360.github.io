@@ -290,6 +290,8 @@ end {
 
 Each key is a business-friendly outcome name. Each value is an event that marks that outcome.
 
+A flow with no `end` block, or with no `completed` outcome, is still valid: the editor gives a warning, `Flow 'Checkout' must define a 'completed' endOutcome.` An outcome that names an event the flow does not declare is an error.
+
 ## Systems
 
 The optional `systems` block connects the flow to the systems and services that own the work.
@@ -517,6 +519,8 @@ flow <FlowName> {
 }
 ```
 
+An empty flow such as `flow Booking { }` is valid, so you can name a flow first and fill it in later.
+
 ## Starts
 
 Starts are triggers that open or inject work into a flow.
@@ -573,6 +577,8 @@ do reserveStock {
 }
 ```
 
+A `do` block that no `when … do` triggers and no `call` or `on … call` calls is valid, and the editor gives a warning: `Action 'reserveStock' is never triggered nor called.` The diagrams draw it on its own, with no arrow into it.
+
 ## Service References
 
 Service references connect a flow command to the service that owns it.
@@ -580,6 +586,8 @@ Service references connect a flow command to the service that owns it.
 ```zfl
 service OrdersCheckout.OrdersCheckoutService
 ```
+
+The `service` line is optional. A command without it is valid, and the editor gives a warning: `Action 'bookSlot' does not declare a service.` The diagrams draw such a command by its system or its name.
 
 Inside a `systems` block, services can optionally declare the aggregates they work with.
 
