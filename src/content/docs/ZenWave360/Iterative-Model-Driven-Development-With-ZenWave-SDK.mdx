@@ -23,22 +23,24 @@ This method puts a model at the center of the spec instead. Business flows, doma
 6. **Agents make tests pass; they don't decide what passing means.** Expectations come from the model and from test data a human validated.
 7. **Humans review evidence, not code.** At the end of an autonomous run the human gets reports, test results and open proposals, not a diff to read line by line.
 8. **Iterative, one batch at a time.** Both loops run in parallel on different batches of flows.
-9. **The generator is an accelerator, not the method.** Deterministic code generation shrinks what agents have to write. The method works without it.
+9. **Generate what is deterministic.** ZenWave SDK turns the approved model into most of the code and its tests, in seconds and with no tokens. Agents write only what is left. The method still holds in a stack without a generator, but it is slower.
 
 ## The cycle at a glance
 
 | Stage | Who leads | Produces | Ends when | ZenWave tools |
 |---|---|---|---|---|
-| [Discover](#discover) | Humans, assisted by agents | PRD, Event Storming findings, first ZFL draft | A flow can be written as ZFL | grill-with-docs, Event Storming |
-| [Shape](#shape-the-human-in-the-loop-loop) (HITL loop) | Humans, assisted by agents | Approved models, ADRs, validated test data, task board | The [gate](#the-gate) passes | ZFL, ZDL, OpenAPI, AsyncAPI, [ZenWave Platform](/zenwave-platform/), [ZenWave SDK](/docs/zenwave-sdk/), zfl-to-zdl, zenwave-test-data, zenwave-test-scenarios |
-| [Implement & Verify](#implement--verify-the-away-from-keyboard-loop) (AFK loop) | Agents | Working, tested code; review reports; model-change proposals | The batch [exit criteria](#exit-criteria) pass | Orchestrator, implementer and reviewer subagents, zenwave-fill-gaps |
+| [Discover](#discover) | Humans, assisted by agents | PRD, Event Storming findings, first ZFL draft | A flow can be written as ZFL | Event Storming, agentic interviews |
+| [Shape](#shape-the-human-in-the-loop-loop) (HITL loop) | Humans, assisted by agents | Approved models, ADRs, validated test data, generated code, task board | The [gate](#the-gate) passes | ZFL, ZDL, OpenAPI, AsyncAPI, [ZenWave Platform](/zenwave-platform/), [ZenWave SDK](/docs/zenwave-sdk/) |
+| [Implement & Verify](#implement--verify-the-away-from-keyboard-loop) (AFK loop) | Agents | Working, tested code; review reports; model-change proposals | The [exit criteria](#exit-criteria) pass | An orchestrator with implementer and reviewer agents |
 | [Navigate](#navigate) | Humans and agents | Understanding of the whole architecture | Never: it runs alongside | [zenwave-architecture](https://github.com/ZenWave360/zenwave-architecture), ZenWave Platform, MCP |
+
+The skills and the orchestrator that implement each stage are in [zenwave-sdd](https://github.com/ZenWave360/zenwave-sdd).
 
 The stages form a cycle: for an existing system, Navigate is the input to Discover.
 
 ## Discover
 
-Discovery comes before the loops. Ideally it starts with a **PRD**, which seeds an interview session with skills like [grill-with-docs](https://github.com/mattpocock/skills/blob/main/docs/engineering/grill-with-docs.md). It continues with an **Event Storming** session between technical experts and domain experts. The architect translates the findings into a first ZFL draft of each flow.
+Discovery comes before the loops. Ideally it starts with a **PRD**, which seeds an agentic interview: the agent asks, you decide. It continues with an **Event Storming** session between technical experts and domain experts. The architect translates the findings into a first ZFL draft of each flow.
 
 Prose is fine here. The PRD and research notes are inputs to the design; agents in the AFK loop never read them.
 
@@ -48,12 +50,12 @@ Prose is fine here. The PRD and research notes are inputs to the design; agents 
 
 The human drives the design; agents assist. The loop repeats until the gate passes:
 
-- **Model.** Write the business flow in ZFL and one ZDL per bounded context. The [zfl-to-zdl](https://github.com/ZenWave360/zenwave-sdd/tree/main/skills/zfl-to-zdl) skill drafts the ZDL from the ZFL. API contracts can be derived from the ZDL.
+- **Model.** Write the business flow in ZFL and one ZDL per bounded context. Agents can draft them from the decisions taken in Discover. API contracts can be derived from the ZDL.
 - **Project.** Explore what the model derives in [ZenWave Platform](/zenwave-platform/) for IntelliJ and VS Code: the EventFlow diagram, sequence diagrams for every alternative branch of a ZFL flow, class diagrams and state machines for each aggregate, commands, domain events, OpenAPI and AsyncAPI.
 - **Generate.** If the stack matches, [ZenWave SDK](/docs/zenwave-sdk/) generates services, APIs, event handlers and a full set of tests. Generated code is one more projection. Early on, throw it away and generate again.
 - **Probe.** Generated tests have no proper test data or complete assertions yet. Use them as entry points: start a debug session, or write a few lines by hand, to check that what the model produces covers the requirements.
 - **Challenge.** Agents review the models looking for contradictions, missing outcomes and decisions nobody made. Answers change the model or become ADRs.
-- **Prepare the handover.** Generate test data for each use case and branch of the flow ([zenwave-test-data](https://github.com/ZenWave360/zenwave-sdd/tree/main/skills/zenwave-test-data), [zenwave-test-scenarios](https://github.com/ZenWave360/zenwave-sdd/tree/main/skills/zenwave-test-scenarios)) and validate it. Split the work into tasks.
+- **Prepare the handover.** Generate test data for each use case and branch of the flow, with agents' help, and validate it. Split the work into tasks.
 
 <Image alt="One model, many projections: a human-owned ZFL and ZDL model produces EventFlow, sequence diagrams, a class diagram, a state machine, OpenAPI, AsyncAPI, and code with tests" light="/images/one-model-many-projections.light.webp" dark="/images/one-model-many-projections.dark.webp" href="/images/one-model-many-projections.light.png" />
 
@@ -61,7 +63,7 @@ The human drives the design; agents assist. The loop repeats until the gate pass
 
 Splitting is a discrete step at the end of Shape, not a loop, though it may take a few iterations. The human splits the work, assisted by an agent that derives a task list from the approved model: from the generated code when there is some, from a blank slate when there isn't.
 
-The result is a list or a graph of tasks. Each task:
+Tasks are sliced vertically, along the paths of the flow, the happy path first, so every slice can be tested end to end. The result is a list or a graph of tasks. Each task:
 
 - points at the model lines it implements and the test data that defines done;
 - states its **difficulty**, so it can be routed to a suitable model;
@@ -86,15 +88,14 @@ The batch can be a single flow, a module or a whole system.
 
 Agents implement the batch without a human at the keyboard. They read **only** the approved models, the ADRs, the validated test data, the task board and the generated code.
 
-1. **Load.** The orchestrator reads the whole approved spec.
-2. **Pick.** It takes the next task whose blockers are done.
-3. **Route.** It chooses a model according to the task's difficulty.
-4. **Implement.** An implementer subagent works in its own worktree, reads the task and the model lines it points at, and runs only the focused tests for that task.
-5. **Review, per batch.** A reviewer subagent runs the entire suite, or the vertical slice of a module in a modular monolith, and checks the changes against the model and the test data. It writes a review report with the reviewed commit range (`from..to`). Optionally, it adds regression tests covered by the model.
-6. **Integrate.** The review report is always committed with the code. On a **FIX** verdict, the orchestrator redelivers the affected tasks to implementers.
-7. **Repeat** until the board is cleared or every remaining task is blocked.
+An orchestrator agent runs the loop:
 
-Only the orchestrator writes to the board. Subagents report back to it.
+- It hands each ready task (its blockers done) to an implementer agent, choosing the model by the task's difficulty.
+- Each implementer works in isolation, in a fresh context, on its own copy of the code. It writes the failing test first from the approved test data, then the code, and runs only the focused tests for its task.
+- Each finished vertical slice goes to a reviewer, a different model from the one that wrote it. The reviewer runs the full suite and checks the slice against the model and the test data. A **FIX** verdict sends the work back to implementers.
+- It repeats until the board is cleared or every remaining task is blocked.
+
+Only the orchestrator writes to the board, and the human talks to it, not to the workers. How it hands out work is still evolving; the current version is in [zenwave-sdd](https://github.com/ZenWave360/zenwave-sdd).
 
 ### When the model is wrong
 
@@ -111,8 +112,8 @@ The human chooses or adjusts a solution in Shape, updates the model, regenerates
 A batch is done when:
 
 - every task of the approved board is done;
-- the batch review is clean (no FIX);
-- the full suite, or the vertical slices, are green;
+- every slice review is clean (no FIX);
+- the full suite is green;
 - structural assertions and approved test data have not changed since the baseline;
 - there are no open model-change proposals.
 
@@ -137,7 +138,7 @@ Navigate runs outside the loops. [zenwave-architecture](https://github.com/ZenWa
 
 ## Without a generator
 
-The method does not depend on ZenWave SDK. Without a generator:
+ZenWave SDK covers Spring Boot, in Java and Kotlin. In other stacks the method still works, with more left to the agents:
 
 - Shape still produces models, projections, test data and tasks, minus the generated code;
 - the task list starts from a blank slate;
@@ -153,10 +154,10 @@ Hard rules:
 - agents never invent expected behavior;
 - nothing crosses into the AFK loop without passing the gate.
 
-Optional practices: the code generator, the board backend (a Markdown list, a folder of task files, Jira, GitHub issues, Linear), routing by difficulty, reviewer regression tests, and the advanced exit check.
+Optional practices: the board backend (a Markdown list, a folder of task files, Jira, GitHub issues, Linear), routing by difficulty, reviewer regression tests, and the advanced exit check.
 
 ## Further reading
 
 - [Spec-Driven Development Two Loops: Model-Driven Human in the Loop](https://ivangsa.com/articles/sdd-two-loops-model-driven-human-in-the-loop/)
 - [Spec-Driven Development Two Loops: Agentic Away from Keyboard Loop](https://ivangsa.com/articles/sdd-two-loops-agentic-away-from-keyboard-loop/)
-- The skills live in [zenwave-sdd](https://github.com/ZenWave360/zenwave-sdd). They are still early, extracted from [Arcadia Editions](https://ivangsa.com/articles/arcadia/), where this method is being tested end to end.
+- The skills and the orchestrator live in [zenwave-sdd](https://github.com/ZenWave360/zenwave-sdd), with a step-by-step README and a manual. They are still early, extracted from [Arcadia Editions](https://ivangsa.com/articles/arcadia/), where this method is being tested end to end.
