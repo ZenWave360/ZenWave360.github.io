@@ -35,7 +35,7 @@ const stages = [
     ],
   },
   {
-    title: 'Generate & Verify',
+    title: 'Implement & Verify',
     tone: 'amber',
     legend: ['APIs', 'Services', 'Tests', 'Infra'],
     icons: [
@@ -92,7 +92,7 @@ const stages = [
                       <path d="M23 42h18" />
                     </svg>
                   )}
-                  {stage.title === 'Generate & Verify' && (
+                  {stage.title === 'Implement & Verify' && (
                     <svg viewBox="0 0 64 64">
                       <path d="m25 20-12 12 12 12" />
                       <path d="m39 20 12 12-12 12" />
@@ -121,7 +121,7 @@ const stages = [
                   <img src={shapeImg.src} alt="ZenWave architecture shape diagram with bounded contexts and domain model" width={shapeImg.width} height={shapeImg.height} loading="lazy" decoding="async" />
                 )}
 
-                {stage.title === 'Generate & Verify' && (
+                {stage.title === 'Implement & Verify' && (
                   <img src={generateImg.src} alt="ZenWave SDK generated Spring Boot service code in IDE" width={generateImg.width} height={generateImg.height} loading="lazy" decoding="async" />
                 )}
 

@@ -30,7 +30,7 @@ This method puts a model at the center of the spec instead. Business flows, doma
 | Stage | Who leads | Produces | Ends when | ZenWave tools |
 |---|---|---|---|---|
 | [Discover](#discover) | Humans, assisted by agents | PRD, Event Storming findings, first ZFL draft | A flow can be written as ZFL | grill-with-docs, Event Storming |
-| [Shape](#shape-the-human-in-the-loop-loop) (HITL loop) | Humans, assisted by agents | Approved models, ADRs, validated test data, task board | The [gate](#the-gate) passes | ZFL, ZDL, OpenAPI, AsyncAPI, [ZenWave Platform](/plugin/), [ZenWave SDK](/docs/zenwave-sdk/), zfl-to-zdl, zenwave-test-data, zenwave-test-scenarios |
+| [Shape](#shape-the-human-in-the-loop-loop) (HITL loop) | Humans, assisted by agents | Approved models, ADRs, validated test data, task board | The [gate](#the-gate) passes | ZFL, ZDL, OpenAPI, AsyncAPI, [ZenWave Platform](/zenwave-platform/), [ZenWave SDK](/docs/zenwave-sdk/), zfl-to-zdl, zenwave-test-data, zenwave-test-scenarios |
 | [Implement & Verify](#implement--verify-the-away-from-keyboard-loop) (AFK loop) | Agents | Working, tested code; review reports; model-change proposals | The batch [exit criteria](#exit-criteria) pass | Orchestrator, implementer and reviewer subagents, zenwave-fill-gaps |
 | [Navigate](#navigate) | Humans and agents | Understanding of the whole architecture | Never: it runs alongside | [zenwave-architecture](https://github.com/ZenWave360/zenwave-architecture), ZenWave Platform, MCP |
 
@@ -49,7 +49,7 @@ Prose is fine here. The PRD and research notes are inputs to the design; agents 
 The human drives the design; agents assist. The loop repeats until the gate passes:
 
 - **Model.** Write the business flow in ZFL and one ZDL per bounded context. The [zfl-to-zdl](https://github.com/ZenWave360/zenwave-sdd/tree/main/skills/zfl-to-zdl) skill drafts the ZDL from the ZFL. API contracts can be derived from the ZDL.
-- **Project.** Explore what the model derives in [ZenWave Platform](/plugin/) for IntelliJ and VS Code: the EventFlow diagram, sequence diagrams for every alternative branch of a ZFL flow, class diagrams and state machines for each aggregate, commands, domain events, OpenAPI and AsyncAPI.
+- **Project.** Explore what the model derives in [ZenWave Platform](/zenwave-platform/) for IntelliJ and VS Code: the EventFlow diagram, sequence diagrams for every alternative branch of a ZFL flow, class diagrams and state machines for each aggregate, commands, domain events, OpenAPI and AsyncAPI.
 - **Generate.** If the stack matches, [ZenWave SDK](/docs/zenwave-sdk/) generates services, APIs, event handlers and a full set of tests. Generated code is one more projection. Early on, throw it away and generate again.
 - **Probe.** Generated tests have no proper test data or complete assertions yet. Use them as entry points: start a debug session, or write a few lines by hand, to check that what the model produces covers the requirements.
 - **Challenge.** Agents review the models looking for contradictions, missing outcomes and decisions nobody made. Answers change the model or become ADRs.

@@ -1,4 +1,5 @@
 {
+  "/plugin/": "/zenwave-platform/",
   "/docs/": "/docs/zenwave-sdk/",
   "/docs/examples/index/": "/docs/examples/eda-examples/",
   "/Event-Driven-Architectures/API-First-with-AsyncAPI/": "/posts/API-First-with-AsyncAPI-And-ZenWave-SDK/",
