@@ -63,13 +63,13 @@ flow CheckoutFlow {
     }
 
     when StartCheckout do authorizePayment {
-        service Payments.PaymentService
+        service Payments.PaymentService for (Payment)
         emits PaymentAuthorized
         emits PaymentDeclined
     }
 
     when PaymentDeclined do cancelOrder {
-        service Orders.OrderService
+        service Orders.OrderService for (Order)
         emits OrderCancelled
     }
 
@@ -101,7 +101,7 @@ Policies are the main building block of ZFL. They translate the Event Storming p
 
 ```zfl
 when OrderCreated do authorizePayment {
-    service PaymentsProcessing.PaymentsProcessingService
+    service PaymentsProcessing.PaymentsProcessingService for (Payment)
     emits PaymentAuthorized
     emits PaymentDeclined
     emits PaymentFailed
@@ -116,13 +116,13 @@ Business flows rarely have only one outcome. ZFL keeps branches explicit by nami
 
 ```zfl
 when PaymentFailed do retryPayment {
-    service PaymentsProcessing.PaymentsProcessingService
+    service PaymentsProcessing.PaymentsProcessingService for (Payment)
     emits PaymentRetried
     emits PaymentRetryExhausted
 }
 
 when PaymentDeclined, PaymentRetryExhausted do releaseStock {
-    service CatalogProducts.CatalogProductsService
+    service CatalogProducts.CatalogProductsService for (Product)
     emits StockReleased
 }
 ```
@@ -135,7 +135,7 @@ When you want to make emission branches explicit, use `@outcome` to group relate
 
 ```zfl
 when OrderCreated do authorizePayment {
-    service PaymentsProcessing.PaymentsProcessingService
+    service PaymentsProcessing.PaymentsProcessingService for (Payment)
 
     @outcome("authorized")
     emits PaymentAuthorized, OrderUpdated
@@ -160,14 +160,14 @@ Most flow steps are modeled as event-to-command policies. Sometimes a command ne
 
 ```zfl
 when StartOrderCheckout do startOrderCheckout {
-    service OrdersCheckout.OrdersCheckoutService
+    service OrdersCheckout.OrdersCheckoutService for (Order)
     call reserveStock
     on StockReserved emits OrderCreated
     on StockUnavailable emits StockUnavailable
 }
 
 do reserveStock {
-    service CatalogProducts.CatalogProductsService
+    service CatalogProducts.CatalogProductsService for (Product)
     emits response StockReserved
     response StockUnavailable
 }
@@ -181,7 +181,7 @@ An `on` line handles one response of the `call` just before it. When the `on` an
 
 ```zfl
 when RequestBooking, RequestAssistedBooking do bookSlot {
-    service Bookings.BookingService
+    service Bookings.BookingService for (Booking)
 
     call getBookingTerms
     on SlotNotBookable response SlotNotBookable
@@ -194,13 +194,13 @@ when RequestBooking, RequestAssistedBooking do bookSlot {
 }
 
 do getBookingTerms {
-    service Facilities.FacilityCatalogService
+    service Facilities.FacilityCatalogService for (Facility)
     response BookingTermsResult
     response SlotNotBookable
 }
 
 do checkBookingHolder {
-    service Accounts.AccountService
+    service Accounts.AccountService for (Account)
     response HolderEligibleResult
     response HolderNotEligible
     response HolderBlocked
@@ -226,7 +226,7 @@ When the caller should not wait for an inline response, use `async call`.
 
 ```zfl
 when OrderCreated do authorizePayment {
-    service PaymentsProcessing.PaymentsProcessingService
+    service PaymentsProcessing.PaymentsProcessingService for (Payment)
     async call authorizePayment
 }
 
@@ -257,7 +257,7 @@ start ReservationExpired {
 }
 
 when ReservationExpired do releaseStock {
-    service CatalogProducts.CatalogProductsService
+    service CatalogProducts.CatalogProductsService for (Product)
     emits StockReleased
 }
 ```
@@ -271,7 +271,7 @@ Compensating actions can be documented with annotations. The syntax is intention
 ```zfl
 @compensates(reserveStock)
 when PaymentDeclined, PaymentRetryExhausted, ReservationExpired do releaseStock {
-    service CatalogProducts.CatalogProductsService
+    service CatalogProducts.CatalogProductsService for (Product)
     emits StockReleased
 }
 ```
@@ -300,12 +300,12 @@ The optional `systems` block connects the flow to the systems and services that 
 systems {
     @zdl("orders-checkout-api/domain-model.zdl")
     OrdersCheckout {
-        service OrdersCheckoutService
+        service OrdersCheckoutService for (Order)
     }
 
     @zdl("payments-processing-api/domain-model.zdl")
     PaymentsProcessing {
-        service PaymentsProcessingService
+        service PaymentsProcessingService for (Payment)
     }
 }
 ```
@@ -316,7 +316,7 @@ Service references inside flow steps use the same names:
 
 ```zfl
 when OrderCreated do authorizePayment {
-    service PaymentsProcessing.PaymentsProcessingService
+    service PaymentsProcessing.PaymentsProcessingService for (Payment)
     emits PaymentAuthorized
 }
 ```
@@ -334,12 +334,12 @@ systems {
 
     @zdl("orders-checkout-api/domain-model.zdl")
     OrdersCheckout {
-        service OrdersCheckoutService
+        service OrdersCheckoutService for (Order)
     }
 
     @zdl("payments-processing-api/domain-model.zdl")
     PaymentsProcessing {
-        service PaymentsProcessingService
+        service PaymentsProcessingService for (Payment)
     }
 }
 
@@ -351,20 +351,20 @@ flow PlaceOrderFlow {
     }
 
     when StartOrderCheckout do startOrderCheckout {
-        service OrdersCheckout.OrdersCheckoutService
+        service OrdersCheckout.OrdersCheckoutService for (Order)
         call reserveStock
         on StockReserved emits OrderCreated
         on StockUnavailable emits StockUnavailable
     }
 
     do reserveStock {
-        service CatalogProducts.CatalogProductsService
+        service CatalogProducts.CatalogProductsService for (Product)
         emits response StockReserved
         response StockUnavailable
     }
 
     when OrderCreated do authorizePayment {
-        service PaymentsProcessing.PaymentsProcessingService
+        service PaymentsProcessing.PaymentsProcessingService for (Payment)
         emits PaymentAuthorized
         emits PaymentDeclined
         emits PaymentFailed
@@ -422,7 +422,7 @@ The `systems` block describes participating systems and their services.
 ```zfl
 systems {
     OrdersCheckout {
-        service OrdersCheckoutService
+        service OrdersCheckoutService for (Order)
     }
 }
 ```
@@ -541,7 +541,7 @@ When blocks model event-to-command policies.
 [<javadoc>]
 [<annotation>*]
 when <Trigger> do <commandName> {
-    [service <SystemName>.<ServiceName>]
+    [service <SystemName>.<ServiceName> [for (<Aggregate>, ...)]]
     [call <commandName>]
     [async call <commandName>]
     [on <EventName>[, <EventName>]* call <commandName>]
@@ -571,7 +571,7 @@ Do blocks define commands that can be called directly or documented independentl
 
 ```zfl
 do reserveStock {
-    service CatalogProducts.CatalogProductsService
+    service CatalogProducts.CatalogProductsService for (Product)
     emits response StockReserved
     response StockUnavailable
 }
@@ -581,15 +581,15 @@ A `do` block that no `when … do` triggers and no `call` or `on … call` calls
 
 ## Service References
 
-Service references connect a flow command to the service that owns it.
+Service references connect a flow command to the service that owns it, and can optionally name the aggregates the service works with using `for (...)`.
 
 ```zfl
-service OrdersCheckout.OrdersCheckoutService
+service OrdersCheckout.OrdersCheckoutService for (Order)
 ```
 
 The `service` line is optional. A command without it is valid, and the editor gives a warning: `Action 'bookSlot' does not declare a service.` The diagrams draw such a command by its system or its name.
 
-Inside a `systems` block, services can optionally declare the aggregates they work with.
+The `for (...)` clause is optional, both in flow commands and inside a `systems` block, and accepts several aggregates.
 
 ```zfl
 service CatalogProductsService for (Product, StockReservation)
