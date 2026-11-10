@@ -22,6 +22,8 @@ We recommend [SDKMAN!](https://sdkman.io/) to install all of them.
 
 Temurin (Eclipse) is a good open-source option for the Java JDK.
 
+Recommended: [ZenWave Platform for VS Code](https://marketplace.visualstudio.com/items?itemName=ZenWave360.zenwave-platform), to edit and validate your models and see them as diagrams. See [Editor support](#editor-support).
+
 {/* TODO: the ZenWave archetype README lists Java 25+ for archetype-generated projects. Confirm the minimum Java version for this page. */}
 
 ## Install the CLI
@@ -201,6 +203,8 @@ event CustomerEvent {
 - `@rest`, `@post` and `@get` describe how the service is exposed as a REST API.
 - `withEvents` makes `createCustomer` publish `CustomerEvent`. `@asyncapi` documents it in AsyncAPI.
 
+With [ZenWave Platform for VS Code](/zenwave-platform/) installed, errors show up while you type, and **ZenWave: Open Preview** (`Ctrl+Shift+V`) shows the model as a document with diagrams. Each plugin in the `plugins` block gets a **Run** button that generates its code, as an alternative to the commands below.
+
 The full syntax is in [ZDL Domain Language](/docs/event-driven-design/zenwave-domain-language/). A larger version of this model is the [Customer Address JPA](/docs/examples/ddd-examples/customer-address-jpa/) example.
 
 ## Generate
@@ -303,9 +307,13 @@ Generated service implementations, mappers and tests are a starting point. Add y
 
 Learn how to evolve your models, generated code and AI-implemented business logic together: [AI-Assisted Model-Driven Development with ZenWave SDK](/docs/ai-assisted-model-driven-development/).
 
-### ZenWave Editor for IntelliJ
+### Editor support
 
-The IntelliJ plugin is optional. It adds editing support for `.zdl` and `.zw` files and runs each plugin from a play button.
+Editor support is optional. ZenWave has it in two IDEs; see [ZenWave Platform: VS Code and IntelliJ](/zenwave-platform/) for the full comparison.
+
+**VS Code (recommended for modeling).** [ZenWave Platform](https://marketplace.visualstudio.com/items?itemName=ZenWave360.zenwave-platform) is the preferred editor for ZDL and ZFL models. It validates them while you type, navigates between flows, models and APIs, and shows them as documents, Mermaid diagrams and EventFlow diagrams. It also runs SDK plugins from a **Run** button, and works in the browser in vscode.dev and github.dev. It is also on [Open VSX](https://open-vsx.org/extension/ZenWave360/zenwave-platform), and is in early access as a pre-release.
+
+**IntelliJ (for running scripts).** The ZenWave Editor plugin runs each SDK plugin of a `.zw` or `.zdl` file from a play button, next to your Java or Kotlin code. It has ZDL editing support and shows diagrams. The advanced editing and validation features are in VS Code.
 
 <iframe
   width="384"
@@ -318,7 +326,7 @@ The IntelliJ plugin is optional. It adds editing support for `.zdl` and `.zw` fi
 
 For rendering class diagrams in markdown preview, install the [PlantUML Integration](https://plugins.jetbrains.com/plugin/7017-plantuml-integration) plugin.
 
-**NOTE:** ZenWave Editor uses the `jbang zw` command to execute plugins, so you need JBang available in the PATH of the console configured by default in IntelliJ.
+**NOTE:** Both editors run plugins with the `jbang zw` command, so you need JBang in the PATH: in IntelliJ, in the PATH of its default console.
 
 ### Examples
 

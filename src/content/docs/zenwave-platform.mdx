@@ -1,13 +1,95 @@
 ---
-title: "ZenWave Editor - IntelliJ Plugin"
+title: "ZenWave Platform - VS Code and IntelliJ"
 slug: "/zenwave-platform/"
 ---
 
 import Image from '../../components/Image.astro';
 
-# ZenWave Editor - IntelliJ Plugin
+# ZenWave Platform: VS Code and IntelliJ
 
-ZenWave Editor: Seamless ZDL Editing & SDK Plugin Integration inside IntelliJ Platform. <span id="plugin-install">&nbsp;</span>
+ZenWave has editor support in two IDEs. Each one has its own job:
+
+- **VS Code is the preferred platform for editing and validating your models.** It understands ZDL, ZFL and ZenWave scripts (`.zw`). It validates them while you type, lets you navigate between them, and shows them as diagrams and documents. It also runs in the browser, in vscode.dev and github.dev.
+- **IntelliJ is the place to run your ZenWave scripts.** It runs SDK plugins from a play button, next to your Java or Kotlin code. It edits ZDL and shows diagrams, but the advanced editing and validation features live in VS Code.
+
+| | VS Code | IntelliJ |
+|---|:---:|:---:|
+| ZDL editing and highlighting | ✅ | ✅ |
+| ZFL (flows) and `.zw` editing | ✅ | basic |
+| Validation while you type, across files | ✅ | basic |
+| Navigation between flows, models and APIs | ✅ | in progress |
+| Preview: documents and Mermaid diagrams | ✅ | in progress |
+| EventFlow diagram | ✅ | ✅ |
+| Run ZenWave SDK plugins | ✅ (desktop) | ✅ |
+| Runs in the browser (vscode.dev, github.dev) | ✅ | ❌ |
+
+IntelliJ will show every diagram that VS Code shows. Advanced editing and validation stay in VS Code.
+
+## ZenWave Platform for VS Code
+
+ZenWave Platform for VS Code is the editor for your ZDL and ZFL models. Use it to design, validate and explore them.
+
+Install it from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=ZenWave360.zenwave-platform) or [Open VSX](https://open-vsx.org/extension/ZenWave360/zenwave-platform). You can also search for **ZenWave Platform** in the Extensions view.
+
+> **Early access.** The extension is published as a pre-release while it is a work in progress. Feedback and questions are welcome at [GitHub Discussions](https://github.com/ZenWave360/zenwave-platform-vscode/discussions).
+
+It replaces the old **ZDL VSCode** extension (`ZenWave360.zdl-vscode`). Uninstall that one after installing ZenWave Platform.
+
+### Design: edit and validate your models
+
+- **[ZFL](/docs/event-driven-design/zenwave-flow-language/)** models business flows across bounded contexts. It is the text version of an Event Storming board.
+- **[ZDL](/docs/event-driven-design/zenwave-domain-language/)** models what is inside a bounded context: aggregates, entities, services, commands, events and APIs.
+
+Errors show up while you type, in every file. A renamed command or a missing event is reported where it breaks the design.
+
+Your design is a set of connected files: a flow points to the bounded contexts that take part in it, and a bounded context points to its APIs. Go to Definition and Find References follow those links in both directions, from a step in a flow to the command in its bounded context and back.
+
+A ZFL `systems` block lists the services and commands its flows use. **Add Missing ZFL Services** adds what the flows use and the block lacks. **Organize ZFL Services in Full** also removes what no flow uses, and asks first.
+
+### See your models as documents and diagrams
+
+The preview turns each model into a Markdown document with Mermaid diagrams:
+
+- A **ZDL** model shows the documentation page of its bounded context. **ZDL Diagrams** shows one diagram at a time: services, aggregates, state machines, events or commands.
+- A **ZFL** flow shows its flowchart and one sequence diagram per outcome.
+- A **ZW** file shows each plugin with its description, the command that runs it, and its configuration.
+
+Open it from the ZenWave icon in the editor title bar, or with **ZenWave: Open Preview** (`Ctrl+Shift+V`). The preview follows your edits. **Copy as Markdown** copies the document, ready to paste into a wiki or a pull request. Mermaid ships inside the extension, so nothing is sent over the network.
+
+### EventFlow diagram
+
+A ZFL flow also opens as an EventFlow diagram: commands, events and policies across your bounded contexts, laid out automatically. It follows your edits as you type. You can:
+
+- switch between the flow view and the service view;
+- draw the flow in lanes, one per system or per service;
+- pick one variant of the flow, from its start to one of its outcomes;
+- save your own node positions beside the model.
+
+### Generate: run the ZenWave SDK
+
+Each plugin declaration in a `.zw` file or in the `config` of a ZDL model has a **Run** button above it. It runs the [ZenWave SDK](/zenwave-sdk/) the same way the command line does. Plugin options get completion and hover help.
+
+Code generation runs on the desktop, in trusted workspaces. It uses the `jbang zw` command (setting `zenwave.sdk.cliCommand`), so install the [ZenWave CLI](/docs/getting-started/#install-the-cli) first.
+
+### Explore: your architecture manifest
+
+Describe your systems, bounded contexts, APIs and models in an architecture manifest, a YAML file. The extension validates it and lets you browse what it declares. Point to it with the `zenwave.workspace.manifest` setting, or with `project-manifest` in `.zenwave/config.yml`.
+
+### Desktop and browser
+
+The extension also works in the browser. Open a GitHub repository with ZenWave models, press `.` (the period key) to open github.dev, and you can read, edit and validate the design without installing anything.
+
+| | Desktop | Browser (vscode.dev, github.dev) |
+|---|:---:|:---:|
+| Editing and validation | ✅ | ✅ |
+| Preview with diagrams and documents | ✅ | ✅ |
+| EventFlow diagram | ✅ | ✅ |
+| Architecture manifest | ✅ | ✅ |
+| ZenWave SDK code generation | ✅ | ❌ (needs a JVM) |
+
+## ZenWave Editor for IntelliJ
+
+The IntelliJ plugin runs your ZenWave scripts next to your code, and gives you ZDL editing support. <span id="plugin-install">&nbsp;</span>
 
 <script src="https://plugins.jetbrains.com/assets/scripts/mp-widget.js"></script>
 <script>MarketplaceWidget.setupMarketplaceWidget('install', 0, "#plugin-install");</script>
@@ -16,27 +98,28 @@ ZenWave Editor: Seamless ZDL Editing & SDK Plugin Integration inside IntelliJ Pl
 
 <iframe width="384" height="319" src="https://plugins.jetbrains.com/embeddable/card/22858" title="ZenWave Editor IntelliJ Plugin" loading="lazy"></iframe>
 
-## Features
+### Features
 
-### ZDL Language Support
-- **Syntax highlighting** for ZDL Domain Model Language
-- **Linting and error detection** with real-time feedback
-- **Code completion** for ZDL syntax (work in progress)
-- **Code navigation** (Ctrl+Click) from ZDL model to source code and API definitions (work in progress)
+#### Run SDK plugins
+- **Run ZenWave SDK plugins** from the editor with the Play button
+- **Copy the command line** of a plugin by hovering over the Play button
+- **Configure plugins** in ZenWave Scripts files (`.zw`)
 
-### SDK Plugin Integration
-- **Execute ZenWave SDK plugins** directly from the editor with the Play button
-- **Copy generated command lines** by hovering over the Play button
-- **Plugin configuration** through ZenWave Scripts Files (`.zw`)
-- **Real-time code generation** from your ZDL models
+#### ZDL editing
+- **Syntax highlighting** for ZDL
+- **Error detection** while you type
+- **Code completion** (work in progress)
+- **Navigation** (Ctrl+Click) from the ZDL model to source code and API definitions (work in progress)
 
-### Documentation & Visualization
-- **Markdown preview** with PlantUML diagrams (requires PlantUML plugin)
-- **Interactive documentation** generation from your domain models
+#### Visualization
+- **EventFlow diagram** for ZFL flows
+- **Markdown preview** of the documentation generated from your models, with PlantUML diagrams (requires the PlantUML plugin)
 
-## ZenWave Scripts Files (.zw)
+For advanced editing and validation of ZDL and ZFL, use VS Code.
 
-The plugin supports ZenWave Scripts Files that define SDK plugins and their configurations:
+### ZenWave Scripts Files (.zw)
+
+A ZenWave Scripts file lists the SDK plugins to run and their configuration:
 
 ```zdl
 config {
@@ -86,33 +169,27 @@ config {
 }
 ```
 
-## Configuration Precedence
+The same `.zw` files run from VS Code, with the **Run** button above each plugin.
 
-The plugin follows a clear configuration hierarchy:
+### Configuration precedence
 
-1. **Command line arguments** (highest precedence)
-2. **Plugin-specific properties** (defined in `.zw` files)
-3. **Global properties** (defined in `.zw` files)
-4. **Properties from referenced `.zdl` files** (lowest precedence)
+From highest to lowest:
 
-## Getting Started
+1. **Command line arguments**
+2. **Plugin properties** defined in `.zw` files
+3. **Global properties** defined in `.zw` files
+4. **Properties from the referenced `.zdl` files**
 
-1. **Install the plugin** from the JetBrains Marketplace
-2. **Install ZenWave CLI** for plugin execution: `jbang alias add --force --fresh --name=zw release@zenwave360/zenwave-sdk`
-3. **Create a ZDL model** file with `.zdl` extension
-4. **Create a ZenWave Scripts** file with `.zw` extension
-5. **Configure your plugins** in the scripts file
-6. **Execute plugins** using the Play button in the editor
+### Getting started with IntelliJ
 
-## Requirements
+1. **Install the plugin** from the JetBrains Marketplace.
+2. **Install the ZenWave CLI**: `jbang alias add --force --fresh --name=zw release@zenwave360/zenwave-sdk`
+3. **Create a ZDL model** file with the `.zdl` extension.
+4. **Create a ZenWave Scripts** file with the `.zw` extension.
+5. **Configure your plugins** in the scripts file.
+6. **Run the plugins** with the Play button in the editor.
 
-- **ZenWave CLI** installed via JBang for plugin execution
-- **PlantUML plugin** (optional) for diagram preview in Markdown
+### Requirements
 
-# ZenWave Editor for VSCode
-
-ZenWave Editor provides Syntax Highlighting for ZDL on VSCode.
-
-It is available on the [VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=ZenWave360.zdl-vscode).
-
-It also works 'on the web', for example on the `github.dev` user interface reached by pressing `.` (the period key) when browsing a repository or Pull Request in GitHub.
+- **ZenWave CLI** installed with JBang, available in the PATH of IntelliJ's default console.
+- **PlantUML plugin** (optional) for diagrams in the Markdown preview.
